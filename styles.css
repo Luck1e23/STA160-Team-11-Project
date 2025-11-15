@@ -1,8 +1,429 @@
-body {
-  font-family: "Helvetica Neue", Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f9f9f9;
-  color: #333;
-  line-height: 1.6;
-}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STA 160 X‑ray Project</title>
+  <meta name="description" content="Chest X‑ray classification project (NIH + CheXpert)." />
+
+  <!-- ====== CSS ====== -->
+  <style>
+    :root {
+      --bg: #0f1216;
+      --bg-soft: #141922;
+      --surface: #1b2230;
+      --text: #e8edf2;
+      --muted: #a6b1c0;
+      --brand: #7aa2ff;
+      --brand-2: #9effcc;
+      --danger: #ff6b6b;
+      --warning: #ffd166;
+      --ok: #4ade80;
+      --card-radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --maxw: 1200px;
+    }
+
+    /* Reset */
+    *,*::before,*::after { box-sizing: border-box; }
+    html,body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, var(--bg) 0%, #0d1014 100%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(100% - 2rem, var(--maxw)); margin-inline: auto; }
+
+    /* Topbar */
+    header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(140%) blur(8px);
+      background: rgba(15,18,22,.55); border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: .9rem 0; }
+    .brand { display: flex; gap: .65rem; align-items: center; font-weight: 700; letter-spacing: .3px; }
+    .brand .logo { inline-size: 36px; block-size: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: var(--shadow); display: grid; place-items: center; font-size: 18px; color: #0b0f14; }
+    .nav a.link { opacity: .9; padding: .5rem .8rem; border-radius: 10px; }
+    .nav a.link:hover { background: rgba(255,255,255,.06); }
+
+    /* Mobile nav (CSS only) */
+    #nav-toggle { display: none; }
+    .nav-links { display: flex; gap: .25rem; flex-wrap: wrap; }
+    .hamburger { display: none; cursor: pointer; padding: .45rem .6rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.08); }
+    .hamburger:focus { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+    @media (max-width: 800px) {
+      .hamburger { display: block; }
+      .nav-links { display: none; width: 100%; padding-top: .75rem; }
+      #nav-toggle:checked ~ .nav-links { display: grid; gap: .25rem; }
+      .nav { flex-wrap: wrap; }
+    }
+
+    /* Hero */
+    .hero { position: relative; padding: 4.5rem 0 3rem; overflow: hidden; }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: center; }
+    .kicker { color: var(--brand-2); font-weight: 600; letter-spacing: .3px; }
+    .title { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.1; margin: .35rem 0 1rem; }
+    .subtitle { color: var(--muted); max-width: 60ch; }
+    .actions { display: flex; gap: .8rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: .5rem; padding: .8rem 1rem; border-radius: 999px; border: 1px solid rgba(255,255,255,.1); background: #0f141c; }
+    .btn.primary { background: linear-gradient(135deg, var(--brand), #5f87ff); border: none; color: #0b0f14; font-weight: 700; }
+    .btn:hover { transform: translateY(-1px); }
+
+    .hero-card {
+      background: linear-gradient(180deg, rgba(122,162,255,.08), rgba(158,255,204,.06));
+      border: 1px solid rgba(122,162,255,.25);
+      border-radius: var(--card-radius);
+      padding: 1rem; box-shadow: var(--shadow);
+    }
+    .preview {
+      aspect-ratio: 4/3; border-radius: 12px; background: radial-gradient(1200px 400px at 10% 10%, rgba(122,162,255,.25), transparent 60%),
+                  linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border: 1px dashed rgba(255,255,255,.18); display: grid; place-items: center; color: var(--muted);
+    }
+    .preview small { opacity: .8; }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Stat bar */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2rem; }
+    .stat { background: var(--surface); border-radius: 14px; padding: 1rem; border: 1px solid rgba(255,255,255,.06); }
+    .stat .num { font-weight: 800; font-size: clamp(1.4rem, 3.5vw, 1.9rem); }
+    .stat .label { color: var(--muted); font-size: .95rem; }
+    @media (max-width: 800px) { .stats { grid-template-columns: 1fr 1fr; } }
+
+    /* Sections */
+    section { padding: 3.2rem 0; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
+    .section-head h2 { margin: 0; font-size: clamp(1.4rem, 3.6vw, 2rem); }
+    .muted { color: var(--muted); }
+
+    /* Cards grid */
+    .grid { display: grid; gap: 1rem; }
+    .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .card { background: var(--surface); border: 1px solid rgba(255,255,255,.06); border-radius: var(--card-radius); padding: 1rem; box-shadow: var(--shadow); }
+    .card h3 { margin: .2rem 0 .2rem; font-size: 1.05rem; }
+    .card p { margin: .2rem 0 0; color: var(--muted); }
+    @media (max-width: 1000px) { .grid.cols-3 { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 700px) { .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; } }
+
+    /* Timeline */
+    .timeline { display: grid; gap: .8rem; }
+    .step { display: grid; grid-template-columns: auto 1fr; gap: .8rem; align-items: start; }
+    .bullet { inline-size: 14px; block-size: 14px; border-radius: 999px; background: var(--brand); margin-top: .35rem; box-shadow: 0 0 0 4px rgba(122,162,255,.15); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 12px; }
+    th, td { padding: .8rem .9rem; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; }
+    thead th { background: rgba(122,162,255,.08); font-weight: 700; }
+    tbody tr:hover { background: rgba(255,255,255,.03); }
+    .tag { display: inline-block; padding: .15rem .5rem; border-radius: 999px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); font-size: .85rem; }
+
+    /* Gallery */
+    .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+    .shot { aspect-ratio: 4/3; border-radius: 10px; background: #0d1117; border: 1px dashed rgba(255,255,255,.12); display: grid; place-items: center; color: var(--muted); }
+    @media (max-width: 850px) { .gallery { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px) { .gallery { grid-template-columns: 1fr; } }
+
+    /* Team */
+    .team { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .member { text-align: center; padding: 1rem; background: var(--surface); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; }
+    .avatar { inline-size: 74px; block-size: 74px; border-radius: 999px; margin-inline: auto; background: linear-gradient(135deg, var(--brand), var(--brand-2)); display: grid; place-items: center; color: #0b0f14; font-weight: 800; box-shadow: var(--shadow); }
+    .member .role { color: var(--muted); font-size: .95rem; margin-top: .15rem; }
+    @media (max-width: 900px) { .team { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px) { .team { grid-template-columns: 1fr; } }
+
+    /* Footer */
+    footer { padding: 2.2rem 0; border-top: 1px solid rgba(255,255,255,.06); color: var(--muted); }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
+    .footer-grid a { color: var(--text); opacity: .85; }
+    .footer-grid a:hover { opacity: 1; text-decoration: underline; }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px) { .footer-grid { grid-template-columns: 1fr; } }
+
+    /* Helpers */
+    .row { display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; }
+    .spacer { block-size: 1rem; }
+    .note { font-size: .95rem; color: var(--muted); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+  </style>
+</head>
+
+<body>
+  <!-- ====== Header / Nav ====== -->
+  <header role="banner">
+    <div class="container nav" aria-label="Top navigation">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">XR</div>
+        <div>STA 160 — Chest X‑ray</div>
+      </div>
+
+      <label class="hamburger" for="nav-toggle" aria-label="Open navigation" aria-controls="nav-links">☰</label>
+      <input type="checkbox" id="nav-toggle" class="sr-only" aria-hidden="true">
+
+      <nav id="nav-links" class="nav-links" role="navigation">
+        <a class="link" href="#datasets">Datasets</a>
+        <a class="link" href="#method">Method</a>
+        <a class="link" href="#results">Results</a>
+        <a class="link" href="#gallery">Gallery</a>
+        <a class="link" href="#team">Team</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ====== Hero ====== -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="kicker">NIH + CheXpert • CNNs • Transfer Learning</div>
+        <h1 class="title">Chest X‑ray Classification for Multi‑Label Pathologies</h1>
+        <p class="subtitle">We benchmark pre‑trained CNNs to detect common thoracic findings from frontal chest X‑rays. Our pipeline covers curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.</p>
+        <div class="actions">
+          <a class="btn primary" href="#results">View Results</a>
+          <a class="btn" href="#method">See the Method</a>
+        </div>
+        <div class="stats" aria-label="Project stats">
+          <div class="stat"><div class="num">112k+</div><div class="label">Images (NIH14)</div></div>
+          <div class="stat"><div class="num">224k+</div><div class="label">Images (CheXpert)</div></div>
+          <div class="stat"><div class="num">14</div><div class="label">NIH labels</div></div>
+          <div class="stat"><div class="num">5</div><div class="label">CheXpert labels</div></div>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Preview">
+        <div class="preview">
+          <small>Drop a sample confusion matrix / ROC image here<br>(replace this box with an &lt;img&gt;)</small>
+        </div>
+        <p class="note" style="margin-top:.8rem">Tip: swap the placeholder with <code>&lt;img src="assets/roc.png" alt="ROC curves for pathologies" /&gt;</code></p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ====== Datasets ====== -->
+  <section id="datasets">
+    <div class="container">
+      <div class="section-head">
+        <h2>Datasets</h2>
+        <span class="tag">Data curation</span>
+      </div>
+      <div class="grid cols-3">
+        <article class="card">
+          <h3>NIH ChestX‑ray14</h3>
+          <p>112,120 frontal CXRs annotated for 14 pathologies. Multi‑label; long‑tailed distributions.</p>
+          <div class="spacer"></div>
+          <div class="row note"><span class="tag">Train/Valid/Test split</span><span class="tag">224×224</span><span class="tag">Augment: flip/crop</span></div>
+        </article>
+        <article class="card">
+          <h3>CheXpert</h3>
+          <p>224,316 images with 5 competition labels (No Finding, Edema, Cardiomegaly, Consolidation, Pleural Effusion). Uncertainty handled with U‑ignore/U‑zero.</p>
+          <div class="spacer"></div>
+          <div class="row note"><span class="tag">U‑label policy</span><span class="tag">CLAHE</span><span class="tag">Center‑crop</span></div>
+        </article>
+        <article class="card">
+          <h3>Test Set & Ethics</h3>
+          <p>Held‑out test set balanced per label prevalence. PHI‑free, academic use only; models audited for shortcut learning.</p>
+          <div class="spacer"></div>
+          <div class="row note"><span class="tag">Stratified</span><span class="tag">Label smoothing</span><span class="tag">AUC‑PR focus</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Method ====== -->
+  <section id="method">
+    <div class="container">
+      <div class="section-head">
+        <h2>Method</h2>
+        <span class="tag">Reproducible pipeline</span>
+      </div>
+      <div class="card">
+        <div class="timeline">
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Preprocessing</strong>
+              <p class="muted">DICOM/PNG read → resize 224×224 → grayscale normalization → optional CLAHE → train/valid/test split (patient‑wise).</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Models</strong>
+              <p class="muted">Transfer learning with ResNet‑50, DenseNet‑121, EfficientNet‑B0. Final linear head with sigmoid for multi‑label BCE.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Training</strong>
+              <p class="muted">BCEWithLogitsLoss + class weights; AdamW; cosine LR; early stopping on macro AUC‑ROC.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Evaluation</strong>
+              <p class="muted">Per‑label AUC‑ROC/PR, threshold tuning via Youden’s J; report macro/micro metrics; calibration with temperature scaling.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Error Analysis</strong>
+              <p class="muted">Confusions by view, device, and sex; Grad‑CAM sanity checks; slice‑wise breakdown for long‑tail classes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Results ====== -->
+  <section id="results">
+    <div class="container">
+      <div class="section-head">
+        <h2>Results</h2>
+        <span class="tag">Metrics</span>
+      </div>
+      <div class="grid cols-2">
+        <article class="card">
+          <h3 style="margin-bottom:.6rem">Summary (Validation)</h3>
+          <table aria-label="validation summary">
+            <thead>
+              <tr><th>Model</th><th>Macro AUC‑ROC</th><th>Macro AUC‑PR</th><th>Params</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>DenseNet‑121</td><td>0.86</td><td>0.41</td><td>8.0M</td></tr>
+              <tr><td>ResNet‑50</td><td>0.84</td><td>0.38</td><td>25.6M</td></tr>
+              <tr><td>EfficientNet‑B0</td><td>0.83</td><td>0.36</td><td>5.3M</td></tr>
+            </tbody>
+          </table>
+          <p class="note">Replace with your numbers. Keep both ROC and PR due to class imbalance.</p>
+        </article>
+        <article class="card">
+          <h3 style="margin-bottom:.6rem">Per‑Label AUC‑ROC (Sample)</h3>
+          <table aria-label="per label auc">
+            <thead>
+              <tr><th>Label</th><th>AUC</th><th>Support</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Cardiomegaly</td><td>0.92</td><td>8,753</td></tr>
+              <tr><td>Pleural Effusion</td><td>0.90</td><td>13,842</td></tr>
+              <tr><td>Edema</td><td>0.88</td><td>6,410</td></tr>
+              <tr><td>Consolidation</td><td>0.81</td><td>5,102</td></tr>
+              <tr><td>No Finding</td><td>0.78</td><td>—</td></tr>
+            </tbody>
+          </table>
+          <p class="note">Populate from your experiment logs or CSV exports.</p>
+        </article>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="card">
+        <h3 style="margin:0 0 .6rem">Confusion Matrix / ROC Gallery</h3>
+        <div class="gallery" id="gallery">
+          <div class="shot">roc_dense.png</div>
+          <div class="shot">roc_resnet.png</div>
+          <div class="shot">cm_cardio.png</div>
+        </div>
+        <p class="note" style="margin-top:.6rem">Swap the placeholders with actual <code>&lt;img&gt;</code> tags when your plots are ready.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Qualitative Examples ====== -->
+  <section id="gallery">
+    <div class="container">
+      <div class="section-head">
+        <h2>Qualitative Examples</h2>
+        <span class="tag">Grad‑CAM / Predictions</span>
+      </div>
+      <div class="grid cols-3">
+        <article class="card">
+          <h3>True Positive</h3>
+          <div class="shot">gradcam_tp.png</div>
+          <p class="note">E.g., Cardiomegaly correctly detected; attention over cardiac silhouette.</p>
+        </article>
+        <article class="card">
+          <h3>False Positive</h3>
+          <div class="shot">gradcam_fp.png</div>
+          <p class="note">Spurious focus on devices; mitigated by augmentations.</p>
+        </article>
+        <article class="card">
+          <h3>False Negative</h3>
+          <div class="shot">gradcam_fn.png</div>
+          <p class="note">Missed small effusion; improved with threshold tuning.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Team ====== -->
+  <section id="team">
+    <div class="container">
+      <div class="section-head">
+        <h2>Team</h2>
+        <span class="tag">STA 160 • UC Davis</span>
+      </div>
+      <div class="team">
+        <div class="member">
+          <div class="avatar" aria-hidden="true">ML</div>
+          <h3>Muhammad Laiq</h3>
+          <div class="role">Lead • Modeling & Docs</div>
+        </div>
+        <div class="member">
+          <div class="avatar" aria-hidden="true">AB</div>
+          <h3>Teammate 2</h3>
+          <div class="role">Data & EDA</div>
+        </div>
+        <div class="member">
+          <div class="avatar" aria-hidden="true">CD</div>
+          <h3>Teammate 3</h3>
+          <div class="role">Training Ops</div>
+        </div>
+        <div class="member">
+          <div class="avatar" aria-hidden="true">EF</div>
+          <h3>Teammate 4</h3>
+          <div class="role">Evaluation</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Footer ====== -->
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:.5rem">
+          <div class="logo" aria-hidden="true">XR</div>
+          <div>Chest X‑ray Project</div>
+        </div>
+        <p class="note">Course: STA 160 • Quarter: Fall 2025 • UC Davis</p>
+      </div>
+      <div>
+        <strong>Links</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="#datasets">Datasets</a></li>
+          <li><a href="#method">Method</a></li>
+          <li><a href="#results">Results</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="mailto:you@example.edu">you@example.edu</a></li>
+          <li><a href="#">GitHub repo</a></li>
+          <li><a href="#">Paper / Report</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
