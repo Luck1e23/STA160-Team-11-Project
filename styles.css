@@ -6,3 +6,122 @@ body {
   color: #333;
   line-height: 1.6;
 }
+
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+nav {
+  background: #34495e;
+  padding: 10px;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+section {
+  padding: 40px;
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+h2 {
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 5px;
+}
+
+ol {
+  padding-left: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
+  padding: 8px;
+  text-align: center;
+}
+
+th {
+  background: #3498db;
+  color: white;
+}
+
+.plot-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.plot-container img {
+  width: 80%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.caption {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.team {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.member {
+  text-align: center;
+  margin: 10px;
+}
+
+footer {
+  background: #eee;
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9em;
+}
+
+.upload-box {
+  display: grid;
+  place-items: center;
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 2px dashed rgba(255,255,255,.18);
+  background: var(--surface);
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.upload-box:hover {
+  border-color: var(--brand);
+  background: rgba(122,162,255,0.08);
+}
+
+.upload-instructions {
+  color: var(--muted);
+  font-size: 1rem;
+  text-align: center;
+}
