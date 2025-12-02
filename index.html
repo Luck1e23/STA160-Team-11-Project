@@ -52,7 +52,7 @@
         radial-gradient(circle at 0% 100%, rgba(124,252,214,.20), transparent 55%);
       opacity: .7;
       filter: blur(3px);
-      z-index: -1;
+      z-index: -2;
       animation: bgFloat 30s ease-in-out infinite alternate;
     }
 
@@ -62,7 +62,7 @@
       100% { transform: translate3d(25px,-25px,0) scale(1.03); }
     }
 
-    body[data-theme="light"] {
+    body.light {
       --bg: #f4f6fb;
       --bg-soft: #e3e7f3;
       --surface: #ffffff;
@@ -71,6 +71,7 @@
       --brand: #2563eb;
       --brand-2: #06b6d4;
       background: radial-gradient(circle at top, #ffffff 0%, #e5ecfb 40%, #dbe4ff 100%);
+      color: var(--text);
     }
 
     img { max-width: 100%; display: block; }
@@ -83,7 +84,7 @@
       background: linear-gradient(90deg, rgba(9,12,18,.92), rgba(15,18,26,.86));
       border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    body[data-theme="light"] header {
+    body.light header {
       background: linear-gradient(90deg, rgba(255,255,255,.92), rgba(237,242,255,.9));
       border-bottom-color: rgba(15,23,42,.08);
     }
@@ -122,7 +123,7 @@
       color: #e5edff;
       box-shadow: 0 10px 24px rgba(15,23,42,.75);
     }
-    body[data-theme="light"] .nav a.link.active {
+    body.light .nav a.link.active {
       background: rgba(37,99,235,.12);
       color: #1f2937;
       box-shadow: 0 10px 24px rgba(148,163,184,.55);
@@ -136,7 +137,7 @@
       border-radius: 10px; border: 1px solid rgba(255,255,255,.14);
       font-size: 1rem;
     }
-    body[data-theme="light"] .hamburger {
+    body.light .hamburger {
       border-color: rgba(15,23,42,.12);
     }
 
@@ -160,7 +161,7 @@
       box-shadow: 0 12px 26px rgba(0,0,0,.7);
       border-color: rgba(148,163,253,.6);
     }
-    body[data-theme="light"] .mode-toggle {
+    body.light .mode-toggle {
       background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.18), transparent 60%), #ffffff;
       color: #111827;
       border-color: rgba(148,163,184,.8);
@@ -192,7 +193,7 @@
       pointer-events: none;
       z-index: -1;
     }
-    body[data-theme="light"] .hero::after {
+    body.light .hero::after {
       background: radial-gradient(circle at 50% 120%, rgba(56,189,248,.25), transparent 55%);
     }
 
@@ -228,13 +229,13 @@
     .btn.primary:hover {
       background: linear-gradient(135deg, #8ab1ff, #6b92ff);
     }
-    body[data-theme="light"] .btn {
+    body.light .btn {
       background: #e5edff;
       border-color: rgba(148,163,184,.6);
       color: #111827;
       box-shadow: 0 10px 24px rgba(148,163,184,.45);
     }
-    body[data-theme="light"] .btn.primary {
+    body.light .btn.primary {
       background: linear-gradient(135deg, #2563eb, #0ea5e9);
       color: #f9fafb;
       box-shadow: 0 16px 40px rgba(37,99,235,.5);
@@ -248,7 +249,7 @@
       padding: 1rem;
       box-shadow: 0 18px 45px rgba(0,0,0,.7);
     }
-    body[data-theme="light"] .hero-card {
+    body.light .hero-card {
       background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.16), transparent 60%),
                   linear-gradient(180deg, #ffffff, #e5edff);
       border-color: rgba(148,163,184,.9);
@@ -272,7 +273,30 @@
     .preview:hover img {
       transform: scale(1.08);
     }
-    .preview small { opacity: .8; text-align: center; padding-inline: 1rem; }
+    .preview small { opacity: .8; text-align: center; padding-inline: 1rem; position: absolute; inset: auto 0 0 0; background: linear-gradient(to top, rgba(0,0,0,.7), transparent); padding-block: .45rem; }
+
+    .scan-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+    .scan-overlay::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 22%;
+      background: linear-gradient(to bottom, rgba(15,23,42,0), rgba(148,163,253,.55), rgba(15,23,42,0));
+      animation: scanLine 5s linear infinite;
+      box-shadow: 0 0 40px rgba(129,140,248,.8);
+    }
+    @keyframes scanLine {
+      0% { top: -25%; }
+      45% { top: 80%; }
+      50% { top: 80%; }
+      100% { top: -25%; }
+    }
 
     @media (max-width: 900px) {
       .hero-grid { grid-template-columns: 1fr; }
@@ -292,7 +316,7 @@
       box-shadow: 0 18px 36px rgba(0,0,0,.6);
       border-color: rgba(122,162,255,.45);
     }
-    body[data-theme="light"] .stat {
+    body.light .stat {
       background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.12), transparent 60%), #ffffff;
       border-color: rgba(148,163,184,.6);
       box-shadow: 0 16px 40px rgba(148,163,184,.55);
@@ -324,7 +348,7 @@
       border-color: rgba(122,162,255,.45);
       background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.18), transparent 65%), var(--surface);
     }
-    body[data-theme="light"] .card {
+    body.light .card {
       background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.1), transparent 65%), #ffffff;
       border-color: rgba(148,163,184,.7);
       box-shadow: 0 16px 40px rgba(148,163,184,.55);
@@ -349,7 +373,7 @@
     th, td { padding: .8rem .9rem; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; }
     thead th { background: rgba(122,162,255,.14); font-weight: 700; }
     tbody tr:hover { background: rgba(255,255,255,.03); }
-    body[data-theme="light"] thead th {
+    body.light thead th {
       background: rgba(191,219,254,.9);
     }
     .tag {
@@ -360,7 +384,7 @@
       border: 1px solid rgba(255,255,255,.1);
       font-size: .85rem;
     }
-    body[data-theme="light"] .tag {
+    body.light .tag {
       background: rgba(219,234,254,.9);
       border-color: rgba(148,163,184,.6);
     }
@@ -402,7 +426,7 @@
       background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
       font-size: .8rem;
     }
-    body[data-theme="light"] .shot {
+    body.light .shot {
       background: #0f172a;
       border-color: rgba(148,163,184,.8);
     }
@@ -425,7 +449,7 @@
       border-color: rgba(122,162,255,.5);
       background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.22), transparent 60%), var(--surface);
     }
-    body[data-theme="light"] .member {
+    body.light .member {
       background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.12), transparent 60%), #ffffff;
       border-color: rgba(148,163,184,.8);
       box-shadow: 0 18px 40px rgba(148,163,184,.6);
@@ -447,7 +471,7 @@
     @media (max-width: 520px) { .team { grid-template-columns: 1fr; } }
 
     footer { padding: 2.2rem 0; border-top: 1px solid rgba(255,255,255,.06); color: var(--muted); }
-    body[data-theme="light"] footer {
+    body.light footer {
       border-top-color: rgba(148,163,184,.5);
     }
     .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
@@ -507,10 +531,10 @@
       background: rgba(148,163,184,.85);
       border-radius: 999px;
     }
-    body[data-theme="light"] .slider-scroll::-webkit-scrollbar-track {
+    body.light .slider-scroll::-webkit-scrollbar-track {
       background: rgba(209,213,219,.9);
     }
-    body[data-theme="light"] .slider-scroll::-webkit-scrollbar-thumb {
+    body.light .slider-scroll::-webkit-scrollbar-thumb {
       background: rgba(107,114,128,.9);
     }
 
@@ -539,13 +563,13 @@
       border-color: rgba(191,219,254,.9);
       box-shadow: 0 10px 26px rgba(15,23,42,.8);
     }
-    body[data-theme="light"] .slider-btn {
+    body.light .slider-btn {
       background: #ffffff;
       border-color: rgba(148,163,184,.8);
       color: #111827;
       box-shadow: 0 10px 24px rgba(148,163,184,.55);
     }
-    body[data-theme="light"] .slider-btn:hover {
+    body.light .slider-btn:hover {
       background: #dbeafe;
     }
 
@@ -560,11 +584,133 @@
       transform: translateY(0) rotateX(0deg);
     }
 
-    @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; }
+    .accordion-item {
+      border-bottom: 1px solid rgba(148,163,184,.25);
+    }
+    .accordion-title {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      padding: .75rem .25rem;
+      cursor: pointer;
+      font-size: .98rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text);
+    }
+    .accordion-title::after {
+      content: "+";
+      font-size: 1rem;
+      opacity: .7;
+      transition: transform .2s ease;
+    }
+    .accordion-title.open::after {
+      transform: rotate(45deg);
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .25s ease;
+      padding: 0 .25rem;
+    }
+    .accordion-content.open {
+      max-height: 200px;
+      padding-bottom: .6rem;
+    }
+
+    .results-tabs {
+      margin-bottom: 1.6rem;
+    }
+    .tabs-row {
+      display: inline-flex;
+      padding: .2rem;
+      background: rgba(15,23,42,.9);
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,.5);
+      margin-bottom: 1rem;
+    }
+    body.light .tabs-row {
+      background: rgba(255,255,255,.95);
+      border-color: rgba(148,163,184,.8);
+    }
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: .35rem .9rem;
+      border-radius: 999px;
+      font-size: .85rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: #0b0f14;
+      box-shadow: 0 8px 22px rgba(0,0,0,.6);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .compare-wrapper {
+      max-width: 640px;
+      margin: 2rem auto 0;
+    }
+    .compare-inner {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 18px 45px rgba(0,0,0,.8);
+      border: 1px solid rgba(148,163,184,.7);
+    }
+    .compare-inner img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .compare-inner img.top {
+      clip-path: inset(0 50% 0 0);
+    }
+    .compare-label {
+      position: absolute;
+      top: .5rem;
+      left: .7rem;
+      padding: .15rem .5rem;
+      font-size: .75rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,.85);
+      color: #e5edff;
+    }
+    .compare-label.right {
+      left: auto;
+      right: .7rem;
+      background: rgba(22,163,74,.85);
+    }
+    .compare-slider-row {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-top: .7rem;
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .compare-slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--brand);
+    }
+
+    #bgParticles {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
     }
   </style>
 </head>
+
 <body>
 
   <header role="banner">
@@ -603,6 +749,9 @@
           We benchmark pre-trained CNNs to detect common thoracic findings from frontal chest X-rays.
           Our pipeline covers data curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.
         </p>
+        <p class="subtitle" style="margin-top:.5rem;">
+          This project explores deep learning models trained on NIH ChestX-ray14 and CheXpert, combining transfer learning and rigorous evaluation to study how well automated methods can flag clinically relevant findings from routine chest radiographs.
+        </p>
 
         <div class="actions">
           <a class="btn primary" href="#results">View Results</a>
@@ -620,6 +769,7 @@
       <aside class="hero-card reveal-section" aria-label="Preview">
         <div class="preview">
           <img src="assets/hero_roc.png" alt="Sample ROC curves preview" />
+          <div class="scan-overlay"></div>
           <small>Replace <strong>assets/hero_roc.png</strong> with your customized ROC image.</small>
         </div>
         <p class="note" style="margin-top:.8rem">Tip: swap out the hero preview anytime.</p>
@@ -633,7 +783,6 @@
         <h2>Datasets</h2>
         <span class="tag">Data curation</span>
       </div>
-
       <div class="grid cols-3">
         <article class="card">
           <h3>NIH ChestX-ray14</h3>
@@ -675,53 +824,46 @@
     <div class="container">
       <div class="section-head">
         <h2>Method</h2>
-        <span class="tag">Reproducible Pipeline</span>
+        <span class="tag">Reproducible pipeline</span>
       </div>
-
       <div class="card" id="methodAccordion">
-
         <div class="accordion-item">
           <button class="accordion-title">Preprocessing</button>
           <div class="accordion-content">
             <p class="muted">
-              DICOM/PNG → Normalize → Resize 224×224 → CLAHE optional →
-              Patient-wise split.
+              DICOM/PNG → normalize → resize 224×224 → optional CLAHE → patient-wise train/validation/test split.
             </p>
           </div>
         </div>
-
         <div class="accordion-item">
           <button class="accordion-title">Models</button>
           <div class="accordion-content">
             <p class="muted">
-              DenseNet-121, ResNet-50, EfficientNet-B0 with sigmoid multi-label heads.
+              DenseNet-121, ResNet-50, EfficientNet-B0 as backbone CNNs with sigmoid multi-label heads for 14-class classification.
             </p>
           </div>
         </div>
-
         <div class="accordion-item">
           <button class="accordion-title">Training</button>
           <div class="accordion-content">
             <p class="muted">
-              BCEWithLogits + class weights; AdamW; cosine LR; early stopping on macro AUC.
+              BCEWithLogitsLoss with class weights, AdamW optimizer, cosine learning rate schedule, and early stopping based on macro AUC-ROC.
             </p>
           </div>
         </div>
-
         <div class="accordion-item">
           <button class="accordion-title">Evaluation</button>
           <div class="accordion-content">
             <p class="muted">
-              Per-label AUC-ROC & AUC-PR; threshold tuning; calibration with temperature scaling.
+              Per-label AUC-ROC and AUC-PR; threshold tuning via Youden’s J statistic; macro and micro metrics; temperature scaling for calibration.
             </p>
           </div>
         </div>
-
         <div class="accordion-item">
           <button class="accordion-title">Error Analysis</button>
           <div class="accordion-content">
             <p class="muted">
-              Confusions by projection / device / sex; Grad-CAM sanity checks.
+              Confusions stratified by projection, device type, and sex; Grad-CAM saliency to detect shortcut learning and failure modes on rare labels.
             </p>
           </div>
         </div>
@@ -746,11 +888,11 @@
         <div class="tab-content active" id="tab-dense">
           <article class="card">
             <h3>Validation Summary</h3>
-            <table>
+            <table aria-label="DenseNet validation summary">
               <thead><tr><th>Metric</th><th>Value</th></tr></thead>
               <tbody>
-                <tr><td>AUC-ROC</td><td>0.86</td></tr>
-                <tr><td>AUC-PR</td><td>0.41</td></tr>
+                <tr><td>Macro AUC-ROC</td><td>0.86</td></tr>
+                <tr><td>Macro AUC-PR</td><td>0.41</td></tr>
                 <tr><td>Params</td><td>8.0M</td></tr>
               </tbody>
             </table>
@@ -760,11 +902,11 @@
         <div class="tab-content" id="tab-resnet">
           <article class="card">
             <h3>Validation Summary</h3>
-            <table>
+            <table aria-label="ResNet validation summary">
               <thead><tr><th>Metric</th><th>Value</th></tr></thead>
               <tbody>
-                <tr><td>AUC-ROC</td><td>0.84</td></tr>
-                <tr><td>AUC-PR</td><td>0.38</td></tr>
+                <tr><td>Macro AUC-ROC</td><td>0.84</td></tr>
+                <tr><td>Macro AUC-PR</td><td>0.38</td></tr>
                 <tr><td>Params</td><td>25.6M</td></tr>
               </tbody>
             </table>
@@ -774,11 +916,11 @@
         <div class="tab-content" id="tab-eff">
           <article class="card">
             <h3>Validation Summary</h3>
-            <table>
+            <table aria-label="EfficientNet validation summary">
               <thead><tr><th>Metric</th><th>Value</th></tr></thead>
               <tbody>
-                <tr><td>AUC-ROC</td><td>0.83</td></tr>
-                <tr><td>AUC-PR</td><td>0.36</td></tr>
+                <tr><td>Macro AUC-ROC</td><td>0.83</td></tr>
+                <tr><td>Macro AUC-PR</td><td>0.36</td></tr>
                 <tr><td>Params</td><td>5.3M</td></tr>
               </tbody>
             </table>
@@ -787,7 +929,7 @@
       </div>
 
       <div class="spacer"></div>
-      
+
       <div class="slider-nav">
         <div class="slider-btn" id="slidePrev">←</div>
         <div class="slider-btn" id="slideNext">→</div>
@@ -795,38 +937,47 @@
 
       <div class="slider-scroll" id="resultSlider">
         <div class="card shot" data-lightbox>
-          <img src="assets/roc_dense.png" alt="ROC DenseNet" />
+          <img src="assets/roc_dense.png" alt="ROC DenseNet-121" />
         </div>
         <div class="card shot" data-lightbox>
-          <img src="assets/roc_resnet.png" alt="ROC ResNet" />
+          <img src="assets/roc_resnet.png" alt="ROC ResNet-50" />
         </div>
         <div class="card shot" data-lightbox>
           <img src="assets/cm_cardio.png" alt="Confusion Matrix Cardiomegaly" />
         </div>
       </div>
+
+      <div class="compare-wrapper">
+        <div class="compare-inner">
+          <img src="assets/xray_raw.png" alt="Original Chest X-ray" />
+          <img src="assets/xray_gradcam.png" alt="Grad-CAM overlay" class="top" id="compareTop">
+          <div class="compare-label">Original</div>
+          <div class="compare-label right">Grad-CAM</div>
+        </div>
+        <div class="compare-slider-row">
+          <span>Original</span>
+          <input type="range" id="compareRange" min="0" max="100" value="50" />
+          <span>Grad-CAM</span>
+        </div>
+      </div>
     </div>
   </section>
-  <!-- ========================= -->
-  <!-- Gallery (Grad-CAM) -->
-  <!-- ========================= -->
+
   <section id="gallery" class="reveal-section">
     <div class="container">
       <div class="section-head">
         <h2>Qualitative Examples</h2>
         <span class="tag">Grad-CAM / Predictions</span>
       </div>
-
       <div class="grid cols-3">
         <article class="card shot" data-lightbox>
           <img src="assets/gradcam_tp.png" alt="True Positive GradCAM" />
           <span>True Positive</span>
         </article>
-
         <article class="card shot" data-lightbox>
           <img src="assets/gradcam_fp.png" alt="False Positive GradCAM" />
           <span>False Positive</span>
         </article>
-
         <article class="card shot" data-lightbox>
           <img src="assets/gradcam_fn.png" alt="False Negative GradCAM" />
           <span>False Negative</span>
@@ -835,41 +986,33 @@
     </div>
   </section>
 
-  <!-- ========================= -->
-  <!-- Team -->
-  <!-- ========================= -->
   <section id="team" class="reveal-section">
     <div class="container">
       <div class="section-head">
         <h2>Team</h2>
         <span class="tag">STA 160 • UC Davis • Team 11</span>
       </div>
-
       <div class="team">
         <div class="member">
           <div class="avatar">ML</div>
           <h3>Muhammad Laiq</h3>
           <div class="role">Lead • Modeling</div>
         </div>
-
         <div class="member">
           <div class="avatar">KS</div>
           <h3>Kayla Sham</h3>
           <div class="role">Data & EDA</div>
         </div>
-
         <div class="member">
           <div class="avatar">TY</div>
           <h3>Tina Yu</h3>
           <div class="role">Training</div>
         </div>
-
         <div class="member">
           <div class="avatar">LL</div>
           <h3>Lauren Le</h3>
           <div class="role">Training</div>
         </div>
-
         <div class="member">
           <div class="avatar">FS</div>
           <h3>Fang Shang</h3>
@@ -888,7 +1031,6 @@
         </div>
         <p class="note">STA 160 • Fall 2025 • Team 11 • UC Davis</p>
       </div>
-
       <div>
         <strong>Links</strong>
         <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
@@ -898,7 +1040,6 @@
           <li><a href="#gallery">Gallery</a></li>
         </ul>
       </div>
-
       <div>
         <strong>Contact</strong>
         <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
@@ -910,29 +1051,27 @@
     </div>
   </footer>
 
-
   <div class="lightbox" id="lightbox">
     <img src="" alt="" />
   </div>
 
-
   <canvas id="bgParticles"></canvas>
 
   <script>
-
     const themeToggle = document.getElementById("themeToggle");
     themeToggle.addEventListener("click", () => {
       document.body.classList.toggle("light");
       themeToggle.textContent = document.body.classList.contains("light") ? "☀" : "☾";
     });
 
-
     const lightbox = document.getElementById("lightbox");
     const lbImg = lightbox.querySelector("img");
-
     document.querySelectorAll("[data-lightbox]").forEach(item => {
       item.addEventListener("click", () => {
-        lbImg.src = item.querySelector("img").src;
+        const img = item.querySelector("img");
+        if (!img) return;
+        lbImg.src = img.src;
+        lbImg.alt = img.alt || "";
         lightbox.classList.add("open");
       });
     });
@@ -942,13 +1081,13 @@
     });
 
     const revealItems = document.querySelectorAll(".reveal-section");
-    const callback = (entries) => {
+    const revealCallback = (entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add("visible");
       });
     };
-    const observer = new IntersectionObserver(callback, { threshold: 0.15 });
-    revealItems.forEach(item => observer.observe(item));
+    const revealObserver = new IntersectionObserver(revealCallback, { threshold: 0.15 });
+    revealItems.forEach(item => revealObserver.observe(item));
 
     const counters = document.querySelectorAll("[data-count]");
     const startCount = entry => {
@@ -974,17 +1113,15 @@
       });
     });
 
-
     const tabBtns = document.querySelectorAll(".tab-btn");
     const tabContents = document.querySelectorAll(".tab-content");
-
     tabBtns.forEach(btn => {
       btn.addEventListener("click", () => {
         tabBtns.forEach(b => b.classList.remove("active"));
         tabContents.forEach(c => c.classList.remove("active"));
-
         btn.classList.add("active");
-        document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+        const target = document.getElementById("tab-" + btn.dataset.tab);
+        if (target) target.classList.add("active");
       });
     });
 
@@ -998,32 +1135,29 @@
 
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll(".nav-links .link");
-
     const highlighter = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         navLinks.forEach(l => l.classList.remove("active"));
         const id = entry.target.id;
-        const active = document.querySelector(`.nav-links .link[href="#${id}"]`);
+        const active = document.querySelector('.nav-links .link[href="#' + id + '"]');
         if (active) active.classList.add("active");
       });
     }, { threshold: 0.4 });
-
     sections.forEach(sec => highlighter.observe(sec));
 
-    const tiltCards = document.querySelectorAll(".card, .shot");
-    window.addEventListener("scroll", () => {
-      tiltCards.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        const mid = window.innerHeight / 2;
-        const rotate = (rect.top - mid) / 80;
-        el.style.transform = `translateY(-3px) rotateX(${rotate}deg)`;
+    const compareRange = document.getElementById("compareRange");
+    const compareTop = document.getElementById("compareTop");
+    if (compareRange && compareTop) {
+      compareRange.addEventListener("input", () => {
+        const v = parseInt(compareRange.value);
+        const right = 100 - v;
+        compareTop.style.clipPath = "inset(0 " + right + "% 0 0)";
       });
-    });
+    }
 
     const canvas = document.getElementById("bgParticles");
     const ctx = canvas.getContext("2d");
-
     function resize() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -1047,10 +1181,8 @@
       particles.forEach(p => {
         p.x += p.dx;
         p.y += p.dy;
-
         if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
-
         ctx.fillStyle = "rgba(122,162,255,0.45)";
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
