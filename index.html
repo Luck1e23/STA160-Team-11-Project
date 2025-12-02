@@ -1,734 +1,871 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" id="top">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STA 160 X-ray Project — Team 11</title>
-  <meta name="description" content="STA 160 Chest X-ray classification project (Team 11, UC Davis). Deep learning for thoracic pathology detection using NIH ChestX-ray14 and CheXpert." />
+  <title>STA 160 X-ray Project</title>
+  <meta name="description" content="Chest X-ray classification project (NIH + CheXpert)." />
 
   <style>
     :root {
-      --bg: #05070c;
-      --bg-soft: #0b0f18;
-      --surface: #111827;
-      --surface-soft: #151b2c;
-      --surface-glass: rgba(17,24,39,0.75);
+      --bg: #020617;
+      --bg-soft: #050816;
+      --surface: rgba(15,23,42,0.92);
+      --surface-soft: rgba(15,23,42,0.8);
       --text: #e5edf7;
-      --muted: #9ca7c2;
+      --muted: #9aa4b8;
       --brand: #7aa2ff;
-      --brand-soft: rgba(122,162,255,0.2);
+      --brand-soft: rgba(122,162,255,0.22);
       --brand-2: #9effcc;
       --accent: #f97316;
-      --danger: #ff6b6b;
+      --danger: #fb7185;
       --ok: #4ade80;
       --card-radius: 18px;
-      --shadow-soft: 0 18px 45px rgba(0,0,0,0.55);
-      --maxw: 1180px;
+      --shadow-soft: 0 18px 60px rgba(0,0,0,0.6);
+      --maxw: 1200px;
     }
 
     *,*::before,*::after { box-sizing: border-box; }
     html,body { height: 100%; scroll-behavior: smooth; }
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: radial-gradient(circle at 0% 0%, #172554 0, transparent 55%),
-                  radial-gradient(circle at 100% 0%, #065f46 0, transparent 55%),
-                  radial-gradient(circle at 50% 100%, #1e293b 0, #020617 60%);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+      background: radial-gradient(circle at 10% 0%, #1d283a 0, transparent 55%),
+                  radial-gradient(circle at 90% 10%, #0f172a 0, transparent 60%),
+                  radial-gradient(circle at 50% 100%, #0b1120 0, #020617 60%);
+      position: relative;
+      overflow-x: hidden;
     }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -40vh -40vw auto auto;
+      background: radial-gradient(circle at center, rgba(122,162,255,0.32), transparent 70%);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: auto auto -40vh -40vw;
+      background: radial-gradient(circle at center, rgba(158,255,204,0.24), transparent 70%);
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: -1;
+    }
+
     img { max-width: 100%; display: block; }
-    a { color: inherit; text-decoration: none; }
-    .container { width: min(100% - 2.4rem, var(--maxw)); margin-inline: auto; }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container {
+      width: min(100% - 2.4rem, var(--maxw));
+      margin-inline: auto;
+    }
 
     header {
       position: sticky;
       top: 0;
-      z-index: 50;
-      backdrop-filter: blur(20px) saturate(140%);
-      background: linear-gradient(to bottom, rgba(2,6,23,0.94), rgba(2,6,23,0.8));
-      border-bottom: 1px solid rgba(148,163,184,0.35);
+      z-index: 40;
+      backdrop-filter: blur(22px) saturate(150%);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      background: linear-gradient(90deg, rgba(15,23,42,0.96), rgba(15,23,42,0.86));
+      border-bottom: 1px solid rgba(148,163,184,0.25);
     }
+
     .nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: .7rem 0;
-      gap: 1rem;
+      gap: 1.5rem;
+      padding: 0.85rem 0.1rem;
     }
+
     .brand {
       display: flex;
-      gap: .8rem;
       align-items: center;
+      gap: 0.8rem;
       font-weight: 650;
-      letter-spacing: .3px;
+      letter-spacing: 0.04em;
+      font-size: 0.95rem;
     }
+
     .brand-logo {
-      inline-size: 40px;
-      block-size: 40px;
+      width: 40px;
+      height: 40px;
       border-radius: 14px;
-      background: conic-gradient(from 200deg, #38bdf8, #a855f7, #22c55e, #38bdf8);
-      padding: 2px;
-      box-shadow: 0 0 0 1px rgba(148,163,184,0.4), 0 10px 30px rgba(15,23,42,0.9);
-    }
-    .brand-logo-inner {
-      inline-size: 100%;
-      block-size: 100%;
-      border-radius: inherit;
-      background: radial-gradient(circle at 30% 0, rgba(255,255,255,0.4), transparent 50%), #020617;
+      background:
+        radial-gradient(circle at 15% 15%, #f9fafb, transparent 55%),
+        conic-gradient(from 210deg, #7aa2ff, #9effcc, #7aa2ff);
       display: grid;
       place-items: center;
-      font-size: 18px;
+      color: #020617;
       font-weight: 800;
-      color: #e5e7eb;
+      font-size: 18px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.8);
+      position: relative;
+      overflow: hidden;
     }
-    .brand-text-main { font-size: .98rem; }
-    .brand-text-sub { font-size: .78rem; color: var(--muted); }
 
-    .nav-main {
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.5), transparent 55%);
+      opacity: 0.7;
+      mix-blend-mode: screen;
+    }
+
+    .brand-text-main {
+      font-size: 0.98rem;
+    }
+
+    .brand-text-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .brand-text {
       display: flex;
-      align-items: center;
-      gap: 1.6rem;
+      flex-direction: column;
+    }
+
+    #nav-toggle {
+      display: none;
+    }
+
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      padding: 0.4rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.45);
+      color: var(--text);
+      background: radial-gradient(circle at top, rgba(148,163,184,0.15), transparent 65%);
+      font-size: 0.9rem;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: .5rem;
-      font-size: .92rem;
-    }
-    .nav-link,
-    .nav-item > button {
-      position: relative;
-      padding: .45rem .75rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--muted);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: .25rem;
-      transition: background .16s ease, color .16s ease, transform .12s ease, border-color .16s ease;
-      font: inherit;
-    }
-    .nav-link::after,
-    .nav-item > button::after {
-      content: "";
-      position: absolute;
-      inset-inline: .75rem;
-      bottom: .28rem;
-      height: 2px;
-      border-radius: 999px;
-      background: linear-gradient(to right, var(--brand), var(--brand-2));
-      transform-origin: center;
-      transform: scaleX(0);
-      opacity: 0;
-      transition: transform .18s ease-out, opacity .18s ease-out;
-    }
-    .nav-link:hover,
-    .nav-item > button:hover {
-      color: #e5edf7;
-      background: rgba(15,23,42,0.9);
-      border-color: rgba(148,163,184,0.5);
-      transform: translateY(-1px);
-    }
-    .nav-link:hover::after,
-    .nav-item > button:hover::after {
-      transform: scaleX(1);
-      opacity: 1;
+      gap: 0.35rem;
+      font-size: 0.9rem;
     }
 
-    .nav-item {
-      position: relative;
-    }
-    .nav-item button {
-      padding-right: .95rem;
-    }
-    .nav-chevron {
-      width: 10px;
-      height: 10px;
+    .link {
+      padding: 0.4rem 0.9rem;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.8);
+      color: var(--muted);
+      border: 1px solid transparent;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: .6rem;
+      gap: 0.18rem;
+      transition:
+        color 0.16s ease,
+        background 0.16s ease,
+        border-color 0.16s ease,
+        transform 0.12s ease;
+    }
+
+    .link span.dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.7);
+    }
+
+    .link:hover {
+      background: rgba(15,23,42,0.9);
+      color: #e5edf7;
+      border-color: rgba(148,163,184,0.4);
+      transform: translateY(-1px);
+    }
+
+    .link-primary {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 0.45rem 1.1rem;
+      background: radial-gradient(circle at 0 0, rgba(248,250,252,0.25), transparent 55%);
+      color: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.86rem;
+    }
+
+    .link-primary-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      display: grid;
+      place-items: center;
+      color: #020617;
+      font-size: 0.7rem;
+      box-shadow: 0 6px 16px rgba(59,130,246,0.65);
+    }
+
+    .nav-group {
+      position: relative;
+    }
+
+    .nav-toggle-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      color: var(--muted);
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      font: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      transition:
+        color 0.16s ease,
+        background 0.16s ease,
+        border-color 0.16s ease,
+        transform 0.12s ease;
+    }
+
+    .nav-toggle-btn::after {
+      content: "▾";
+      font-size: 0.65rem;
+      opacity: 0.9;
+    }
+
+    .nav-toggle-btn:hover,
+    .nav-group.open .nav-toggle-btn {
+      background: rgba(15,23,42,0.9);
+      color: #e5edf7;
+      border-color: rgba(148,163,184,0.4);
+      transform: translateY(-1px);
     }
 
     .nav-dropdown {
       position: absolute;
-      inset-inline-end: 0;
-      top: calc(100% + .5rem);
-      width: 360px;
-      border-radius: 18px;
-      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.18), transparent 55%), rgba(15,23,42,0.98);
-      border: 1px solid rgba(148,163,184,0.55);
-      box-shadow: 0 22px 60px rgba(15,23,42,0.95);
-      padding: .9rem;
+      right: 0;
+      top: calc(100% + 0.4rem);
+      background: radial-gradient(circle at top left, rgba(148,163,184,0.18), transparent 65%),
+                  rgba(15,23,42,0.96);
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.5);
+      padding: 0.45rem;
+      min-width: 190px;
+      box-shadow: 0 18px 50px rgba(15,23,42,0.9);
+      backdrop-filter: blur(26px) saturate(160%);
+      -webkit-backdrop-filter: blur(26px) saturate(160%);
       opacity: 0;
-      transform: translateY(6px);
       pointer-events: none;
-      transition: opacity .16s ease-out, transform .16s ease-out;
+      transform: translateY(-4px);
+      transition:
+        opacity 0.14s ease,
+        transform 0.14s ease;
     }
-    .nav-item:hover .nav-dropdown {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-    .nav-dropdown-heading {
+
+    .nav-dropdown a {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: .65rem;
-    }
-    .nav-dropdown-heading span:first-child {
-      font-size: .85rem;
-      font-weight: 600;
-    }
-    .nav-dropdown-heading span:last-child {
-      font-size: .78rem;
-      color: var(--muted);
-    }
-    .nav-dropdown-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .55rem;
-    }
-    .nav-drop-card {
-      padding: .55rem .6rem;
+      align-items: center;
+      padding: 0.44rem 0.65rem;
       border-radius: 12px;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.6);
-      cursor: pointer;
-      transition: border-color .16s ease, background .16s ease, transform .12s ease;
-      font-size: .78rem;
-    }
-    .nav-drop-card strong {
-      font-size: .8rem;
-      display: block;
-      margin-bottom: .12rem;
-    }
-    .nav-drop-card span {
+      font-size: 0.84rem;
       color: var(--muted);
-      font-size: .75rem;
+      transition: background 0.14s ease, color 0.14s ease, transform 0.12s ease;
     }
-    .nav-drop-card:hover {
-      border-color: var(--brand);
-      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.2), transparent 60%), rgba(15,23,42,0.98);
+
+    .nav-dropdown a small {
+      color: rgba(148,163,184,0.8);
+      font-size: 0.72rem;
+    }
+
+    .nav-dropdown a:hover {
+      background: linear-gradient(90deg, rgba(122,162,255,0.18), rgba(158,255,204,0.12));
+      color: #e5edf7;
       transform: translateY(-1px);
     }
 
-    .nav-pill {
-      padding: .25rem .7rem;
-      border-radius: 999px;
-      font-size: .78rem;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.25), transparent 60%), rgba(15,23,42,0.95);
-      display: inline-flex;
-      align-items: center;
-      gap: .25rem;
-      color: var(--muted);
-      white-space: nowrap;
-    }
-    .nav-pill-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #f97316, #ea580c);
-      box-shadow: 0 0 0 3px rgba(248,171,88,0.28);
+    .nav-group.open .nav-dropdown {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
-    .hamburger {
-      display: none;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      padding: .35rem .5rem;
-      font-size: 1.1rem;
-      cursor: pointer;
-      background: rgba(15,23,42,0.9);
-    }
-    #nav-toggle { display: none; }
-
-    @media (max-width: 900px) {
-      .nav-main {
-        display: none;
-      }
+    @media (max-width: 880px) {
       .hamburger {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-      }
-      #nav-toggle:checked ~ .nav-main {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: .5rem;
-        width: 100%;
-        padding-top: .6rem;
+        gap: 0.35rem;
+        font-size: 0.8rem;
       }
       .nav-links {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        margin-top: 0.75rem;
+      }
+      #nav-toggle:checked ~ .nav-links {
+        display: flex;
+      }
+      .nav {
         flex-wrap: wrap;
+      }
+      .nav-dropdown {
+        position: static;
+        width: 100%;
+        margin-top: 0.3rem;
+        transform: none;
+        box-shadow: none;
+      }
+      .nav-group {
+        width: 100%;
+      }
+      .nav-dropdown a {
+        padding: 0.5rem 0.55rem;
       }
     }
 
     .hero {
-      padding: 3.8rem 0 3.4rem;
       position: relative;
+      padding: 4.3rem 0 3.4rem;
     }
+
+    .hero-glow {
+      position: absolute;
+      inset: -40vh 0 auto;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.8;
+      background:
+        radial-gradient(circle at 20% 0, rgba(148,163,184,0.28), transparent 55%),
+        radial-gradient(circle at 85% 10%, rgba(56,189,248,0.25), transparent 60%);
+    }
+
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
-      gap: 2.25rem;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 2.5rem;
       align-items: center;
     }
-    @media (max-width: 960px) {
+
+    @media (max-width: 980px) {
+      .hero {
+        padding-top: 3.6rem;
+      }
       .hero-grid {
-        grid-template-columns: minmax(0,1fr);
+        grid-template-columns: minmax(0, 1fr);
       }
     }
-    .hero-kicker-row {
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-      flex-wrap: wrap;
-    }
+
     .kicker {
-      color: var(--brand-2);
-      font-weight: 600;
-      letter-spacing: .4px;
-      font-size: .86rem;
-      padding: .18rem .6rem;
-      border-radius: 999px;
-      border: 1px solid rgba(74,222,128,0.4);
-      background: radial-gradient(circle at 0 0, rgba(34,197,94,0.35), transparent 60%), rgba(15,23,42,0.9);
-    }
-    .hero-pill {
-      font-size: .8rem;
-      padding: .2rem .65rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      color: var(--muted);
       display: inline-flex;
       align-items: center;
-      gap: .35rem;
-      background: rgba(15,23,42,0.9);
-    }
-    .hero-pill span {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 14px;
-      height: 14px;
+      gap: 0.5rem;
+      padding: 0.2rem 0.65rem;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #38bdf8, #4f46e5);
+      background: radial-gradient(circle at 0 0, rgba(226,232,240,0.2), transparent 55%);
+      border: 1px solid rgba(148,163,184,0.6);
+      font-size: 0.76rem;
+      color: rgba(226,232,240,0.9);
+    }
+
+    .kicker-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, #f97316, #f97316);
+      box-shadow: 0 0 0 5px rgba(248,250,252,0.12);
     }
 
     .title {
-      font-size: clamp(2.15rem, 4.6vw, 3.2rem);
-      line-height: 1.1;
-      margin: .8rem 0 .9rem;
+      font-size: clamp(2.3rem, 4.4vw, 3.5rem);
+      line-height: 1.08;
+      margin: 0.8rem 0 0.9rem;
+      letter-spacing: -0.03em;
     }
-    .title em {
-      font-style: normal;
-      background: linear-gradient(to right, #93c5fd, #a7f3d0);
+
+    .title span.accent {
+      background: linear-gradient(120deg, #7aa2ff, #9effcc);
       -webkit-background-clip: text;
+      background-clip: text;
       color: transparent;
     }
+
     .subtitle {
       color: var(--muted);
       max-width: 60ch;
-      font-size: .98rem;
+      font-size: 0.98rem;
     }
 
     .actions {
       display: flex;
       flex-wrap: wrap;
-      gap: .75rem;
+      gap: 0.7rem;
       margin-top: 1.4rem;
-      align-items: center;
     }
+
     .btn {
-      border-radius: 999px;
-      padding: .8rem 1.2rem;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.94);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: .45rem;
+      gap: 0.45rem;
+      padding: 0.8rem 1.15rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.92);
+      color: #e5edf7;
+      font-size: 0.88rem;
       cursor: pointer;
-      font-size: .9rem;
-      color: var(--text);
-      transition: transform .14s ease, box-shadow .14s ease, background .14s ease, border-color .14s ease;
+      box-shadow: 0 14px 32px rgba(15,23,42,0.8);
+      transition:
+        background 0.16s ease,
+        transform 0.12s ease,
+        box-shadow 0.16s ease,
+        border-color 0.16s ease;
     }
+
     .btn-primary {
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.55), transparent 60%), linear-gradient(to right, #2563eb, #4f46e5);
-      border-color: rgba(129,140,248,0.95);
-      box-shadow: 0 18px 45px rgba(15,23,42,0.9);
+      background: radial-gradient(circle at 0 0, rgba(248,250,252,0.35), transparent 60%),
+                  linear-gradient(135deg, #7aa2ff, #9effcc);
+      border-color: rgba(148,163,184,0.65);
+      color: #020617;
       font-weight: 650;
     }
-    .btn-secondary {
-      background: rgba(15,23,42,0.9);
-    }
-    .btn span.icon {
+
+    .btn-icon {
       width: 18px;
       height: 18px;
       border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(15,23,42,0.8);
-      font-size: .7rem;
+      background: rgba(15,23,42,0.95);
+      display: grid;
+      place-items: center;
+      font-size: 0.65rem;
+      color: #e5edf7;
     }
-    .btn-primary span.icon {
+
+    .btn-secondary {
       background: rgba(15,23,42,0.9);
     }
+
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 18px 40px rgba(15,23,42,0.85);
-      border-color: rgba(165,180,252,0.9);
-      background: rgba(15,23,42,0.96);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.95);
+      background: rgba(15,23,42,1);
+      border-color: rgba(148,163,184,0.7);
     }
+
     .btn-primary:hover {
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.75), transparent 65%), linear-gradient(to right, #3b82f6, #6366f1);
+      background: linear-gradient(135deg, #8bb4ff, #b8ffd8);
     }
 
     .hero-meta {
+      margin-top: 1.5rem;
       display: flex;
       flex-wrap: wrap;
-      gap: .85rem;
-      margin-top: 1.4rem;
-      font-size: .78rem;
+      gap: 0.75rem;
+      font-size: 0.8rem;
       color: var(--muted);
     }
+
     .hero-meta span {
       display: inline-flex;
       align-items: center;
-      gap: .3rem;
-      padding: .22rem .55rem;
+      gap: 0.35rem;
+      padding: 0.3rem 0.7rem;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
       background: rgba(15,23,42,0.9);
-    }
-    .hero-meta span i {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, var(--brand), var(--brand-2));
+      border: 1px solid rgba(148,163,184,0.4);
     }
 
-    .hero-panel {
-      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.26), transparent 65%), radial-gradient(circle at 100% 0, rgba(34,197,94,0.22), transparent 60%), rgba(15,23,42,0.96);
-      border-radius: 26px;
-      padding: 1.25rem;
-      border: 1px solid rgba(148,163,184,0.75);
-      box-shadow: var(--shadow-soft);
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(circle at 0 0, rgba(148,163,184,0.25) 0, transparent 55%), radial-gradient(circle at 100% 100%, rgba(79,70,229,0.22) 0, transparent 60%);
-      opacity: .85;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
-    .hero-panel-inner {
-      position: relative;
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr);
-      gap: 1rem;
-      align-items: center;
-    }
-    @media (max-width: 560px) {
-      .hero-panel-inner {
-        grid-template-columns: minmax(0,1fr);
-      }
-    }
-
-    .hero-xray {
-      border-radius: 18px;
-      border: 1px solid rgba(148,163,184,0.8);
-      overflow: hidden;
-      position: relative;
-      background: radial-gradient(circle at 50% 0, rgba(15,23,42,1), #020617);
-    }
-    .hero-xray img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: contrast(1.1) saturate(1.05);
-    }
-    .xray-overlay {
-      position: absolute;
-      inset: auto 0 0 0;
-      padding: .45rem .65rem;
-      font-size: .78rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: linear-gradient(to top, rgba(15,23,42,0.92), transparent);
-      color: var(--muted);
-    }
-    .xray-overlay span {
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-    }
-    .xray-overlay span i {
-      width: 10px;
-      height: 10px;
+    .hero-meta i {
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #34d399, #4ade80);
-      box-shadow: 0 0 0 3px rgba(74,222,128,0.35);
-    }
-
-    .hero-side-meta {
-      display: grid;
-      gap: .55rem;
-      font-size: .8rem;
-    }
-    .hero-chip {
-      padding: .25rem .6rem;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.92);
-      border: 1px solid rgba(148,163,184,0.75);
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .35rem;
-    }
-    .hero-chip strong {
-      font-size: .8rem;
-    }
-    .hero-chip span {
-      color: var(--muted);
-    }
-
-    .hero-metrics {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: .55rem;
-      margin-top: .5rem;
-    }
-    .metric {
-      border-radius: 14px;
-      border: 1px solid rgba(148,163,184,0.8);
-      background: rgba(15,23,42,0.94);
-      padding: .55rem .65rem;
-      font-size: .78rem;
-      display: grid;
-      gap: .1rem;
-    }
-    .metric-label {
-      color: var(--muted);
-      font-size: .76rem;
-    }
-    .metric-value {
-      font-weight: 600;
-      font-size: .95rem;
-    }
-    .metric-badge {
-      font-size: .7rem;
-      padding: .08rem .35rem;
-      border-radius: 999px;
-      border: 1px solid rgba(52,211,153,0.7);
-      color: #bbf7d0;
-      background: rgba(6,95,70,0.6);
-      justify-self: flex-start;
+      background: radial-gradient(circle at 0 0, var(--brand), #22c55e);
     }
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0,1fr));
       gap: 1rem;
-      margin-top: 2.2rem;
+      margin-top: 2rem;
     }
+
     .stat {
-      background: rgba(15,23,42,0.96);
       border-radius: 18px;
-      padding: .9rem .95rem;
-      border: 1px solid rgba(148,163,184,0.7);
-      box-shadow: 0 14px 35px rgba(15,23,42,0.9);
+      background: linear-gradient(135deg, rgba(15,23,42,0.88), rgba(15,23,42,0.96));
+      border: 1px solid rgba(148,163,184,0.5);
       position: relative;
+      padding: 0.85rem 1rem;
       overflow: hidden;
-      font-size: .88rem;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.16s ease,
+        border-color 0.16s ease;
     }
+
     .stat::before {
       content: "";
       position: absolute;
-      inset: -30%;
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.26), transparent 55%);
-      opacity: .85;
-      mix-blend-mode: soft-light;
+      inset: -40% auto auto -30%;
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle at center, rgba(122,162,255,0.32), transparent 70%);
+      opacity: 0.8;
+      transform: translate3d(-10px,10px,0);
+      transition: opacity 0.16s ease, transform 0.16s ease;
     }
-    .stat-label {
-      position: relative;
-      color: var(--muted);
-      font-size: .8rem;
+
+    .stat:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 60px rgba(15,23,42,1);
+      border-color: rgba(129,140,248,0.9);
     }
+
+    .stat:hover::before {
+      opacity: 1;
+      transform: translate3d(0,0,0);
+    }
+
     .stat-num {
-      position: relative;
+      font-size: clamp(1.4rem, 3.2vw, 1.9rem);
       font-weight: 800;
-      font-size: 1.35rem;
-      margin-top: .2rem;
+      letter-spacing: 0.03em;
     }
-    .stat-sub {
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: rgba(148,163,184,0.9);
+      margin-top: 0.2rem;
+    }
+
+    .hero-panel {
       position: relative;
-      margin-top: .15rem;
-      font-size: .75rem;
-      color: rgba(148,163,184,0.95);
     }
-    @media (max-width: 920px) {
+
+    .hero-card {
+      position: relative;
+      border-radius: 24px;
+      padding: 1.2rem;
+      background:
+        radial-gradient(circle at 0 0, rgba(248,250,252,0.12), transparent 55%),
+        linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.88));
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      backdrop-filter: blur(26px) saturate(160%);
+      -webkit-backdrop-filter: blur(26px) saturate(160%);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: auto -10% 10% 40%;
+      height: 75px;
+      background: radial-gradient(circle at center, rgba(52,211,153,0.35), transparent 70%);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    .preview {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(148,163,184,0.65);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(122,162,255,0.46), transparent 70%),
+        radial-gradient(circle at 100% 65%, rgba(34,197,94,0.3), transparent 70%),
+        linear-gradient(150deg, #020617, #020617);
+      position: relative;
+      aspect-ratio: 4/3;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 25px 70px rgba(15,23,42,0.95);
+    }
+
+    .preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      mix-blend-mode: screen;
+      opacity: 0.95;
+      transform-origin: center;
+      transition: transform 0.6s ease-out;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 0, rgba(248,250,252,0.16), transparent 60%),
+        linear-gradient(to bottom, transparent, rgba(15,23,42,0.7));
+    }
+
+    .preview-caption {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 0.35rem 0.8rem 0.7rem;
+      font-size: 0.78rem;
+      color: rgba(226,232,240,0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      background: linear-gradient(to top, rgba(15,23,42,0.95), transparent);
+    }
+
+    .preview-caption span {
+      color: rgba(148,163,184,0.95);
+      font-size: 0.72rem;
+    }
+
+    .preview-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border-radius: 999px;
+      padding: 0.25rem 0.55rem;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.96);
+      font-size: 0.74rem;
+    }
+
+    .preview-badge i {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, #22c55e, #22c55e);
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
+    }
+
+    .hero-card-note {
+      margin-top: 0.8rem;
+      font-size: 0.84rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-mini-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+    }
+
+    .hero-mini-badges span {
+      padding: 0.14rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.65);
+      background: rgba(15,23,42,0.95);
+      color: rgba(226,232,240,0.9);
+    }
+
+    @media (max-width: 640px) {
       .stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0,1fr));
       }
     }
-    @media (max-width: 520px) {
-      .stats {
-        grid-template-columns: minmax(0,1fr);
+
+    @media (max-width: 980px) {
+      .hero-card {
+        margin-inline: auto;
+        max-width: 520px;
       }
     }
 
     section {
-      padding: 3.1rem 0;
+      padding: 3.2rem 0;
+      position: relative;
     }
+
     .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 1.35rem;
+      margin-bottom: 1.4rem;
     }
-    .section-title {
-      margin: 0;
-      font-size: clamp(1.3rem, 3.1vw, 1.8rem);
-    }
-    .section-sub {
-      margin: .15rem 0 0;
-      font-size: .88rem;
-      color: var(--muted);
-    }
-    .section-tag-row {
+
+    .section-title-wrap {
       display: flex;
-      gap: .5rem;
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      min-width: 0;
+      flex-direction: column;
+      gap: 0.3rem;
     }
-    .tag {
+
+    .section-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(148,163,184,0.85);
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.45rem, 3.2vw, 2.05rem);
+      letter-spacing: -0.02em;
+    }
+
+    .section-tag {
       display: inline-flex;
       align-items: center;
-      gap: .25rem;
-      padding: .18rem .6rem;
+      gap: 0.35rem;
+      padding: 0.28rem 0.7rem;
       border-radius: 999px;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.7);
-      font-size: .78rem;
-      color: var(--muted);
-      white-space: nowrap;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(148,163,184,0.55);
+      color: rgba(226,232,240,0.9);
+      font-size: 0.8rem;
     }
-    .tag-dot {
-      width: 7px;
-      height: 7px;
+
+    .section-tag-dot {
+      width: 6px;
+      height: 6px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, var(--brand), var(--brand-2));
+      background: radial-gradient(circle at 0 0, var(--brand), #22c55e);
+    }
+
+    .muted {
+      color: var(--muted);
     }
 
     .grid {
       display: grid;
       gap: 1rem;
     }
-    .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-    @media (max-width: 1040px) {
-      .grid.cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0,1fr));
     }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+
+    @media (max-width: 1000px) {
+      .grid-3 {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+    }
+
     @media (max-width: 720px) {
-      .grid.cols-3,
-      .grid.cols-2 { grid-template-columns: minmax(0,1fr); }
+      .grid-3,
+      .grid-2 {
+        grid-template-columns: minmax(0,1fr);
+      }
     }
 
     .card {
-      background: rgba(15,23,42,0.96);
       border-radius: var(--card-radius);
-      border: 1px solid rgba(148,163,184,0.7);
       padding: 1rem;
-      box-shadow: 0 16px 40px rgba(15,23,42,0.95);
+      background: linear-gradient(135deg, rgba(15,23,42,0.96), rgba(15,23,42,0.9));
+      border: 1px solid rgba(148,163,184,0.55);
+      box-shadow: var(--shadow-soft);
       position: relative;
       overflow: hidden;
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.16s ease,
+        border-color 0.16s ease,
+        background 0.16s ease;
     }
+
     .card::before {
       content: "";
       position: absolute;
-      inset-inline: -20%;
-      top: -40%;
-      height: 60%;
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.22), transparent 55%);
-      opacity: .7;
-      pointer-events: none;
-      mix-blend-mode: soft-light;
+      inset: auto -20% 0 auto;
+      height: 60px;
+      background: radial-gradient(circle at center, rgba(122,162,255,0.28), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.16s ease, transform 0.16s ease;
+      transform: translate3d(0,16px,0);
     }
-    .card > * {
-      position: relative;
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 60px rgba(15,23,42,1);
+      border-color: rgba(129,140,248,0.9);
+      background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(15,23,42,0.96));
     }
+
+    .card:hover::before {
+      opacity: 1;
+      transform: translate3d(0,0,0);
+    }
+
     .card h3 {
-      margin: .17rem 0 .25rem;
-      font-size: 1rem;
+      margin: 0.15rem 0 0.25rem;
+      font-size: 1.02rem;
     }
+
     .card p {
-      margin: 0;
-      font-size: .9rem;
+      margin: 0.2rem 0 0;
       color: var(--muted);
+      font-size: 0.93rem;
     }
 
     .timeline {
       display: grid;
-      gap: .9rem;
+      gap: 0.9rem;
     }
+
     .step {
       display: grid;
       grid-template-columns: auto minmax(0,1fr);
-      gap: .8rem;
+      gap: 0.9rem;
       align-items: flex-start;
-      font-size: .9rem;
     }
+
     .bullet-wrap {
       position: relative;
-      padding-top: .35rem;
+      padding-top: 0.18rem;
     }
+
     .bullet {
-      inline-size: 15px;
-      block-size: 15px;
+      width: 14px;
+      height: 14px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, #60a5fa, #a855f7);
-      box-shadow: 0 0 0 4px rgba(56,189,248,0.2);
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      box-shadow: 0 0 0 4px rgba(148,163,184,0.4);
     }
+
     .bullet-wrap::after {
       content: "";
       position: absolute;
-      top: 1.8rem;
-      left: 6.5px;
+      inset: 16px auto -4px 6px;
       width: 2px;
-      height: calc(100% - 1.8rem);
-      background: linear-gradient(to bottom, rgba(148,163,184,0.45), transparent);
+      background: radial-gradient(circle at top, rgba(148,163,184,0.6), transparent 60%);
+      opacity: 0.6;
     }
+
     .step:last-child .bullet-wrap::after {
       display: none;
     }
+
     .step strong {
-      font-size: .9rem;
+      font-size: 0.95rem;
     }
+
     .step p {
-      margin-top: .15rem;
-      font-size: .88rem;
+      margin: 0.25rem 0 0;
+      font-size: 0.9rem;
     }
 
     table {
@@ -736,394 +873,350 @@
       border-collapse: collapse;
       border-radius: 14px;
       overflow: hidden;
-      font-size: .86rem;
+      background: rgba(15,23,42,0.98);
     }
-    th, td {
-      padding: .8rem .9rem;
-      border-bottom: 1px solid rgba(148,163,184,0.4);
+
+    th,
+    td {
+      padding: 0.7rem 0.85rem;
+      border-bottom: 1px solid rgba(51,65,85,0.85);
       text-align: left;
-      white-space: nowrap;
+      font-size: 0.86rem;
     }
+
     thead th {
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.25), transparent 60%), rgba(15,23,42,0.98);
-      font-weight: 600;
-      color: #e5edf7;
-      font-size: .82rem;
-    }
-    tbody tr:nth-child(2n) {
-      background: rgba(15,23,42,0.85);
-    }
-    tbody tr:hover {
-      background: rgba(30,64,175,0.7);
-    }
-    td:last-child, th:last-child {
-      text-align: right;
+      background: radial-gradient(circle at 0 0, rgba(148,163,184,0.24), transparent 60%),
+                  rgba(15,23,42,1);
+      font-weight: 620;
+      font-size: 0.84rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(226,232,240,0.9);
     }
 
-    .results-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, .9fr);
-      gap: 1.2rem;
-    }
-    @media (max-width: 880px) {
-      .results-layout {
-        grid-template-columns: minmax(0,1fr);
-      }
-    }
-
-    .results-tabs {
-      display: flex;
-      gap: .5rem;
-      margin-bottom: .8rem;
-      flex-wrap: wrap;
-    }
-    .results-tab {
-      padding: .28rem .7rem;
-      border-radius: 999px;
+    tbody tr:nth-child(even) {
       background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.7);
-      font-size: .8rem;
-      color: var(--muted);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-      transition: background .14s ease, color .14s ease, border-color .14s ease, transform .12s ease;
-    }
-    .results-tab-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(148,163,184,0.8);
-    }
-    .results-tab.active {
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.45), transparent 65%), rgba(15,23,42,0.96);
-      border-color: rgba(59,130,246,0.9);
-      color: #e5edf7;
-      transform: translateY(-1px);
-    }
-    .results-tab.active .results-tab-dot {
-      background: radial-gradient(circle at 30% 0, var(--brand), var(--brand-2));
-      box-shadow: 0 0 0 3px rgba(56,189,248,0.35);
     }
 
-    .results-panel {
-      display: none;
-    }
-    .results-panel.active {
-      display: block;
+    tbody tr:hover {
+      background: rgba(30,64,175,0.35);
     }
 
     .note {
-      font-size: .84rem;
+      font-size: 0.86rem;
       color: var(--muted);
-      margin-top: .5rem;
     }
 
     .gallery {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: .7rem;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 0.75rem;
     }
+
     @media (max-width: 900px) {
       .gallery {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0,1fr));
       }
     }
-    @media (max-width: 600px) {
+
+    @media (max-width: 640px) {
       .gallery {
         grid-template-columns: minmax(0,1fr);
       }
     }
+
     .shot {
       position: relative;
       border-radius: 14px;
-      border: 1px solid rgba(148,163,184,0.7);
       overflow: hidden;
+      background: radial-gradient(circle at 0 0, rgba(148,163,184,0.24), transparent 70%),
+                  #020617;
+      border: 1px solid rgba(148,163,184,0.6);
+      aspect-ratio: 4/3;
       cursor: zoom-in;
-      background: radial-gradient(circle at 50% 0, rgba(15,23,42,1), #020617);
-      box-shadow: 0 14px 32px rgba(15,23,42,0.95);
-      transform-origin: center;
-      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+      box-shadow: 0 20px 55px rgba(15,23,42,1);
+      display: grid;
+      place-items: center;
+      transition:
+        transform 0.16s ease,
+        box-shadow 0.18s ease,
+        border-color 0.16s ease;
     }
+
+    .shot:hover {
+      transform: translateY(-4px) scale(1.01);
+      box-shadow: 0 26px 70px rgba(15,23,42,1);
+      border-color: rgba(129,140,248,0.95);
+    }
+
     .shot img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
+      mix-blend-mode: screen;
     }
+
     .shot-label {
       position: absolute;
-      inset-inline: .55rem;
-      bottom: .55rem;
-      padding: .3rem .4rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.8);
-      background: linear-gradient(to top, rgba(15,23,42,0.95), transparent);
-      font-size: .78rem;
-      display: inline-flex;
+      inset: auto 0 0 0;
+      padding: 0.4rem 0.7rem 0.55rem;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: .3rem;
-      color: var(--muted);
+      gap: 0.7rem;
+      font-size: 0.8rem;
+      background: linear-gradient(to top, rgba(15,23,42,0.96), transparent);
+      color: rgba(226,232,240,0.9);
     }
-    .shot-label i {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, var(--brand), #f97316);
-    }
-    .shot:hover {
-      transform: translateY(-3px) scale(1.01);
-      box-shadow: 0 18px 45px rgba(15,23,42,0.98);
-      border-color: rgba(59,130,246,0.95);
+
+    .shot-label span {
+      font-size: 0.78rem;
+      color: rgba(148,163,184,0.9);
     }
 
     .team {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0,1fr));
       gap: 1rem;
     }
+
     @media (max-width: 1100px) {
-      .team { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .team {
+        grid-template-columns: repeat(3, minmax(0,1fr));
+      }
     }
-    @media (max-width: 740px) {
-      .team { grid-template-columns: repeat(2, minmax(0,1fr)); }
+
+    @media (max-width: 720px) {
+      .team {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
     }
+
     @media (max-width: 520px) {
-      .team { grid-template-columns: minmax(0,1fr); }
+      .team {
+        grid-template-columns: minmax(0,1fr);
+      }
     }
+
     .member {
       text-align: center;
       padding: 1rem;
-      border-radius: 18px;
-      background: rgba(15,23,42,0.96);
-      border: 1px solid rgba(148,163,184,0.7);
-      box-shadow: 0 16px 40px rgba(15,23,42,0.95);
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.9));
+      border: 1px solid rgba(148,163,184,0.6);
+      box-shadow: var(--shadow-soft);
       position: relative;
       overflow: hidden;
-      font-size: .9rem;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      transition:
+        transform 0.14s ease,
+        box-shadow 0.18s ease,
+        border-color 0.16s ease;
     }
+
     .member::before {
       content: "";
       position: absolute;
-      inset-inline: -30%;
-      top: -45%;
-      height: 55%;
-      background: radial-gradient(circle at 50% 0, rgba(59,130,246,0.28), transparent 60%);
-      opacity: .9;
-      mix-blend-mode: soft-light;
+      inset: auto auto -15% -10%;
+      width: 120px;
+      height: 80px;
+      background: radial-gradient(circle at center, rgba(122,162,255,0.35), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.16s ease, transform 0.16s ease;
+      transform: translate3d(0,18px,0);
     }
-    .member > * {
-      position: relative;
+
+    .member:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 60px rgba(15,23,42,1);
+      border-color: rgba(129,140,248,0.95);
     }
+
+    .member:hover::before {
+      opacity: 1;
+      transform: translate3d(0,0,0);
+    }
+
     .avatar {
-      inline-size: 76px;
-      block-size: 76px;
+      width: 74px;
+      height: 74px;
       border-radius: 999px;
-      margin: 0 auto .4rem;
-      border: 2px solid rgba(191,219,254,0.9);
-      background: conic-gradient(from 210deg, #38bdf8, #4f46e5, #22c55e, #38bdf8);
-      padding: 3px;
-      box-shadow: 0 10px 30px rgba(15,23,42,0.9);
+      margin-inline: auto;
+      margin-bottom: 0.5rem;
+      background:
+        radial-gradient(circle at 10% 0, #f9fafb, transparent 55%),
+        conic-gradient(from 220deg, #7aa2ff, #9effcc, #7aa2ff);
       display: grid;
       place-items: center;
-    }
-    .avatar-inner {
-      inline-size: 100%;
-      block-size: 100%;
-      border-radius: inherit;
-      background: radial-gradient(circle at 30% 0, rgba(249,250,251,0.85), transparent 55%), #020617;
-      display: grid;
-      place-items: center;
+      color: #020617;
       font-weight: 800;
-      color: #0f172a;
-      font-size: 1rem;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
+      position: relative;
+      overflow: hidden;
     }
+
+    .avatar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.6), transparent 60%);
+      mix-blend-mode: screen;
+      opacity: 0.9;
+    }
+
     .member h3 {
-      margin: .1rem 0 .08rem;
-      font-size: .98rem;
+      margin: 0.2rem 0 0.1rem;
+      font-size: 0.98rem;
     }
+
     .member .role {
+      font-size: 0.84rem;
       color: var(--muted);
-      font-size: .82rem;
-    }
-    .member .affil {
-      margin-top: .25rem;
-      font-size: .78rem;
-      color: rgba(148,163,184,0.95);
     }
 
     footer {
-      padding: 2.3rem 0 2rem;
-      border-top: 1px solid rgba(148,163,184,0.55);
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.25), transparent 60%), rgba(2,6,23,0.98);
-      color: var(--muted);
-      font-size: .86rem;
+      padding: 2.4rem 0 2rem;
+      border-top: 1px solid rgba(148,163,184,0.4);
+      background: radial-gradient(circle at 0 0, rgba(148,163,184,0.18), transparent 60%),
+                  rgba(15,23,42,0.98);
+      margin-top: 1.4rem;
     }
+
     .footer-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr);
-      gap: 1.1rem;
+      grid-template-columns: 2.2fr 1.2fr 1.2fr;
+      gap: 1.4rem;
+      align-items: flex-start;
+      font-size: 0.87rem;
     }
-    @media (max-width: 880px) {
+
+    @media (max-width: 900px) {
       .footer-grid {
-        grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+        grid-template-columns: repeat(2, minmax(0,1fr));
       }
     }
-    @media (max-width: 560px) {
+
+    @media (max-width: 640px) {
       .footer-grid {
         grid-template-columns: minmax(0,1fr);
       }
     }
-    .footer-grid strong {
-      color: #e5edf7;
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
     }
+
+    .footer-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 15% 0, #f9fafb, transparent 55%),
+        conic-gradient(from 210deg, #7aa2ff, #9effcc, #7aa2ff);
+      display: grid;
+      place-items: center;
+      font-size: 0.78rem;
+      color: #020617;
+      box-shadow: 0 12px 28px rgba(15,23,42,0.9);
+    }
+
+    .footer-note {
+      color: var(--muted);
+    }
+
+    .footer-group-title {
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+
     .footer-links {
       list-style: none;
       padding: 0;
-      margin: .5rem 0 0;
+      margin: 0;
       display: grid;
-      gap: .25rem;
-    }
-    .footer-links a {
-      color: var(--muted);
-      text-decoration: none;
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
-    }
-    .footer-links a::before {
-      content: "•";
-      color: rgba(148,163,184,0.9);
-      font-size: .9rem;
-    }
-    .footer-links a:hover {
-      color: #e5edf7;
-      text-decoration: underline;
+      gap: 0.18rem;
     }
 
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 0 0, rgba(59,130,246,0.45), transparent 55%), rgba(2,6,23,0.96);
-      display: flex;
+    .footer-links a {
+      color: rgba(209,213,219,0.9);
+      font-size: 0.86rem;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s ease-out;
-      z-index: 60;
-      backdrop-filter: blur(18px);
+      gap: 0.3rem;
+      opacity: 0.85;
+      transition: opacity 0.14s ease, transform 0.12s ease;
     }
-    .lightbox.open {
+
+    .footer-links a::before {
+      content: "•";
+      font-size: 0.8rem;
+      color: rgba(148,163,184,0.9);
+    }
+
+    .footer-links a:hover {
       opacity: 1;
-      pointer-events: auto;
+      transform: translateX(1px);
     }
-    .lightbox-inner {
-      max-width: min(960px, 94vw);
-      max-height: 86vh;
-      border-radius: 18px;
-      background: rgba(15,23,42,0.98);
-      border: 1px solid rgba(148,163,184,0.8);
-      box-shadow: 0 26px 70px rgba(15,23,42,0.98);
-      overflow: hidden;
-      display: grid;
-      grid-template-rows: auto minmax(0,1fr);
-    }
-    .lightbox-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: .55rem .8rem;
-      border-bottom: 1px solid rgba(148,163,184,0.7);
-      font-size: .8rem;
-    }
-    .lightbox-header span {
-      display: inline-flex;
-      align-items: center;
-      gap: .35rem;
-    }
-    .lightbox-header span i {
-      width: 8px;
-      height: 8px;
+
+    .back-to-top {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, var(--brand), var(--brand-2));
-    }
-    .lightbox-close {
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.8);
-      padding: .18rem .45rem;
-      background: rgba(15,23,42,0.95);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      font-size: .8rem;
-      color: var(--muted);
-    }
-    .lightbox-body {
-      padding: .65rem .75rem .8rem;
+      border: 1px solid rgba(148,163,184,0.7);
       display: grid;
       place-items: center;
-      background: radial-gradient(circle at 50% 0, rgba(30,64,175,0.65), transparent 60%);
+      background: radial-gradient(circle at 0 0, rgba(248,250,252,0.4), transparent 60%),
+                  rgba(15,23,42,0.98);
+      color: #020617;
+      font-size: 1.1rem;
+      cursor: pointer;
+      box-shadow: 0 16px 40px rgba(15,23,42,1);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(16px);
+      transition:
+        opacity 0.16s ease,
+        transform 0.16s ease;
+      z-index: 35;
     }
-    .lightbox-body img {
-      max-width: 100%;
-      max-height: 70vh;
-      border-radius: 12px;
-      border: 1px solid rgba(148,163,184,0.8);
-      background: #020617;
+
+    .back-to-top.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
     .reveal {
       opacity: 0;
-      transform: translateY(26px);
-      transition: opacity .5s ease-out, transform .5s ease-out;
+      transform: translateY(28px);
+      transition:
+        opacity 0.4s ease-out,
+        transform 0.4s ease-out;
     }
-    .reveal.visible {
+
+    .reveal.is-visible {
       opacity: 1;
       transform: translateY(0);
     }
-    .reveal-delay-1 { transition-delay: .04s; }
-    .reveal-delay-2 { transition-delay: .08s; }
-    .reveal-delay-3 { transition-delay: .12s; }
 
-    .scroll-dots {
-      position: fixed;
-      inset-block: 50%;
-      inset-inline-end: 1.4rem;
-      transform: translateY(-50%);
-      display: flex;
-      flex-direction: column;
-      gap: .4rem;
-      z-index: 40;
+    .reveal-delay-1 {
+      transition-delay: 0.08s;
     }
-    .scroll-dot {
-      width: 9px;
-      height: 22px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.85);
-      background: rgba(15,23,42,0.9);
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+
+    .reveal-delay-2 {
+      transition-delay: 0.16s;
     }
-    .scroll-dot span {
-      position: absolute;
-      inset: 3px;
-      border-radius: inherit;
-      background: radial-gradient(circle at 50% 0, rgba(59,130,246,0.9), rgba(59,130,246,0.4));
-      transform-origin: bottom;
-      transform: scaleY(0);
-      transition: transform .16s ease-out;
-    }
-    .scroll-dot.active span {
-      transform: scaleY(1);
-    }
-    @media (max-width: 880px) {
-      .scroll-dots {
-        display: none;
-      }
+
+    .reveal-delay-3 {
+      transition-delay: 0.24s;
     }
   </style>
 </head>
@@ -1132,186 +1225,204 @@
   <header role="banner">
     <div class="container nav" aria-label="Top navigation">
       <div class="brand">
-        <div class="brand-logo">
-          <div class="brand-logo-inner">XR</div>
-        </div>
-        <div>
-          <div class="brand-text-main">Chest X-ray Classification</div>
-          <div class="brand-text-sub">STA 160 • Team 11 • UC Davis</div>
+        <div class="brand-logo" aria-hidden="true">XR</div>
+        <div class="brand-text">
+          <span class="brand-text-main">STA 160 — Chest X-ray</span>
+          <span class="brand-text-sub">Team 11 · NIH ChestX-ray14</span>
         </div>
       </div>
 
+      <label class="hamburger" for="nav-toggle">
+        ☰ <span>Menu</span>
+      </label>
       <input type="checkbox" id="nav-toggle">
-      <label class="hamburger" for="nav-toggle" aria-label="Open navigation">☰</label>
 
-      <div class="nav-main">
-        <div class="nav-links">
-          <a class="nav-link" href="#hero">Overview</a>
-          <div class="nav-item">
-            <button type="button">
-              Pipeline
-              <span class="nav-chevron">⌄</span>
-            </button>
-            <div class="nav-dropdown">
-              <div class="nav-dropdown-heading">
-                <span>Sections</span>
-                <span>Jump to key parts</span>
-              </div>
-              <div class="nav-dropdown-grid">
-                <div class="nav-drop-card" data-jump="#datasets">
-                  <strong>Datasets</strong>
-                  <span>NIH ChestX-ray14 + CheXpert</span>
-                </div>
-                <div class="nav-drop-card" data-jump="#method">
-                  <strong>Method</strong>
-                  <span>Preprocessing → Models → Training</span>
-                </div>
-                <div class="nav-drop-card" data-jump="#results">
-                  <strong>Results</strong>
-                  <span>Macro AUC-ROC / AUC-PR</span>
-                </div>
-                <div class="nav-drop-card" data-jump="#gallery">
-                  <strong>Grad-CAM</strong>
-                  <span>Qualitative model behavior</span>
-                </div>
-              </div>
-            </div>
+      <nav class="nav-links" role="navigation">
+        <a class="link" href="#top">
+          <span class="dot"></span>
+          Overview
+        </a>
+        <a class="link" href="#datasets">
+          <span class="dot"></span>
+          Datasets
+        </a>
+        <a class="link" href="#method">
+          <span class="dot"></span>
+          Method
+        </a>
+        <a class="link" href="#results">
+          <span class="dot"></span>
+          Results
+        </a>
+        <div class="nav-group">
+          <button class="nav-toggle-btn" type="button">More</button>
+          <div class="nav-dropdown">
+            <a href="#gallery">
+              Qualitative
+              <small>Grad-CAM · predictions</small>
+            </a>
+            <a href="#team">
+              Team
+              <small>STA 160 · UC Davis</small>
+            </a>
+            <a href="#contact">
+              Contact
+              <small>Report · repo links</small>
+            </a>
           </div>
-          <a class="nav-link" href="#results">Results</a>
-          <a class="nav-link" href="#gallery">Examples</a>
-          <a class="nav-link" href="#team">Team</a>
         </div>
-        <div class="nav-pill">
-          <span class="nav-pill-dot"></span>
-          STA 160 • Fall 2025
-        </div>
-      </div>
+        <a class="link-primary" href="#results">
+          <div class="link-primary-icon">▶</div>
+          Live metrics
+        </a>
+      </nav>
     </div>
   </header>
 
-  <div class="scroll-dots" aria-hidden="true">
-    <div class="scroll-dot" data-jump="#hero"><span></span></div>
-    <div class="scroll-dot" data-jump="#datasets"><span></span></div>
-    <div class="scroll-dot" data-jump="#method"><span></span></div>
-    <div class="scroll-dot" data-jump="#results"><span></span></div>
-    <div class="scroll-dot" data-jump="#gallery"><span></span></div>
-    <div class="scroll-dot" data-jump="#team"><span></span></div>
-  </div>
-
-  <section class="hero" id="hero">
+  <div class="hero">
+    <div class="hero-glow"></div>
     <div class="container hero-grid">
       <div class="reveal">
-        <div class="hero-kicker-row">
-          <div class="kicker">NIH ChestX-ray14 • CheXpert • Deep CNNs</div>
-          <div class="hero-pill"><span></span>Team 11 • STA 160</div>
+        <div class="kicker">
+          <span class="kicker-dot"></span>
+          NIH ChestX-ray14 · Multi-label pathology · Transfer learning
         </div>
         <h1 class="title">
-          Chest X-ray Classification for <em>Multi-Label</em> Thoracic Pathologies
+          Chest X-ray classification for
+          <span class="accent">multi-label thoracic diseases</span>
         </h1>
         <p class="subtitle">
-          This project explores deep learning methods to automatically detect thoracic diseases from chest X-ray images. Using NIH ChestX-ray14 (112k images, 14 labels) and CheXpert, we apply transfer learning with the XRV Pathology Classifier and benchmark multiple CNN architectures across preprocessing, training, calibration, and error analysis.
+          We benchmark deep CNNs on large-scale chest X-ray datasets to automatically detect common thoracic findings from frontal radiographs. The pipeline spans data curation, preprocessing, transfer learning, calibration, and error analysis with transparent, reproducible steps.
         </p>
+
         <div class="actions">
           <a class="btn btn-primary" href="#results">
-            <span class="icon">▶</span>
-            View Results Dashboard
+            <span class="btn-icon">●</span>
+            View metrics
           </a>
           <a class="btn btn-secondary" href="#method">
-            <span class="icon">λ</span>
-            See the Full Pipeline
+            <span class="btn-icon">⇲</span>
+            Explore pipeline
           </a>
         </div>
+
         <div class="hero-meta">
-          <span><i></i> Transfer learning with XRV Pathology Classifier</span>
-          <span><i></i> Multi-label BCE, class imbalance-aware training</span>
+          <span>
+            <i></i>
+            NIH ChestX-ray14 · 112k frontal CXRs
+          </span>
+          <span>
+            <i></i>
+            XRV pathology classifier · transfer learning
+          </span>
         </div>
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-label">Images (NIH14)</div>
+
+        <div class="stats" aria-label="Project stats">
+          <div class="stat reveal reveal-delay-1">
             <div class="stat-num">112k+</div>
-            <div class="stat-sub">Frontal CXRs across 14 pathologies</div>
+            <div class="stat-label">Images (NIH ChestX-ray14)</div>
           </div>
-          <div class="stat">
-            <div class="stat-label">Images (CheXpert)</div>
+          <div class="stat reveal reveal-delay-2">
             <div class="stat-num">224k+</div>
-            <div class="stat-sub">Competition subset with uncertainty labels</div>
+            <div class="stat-label">Images (CheXpert)</div>
           </div>
-          <div class="stat">
-            <div class="stat-label">NIH labels</div>
+          <div class="stat reveal reveal-delay-3">
             <div class="stat-num">14</div>
-            <div class="stat-sub">Multi-label, long-tailed distribution</div>
+            <div class="stat-label">NIH labels</div>
           </div>
-          <div class="stat">
-            <div class="stat-label">CheXpert labels</div>
+          <div class="stat reveal reveal-delay-3">
             <div class="stat-num">5</div>
-            <div class="stat-sub">No Finding + 4 key pathologies</div>
+            <div class="stat-label">CheXpert labels</div>
           </div>
         </div>
       </div>
 
-      <aside class="hero-panel reveal reveal-delay-1" aria-label="Model preview">
-        <div class="hero-panel-inner">
-          <div class="hero-xray" data-lightbox-src="assets/hero_roc.png" data-lightbox-label="Validation ROC curves for main models">
-            <img src="assets/hero_roc.png" alt="Sample ROC curves preview" />
-            <div class="xray-overlay">
-              <span><i></i> DenseNet-121 • ResNet-50 • EffNet-B0</span>
-              <span>Macro AUC-ROC focus</span>
+      <aside class="hero-panel reveal reveal-delay-1" aria-label="Preview">
+        <div class="hero-card">
+          <div class="preview">
+            <img src="assets/hero_roc.png" alt="Sample ROC curves for multi-label chest X-ray classification" />
+            <div class="preview-overlay"></div>
+            <div class="preview-caption">
+              <div>
+                Validation ROC curves
+                <span>DenseNet-121 · ResNet-50 · EfficientNet-B0</span>
+              </div>
+              <div class="preview-badge">
+                <i></i>
+                Macro AUC-ROC focus
+              </div>
             </div>
           </div>
-          <div class="hero-side-meta">
-            <div class="hero-chip">
-              <strong>Pathology Classifier</strong>
-              <span>XRV pre-trained medical model</span>
-            </div>
-            <div class="hero-metrics">
-              <div class="metric">
-                <div class="metric-label">NIH Validation</div>
-                <div class="metric-value">AUC-ROC ≈ 0.86</div>
-                <div class="metric-badge">DenseNet-121</div>
-              </div>
-              <div class="metric">
-                <div class="metric-label">Class Imbalance</div>
-                <div class="metric-value">AUC-PR tracked</div>
-                <div class="metric-badge">Macro + per-label</div>
-              </div>
-            </div>
-            <div class="hero-chip">
-              <strong>Pipeline</strong>
-              <span>Preprocessing → Fine-tuning → Calibration → Grad-CAM</span>
+          <div class="hero-card-note">
+            <span>Replace <code>assets/hero_roc.png</code> with your favorite ROC or confusion matrix figure.</span>
+            <div class="hero-mini-badges">
+              <span>Temperature scaling</span>
+              <span>Label smoothing</span>
+              <span>Grad-CAM sanity checks</span>
             </div>
           </div>
         </div>
       </aside>
     </div>
-  </section>
+  </div>
 
   <section id="datasets">
     <div class="container">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">Datasets</h2>
-          <p class="section-sub">NIH ChestX-ray14 and CheXpert with curated splits, preprocessing, and ethical constraints.</p>
+      <div class="section-head reveal">
+        <div class="section-title-wrap">
+          <span class="section-eyebrow">Data</span>
+          <h2>Datasets</h2>
         </div>
-        <div class="section-tag-row">
-          <div class="tag"><span class="tag-dot"></span> Data curation</div>
-          <div class="tag">Patient-wise splits</div>
+        <div class="section-tag">
+          <span class="section-tag-dot"></span>
+          Data curation
         </div>
       </div>
-      <div class="grid cols-3">
-        <article class="card reveal">
-          <h3>NIH ChestX-ray14</h3>
-          <p>112,120 frontal CXRs annotated for 14 thoracic pathologies with long-tailed label frequencies and multi-label assignments per image.</p>
-          <div class="note">Train/validation/test splits are patient-wise to avoid leakage, with 224×224 resolution and basic augmentations.</div>
-        </article>
+
+      <div class="grid grid-3">
         <article class="card reveal reveal-delay-1">
-          <h3>CheXpert</h3>
-          <p>224,316 images with competition labels: No Finding, Edema, Cardiomegaly, Consolidation, Pleural Effusion. Uncertainty handled via U-ignore and U-zero policies.</p>
-          <div class="note">Preprocessing includes CLAHE, center-crop, and consistent normalization to align with pre-trained XRV expectations.</div>
+          <h3>NIH ChestX-ray14</h3>
+          <p>112,120 frontal CXRs annotated for 14 pathologies. Multi-label with long-tailed class distributions.</p>
+          <div style="height:0.4rem"></div>
+          <p class="note">
+            Train/validation/test split is patient-wise to avoid leakage, with images resized to 224×224 resolution and basic augmentations applied.
+          </p>
+          <div style="height:0.5rem"></div>
+          <div class="hero-mini-badges">
+            <span>Train/Valid/Test split</span>
+            <span>224×224</span>
+            <span>Augment: flip/crop</span>
+          </div>
         </article>
+
         <article class="card reveal reveal-delay-2">
-          <h3>Test Set & Ethics</h3>
-          <p>Held-out test sets balanced relative to label prevalence. All data are PHI-free, used strictly for academic purposes, with checks against shortcut learning.</p>
-          <div class="note">We monitor performance across view position, device type, and sex to surface potential biases in the learned representations.</div>
+          <h3>CheXpert</h3>
+          <p>224,316 images with competition labels (No Finding, Edema, Cardiomegaly, Consolidation, Pleural Effusion), including uncertainty labels.</p>
+          <div style="height:0.4rem"></div>
+          <p class="note">
+            We experiment with U-ignore and U-zero policies, CLAHE contrast enhancement, and center-crop preprocessing.
+          </p>
+          <div style="height:0.5rem"></div>
+          <div class="hero-mini-badges">
+            <span>U-label policy</span>
+            <span>CLAHE</span>
+            <span>Center-crop</span>
+          </div>
+        </article>
+
+        <article class="card reveal reveal-delay-3">
+          <h3>Test set & ethics</h3>
+          <p>Held-out test set balanced relative to label prevalence. PHI-free, academic use only; models monitored for shortcut learning.</p>
+          <div style="height:0.4rem"></div>
+          <p class="note">
+            We emphasize calibration and robustness, reporting AUC-PR alongside ROC to reflect class imbalance.
+          </p>
+          <div style="height:0.5rem"></div>
+          <div class="hero-mini-badges">
+            <span>Stratified</span>
+            <span>Label smoothing</span>
+            <span>AUC-PR focus</span>
+          </div>
         </article>
       </div>
     </div>
@@ -1319,51 +1430,72 @@
 
   <section id="method">
     <div class="container">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">Method</h2>
-          <p class="section-sub">From raw DICOMs/PNGs to calibrated decision scores and interpretable Grad-CAM maps.</p>
+      <div class="section-head reveal">
+        <div class="section-title-wrap">
+          <span class="section-eyebrow">Pipeline</span>
+          <h2>Method</h2>
         </div>
-        <div class="section-tag-row">
-          <div class="tag"><span class="tag-dot"></span> Reproducible pipeline</div>
-          <div class="tag">Transfer learning • XRV</div>
+        <div class="section-tag">
+          <span class="section-tag-dot"></span>
+          Reproducible pipeline
         </div>
       </div>
-      <div class="card reveal">
+
+      <div class="card reveal reveal-delay-1">
         <div class="timeline">
           <div class="step">
-            <div class="bullet-wrap"><div class="bullet"></div></div>
+            <div class="bullet-wrap">
+              <div class="bullet" aria-hidden="true"></div>
+            </div>
             <div>
               <strong>Preprocessing</strong>
-              <p>DICOM/PNG read-in, resize to 224×224, grayscale normalization, and optional CLAHE. We create patient-wise train/validation/test splits to avoid patient leakage between sets.</p>
+              <p class="muted">
+                DICOM/PNG ingest → resize to 224×224 → grayscale normalization → optional CLAHE → patient-wise train/validation/test split.
+              </p>
             </div>
           </div>
           <div class="step">
-            <div class="bullet-wrap"><div class="bullet"></div></div>
+            <div class="bullet-wrap">
+              <div class="bullet" aria-hidden="true"></div>
+            </div>
             <div>
               <strong>Models</strong>
-              <p>Transfer learning with DenseNet-121, ResNet-50, EfficientNet-B0, and the XRV Pathology Classifier. The final heads are linear layers with sigmoids for multi-label BCE training.</p>
+              <p class="muted">
+                Transfer learning with ResNet-50, DenseNet-121, and EfficientNet-B0. Final linear head with sigmoid outputs for multi-label BCE.
+              </p>
             </div>
           </div>
           <div class="step">
-            <div class="bullet-wrap"><div class="bullet"></div></div>
+            <div class="bullet-wrap">
+              <div class="bullet" aria-hidden="true"></div>
+            </div>
             <div>
               <strong>Training</strong>
-              <p>We use BCEWithLogitsLoss with class weights for imbalance, AdamW optimizer, cosine learning rate schedules, and early stopping based on macro AUC-ROC on the validation split.</p>
+              <p class="muted">
+                BCEWithLogitsLoss with class weights; AdamW optimizer; cosine learning rate schedule; early stopping on macro AUC-ROC.
+              </p>
             </div>
           </div>
           <div class="step">
-            <div class="bullet-wrap"><div class="bullet"></div></div>
+            <div class="bullet-wrap">
+              <div class="bullet" aria-hidden="true"></div>
+            </div>
             <div>
               <strong>Evaluation</strong>
-              <p>Per-label AUC-ROC and AUC-PR are reported alongside macro and micro aggregates. Thresholds are tuned via Youden’s J statistic, and scores are calibrated with temperature scaling.</p>
+              <p class="muted">
+                Per-label AUC-ROC and AUC-PR, threshold tuning via Youden’s J; macro and micro metrics; calibration with temperature scaling.
+              </p>
             </div>
           </div>
           <div class="step">
-            <div class="bullet-wrap"><div class="bullet"></div></div>
+            <div class="bullet-wrap">
+              <div class="bullet" aria-hidden="true"></div>
+            </div>
             <div>
-              <strong>Error Analysis & Explainability</strong>
-              <p>We analyze confusions by view (AP vs. PA), device presence, and sex, and inspect Grad-CAM heatmaps to confirm that attention aligns with relevant anatomical regions, especially for long-tail classes.</p>
+              <strong>Error analysis</strong>
+              <p class="muted">
+                Confusions by view, device, and sex; Grad-CAM sanity checks; slice-wise breakdown for long-tail classes and hard negatives.
+              </p>
             </div>
           </div>
         </div>
@@ -1373,115 +1505,187 @@
 
   <section id="results">
     <div class="container">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">Results</h2>
-          <p class="section-sub">Aggregate metrics, per-label performance, and visual diagnostics for key pathologies.</p>
+      <div class="section-head reveal">
+        <div class="section-title-wrap">
+          <span class="section-eyebrow">Metrics</span>
+          <h2>Results</h2>
         </div>
-        <div class="section-tag-row">
-          <div class="tag"><span class="tag-dot"></span> Metrics</div>
-          <div class="tag">Macro AUC-ROC • AUC-PR</div>
+        <div class="section-tag">
+          <span class="section-tag-dot"></span>
+          Validation performance
         </div>
       </div>
 
-      <div class="results-layout">
-        <article class="card reveal">
-          <div class="results-tabs">
-            <button class="results-tab active" data-panel="summary">
-              <span class="results-tab-dot"></span> Summary (Validation)
-            </button>
-            <button class="results-tab" data-panel="perlabel">
-              <span class="results-tab-dot"></span> Per-label AUC-ROC
-            </button>
-          </div>
-          <div class="results-panel active" id="results-summary">
-            <table aria-label="validation summary">
-              <thead>
-                <tr><th>Model</th><th>Macro AUC-ROC</th><th>Macro AUC-PR</th><th>Params</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>DenseNet-121</td><td>0.86</td><td>0.41</td><td>8.0M</td></tr>
-                <tr><td>ResNet-50</td><td>0.84</td><td>0.38</td><td>25.6M</td></tr>
-                <tr><td>EfficientNet-B0</td><td>0.83</td><td>0.36</td><td>5.3M</td></tr>
-              </tbody>
-            </table>
-            <p class="note">DenseNet-121 provides the best trade-off between capacity and performance, especially under class imbalance, motivating its choice as our primary backbone.</p>
-          </div>
-          <div class="results-panel" id="results-perlabel">
-            <table aria-label="per label auc">
-              <thead>
-                <tr><th>Label</th><th>AUC-ROC</th><th>Support</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>Cardiomegaly</td><td>0.92</td><td>8,753</td></tr>
-                <tr><td>Pleural Effusion</td><td>0.90</td><td>13,842</td></tr>
-                <tr><td>Edema</td><td>0.88</td><td>6,410</td></tr>
-                <tr><td>Consolidation</td><td>0.81</td><td>5,102</td></tr>
-                <tr><td>No Finding</td><td>0.78</td><td>—</td></tr>
-              </tbody>
-            </table>
-            <p class="note">We see strong separation for Cardiomegaly and Pleural Effusion, with more modest performance on subtle findings and the ambiguous “No Finding” class.</p>
-          </div>
+      <div class="grid grid-2">
+        <article class="card reveal reveal-delay-1">
+          <h3 style="margin-bottom:.6rem">Summary (validation)</h3>
+          <table aria-label="validation summary">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Macro AUC-ROC</th>
+                <th>Macro AUC-PR</th>
+                <th>Params</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>DenseNet-121</td>
+                <td>0.86</td>
+                <td>0.41</td>
+                <td>8.0M</td>
+              </tr>
+              <tr>
+                <td>ResNet-50</td>
+                <td>0.84</td>
+                <td>0.38</td>
+                <td>25.6M</td>
+              </tr>
+              <tr>
+                <td>EfficientNet-B0</td>
+                <td>0.83</td>
+                <td>0.36</td>
+                <td>5.3M</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="note" style="margin-top:.5rem">
+            Replace these values with your final validation metrics. We keep both ROC and PR curves to reflect class imbalance.
+          </p>
         </article>
 
-        <article class="card reveal reveal-delay-1">
-          <h3 style="margin-bottom:.55rem">Confusion Matrix / ROC Gallery</h3>
-          <div class="gallery">
-            <div class="shot" data-lightbox-src="assets/roc_dense.png" data-lightbox-label="DenseNet-121 ROC curves">
-              <img src="assets/roc_dense.png" alt="ROC curves for DenseNet-121" />
-              <div class="shot-label"><i></i> roc_dense.png</div>
-            </div>
-            <div class="shot" data-lightbox-src="assets/roc_resnet.png" data-lightbox-label="ResNet-50 ROC curves">
-              <img src="assets/roc_resnet.png" alt="ROC curves for ResNet-50" />
-              <div class="shot-label"><i></i> roc_resnet.png</div>
-            </div>
-            <div class="shot" data-lightbox-src="assets/cm_cardio.png" data-lightbox-label="Cardiomegaly confusion matrix">
-              <img src="assets/cm_cardio.png" alt="Confusion matrix for Cardiomegaly" />
-              <div class="shot-label"><i></i> cm_cardio.png</div>
+        <article class="card reveal reveal-delay-2">
+          <h3 style="margin-bottom:.6rem">Per-label AUC-ROC (sample)</h3>
+          <table aria-label="per label auc">
+            <thead>
+              <tr>
+                <th>Label</th>
+                <th>AUC</th>
+                <th>Support</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Cardiomegaly</td>
+                <td>0.92</td>
+                <td>8,753</td>
+              </tr>
+              <tr>
+                <td>Pleural Effusion</td>
+                <td>0.90</td>
+                <td>13,842</td>
+              </tr>
+              <tr>
+                <td>Edema</td>
+                <td>0.88</td>
+                <td>6,410</td>
+              </tr>
+              <tr>
+                <td>Consolidation</td>
+                <td>0.81</td>
+                <td>5,102</td>
+              </tr>
+              <tr>
+                <td>No Finding</td>
+                <td>0.78</td>
+                <td>—</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="note" style="margin-top:.5rem">
+            Populate this table directly from your experiment logs or CSV exports for the main labels you wish to highlight.
+          </p>
+        </article>
+      </div>
+
+      <div style="height:1.2rem"></div>
+
+      <div class="card reveal reveal-delay-3">
+        <h3 style="margin:0 0 .6rem">Confusion matrix / ROC gallery</h3>
+        <div class="gallery">
+          <div class="shot" data-lightbox>
+            <img src="assets/roc_dense.png" alt="ROC curves for DenseNet-121" />
+            <div class="shot-label">
+              <span>roc_dense.png</span>
+              <span>DenseNet-121 ROC</span>
             </div>
           </div>
-          <p class="note">Swap in your own PNG files by replacing the images in <code>assets/</code> or adjusting the <code>src</code> attributes above.</p>
-        </article>
+          <div class="shot" data-lightbox>
+            <img src="assets/roc_resnet.png" alt="ROC curves for ResNet-50" />
+            <div class="shot-label">
+              <span>roc_resnet.png</span>
+              <span>ResNet-50 ROC</span>
+            </div>
+          </div>
+          <div class="shot" data-lightbox>
+            <img src="assets/cm_cardio.png" alt="Confusion matrix for Cardiomegaly" />
+            <div class="shot-label">
+              <span>cm_cardio.png</span>
+              <span>Cardiomegaly confusion matrix</span>
+            </div>
+          </div>
+        </div>
+        <p class="note" style="margin-top:.7rem">
+          Place your figures inside the <code>assets/</code> folder with these filenames, or update the <code>src</code> paths to match your file names.
+        </p>
       </div>
     </div>
   </section>
 
   <section id="gallery">
     <div class="container">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">Qualitative Examples</h2>
-          <p class="section-sub">Grad-CAM heatmaps reveal where the model is “looking” for each prediction.</p>
+      <div class="section-head reveal">
+        <div class="section-title-wrap">
+          <span class="section-eyebrow">Qualitative</span>
+          <h2>Grad-CAM examples</h2>
         </div>
-        <div class="section-tag-row">
-          <div class="tag"><span class="tag-dot"></span> Grad-CAM • Predictions</div>
-          <div class="tag">True/False positives and negatives</div>
+        <div class="section-tag">
+          <span class="section-tag-dot"></span>
+          Predictions · saliency
         </div>
       </div>
-      <div class="grid cols-3">
-        <article class="card reveal">
-          <h3>True Positive</h3>
-          <div class="shot" data-lightbox-src="assets/gradcam_tp.png" data-lightbox-label="Grad-CAM true positive example">
-            <img src="assets/gradcam_tp.png" alt="Grad-CAM true positive example" />
-            <div class="shot-label"><i></i> gradcam_tp.png</div>
-          </div>
-          <p class="note">Example of Cardiomegaly correctly detected, with Grad-CAM highlighting the cardiac silhouette in a clinically plausible region.</p>
-        </article>
+
+      <div class="grid grid-3">
         <article class="card reveal reveal-delay-1">
-          <h3>False Positive</h3>
-          <div class="shot" data-lightbox-src="assets/gradcam_fp.png" data-lightbox-label="Grad-CAM false positive example">
-            <img src="assets/gradcam_fp.png" alt="Grad-CAM false positive example" />
-            <div class="shot-label"><i></i> gradcam_fp.png</div>
+          <h3>True positive</h3>
+          <div class="shot" data-lightbox>
+            <img src="assets/gradcam_tp.png" alt="Grad-CAM true positive example" />
+            <div class="shot-label">
+              <span>gradcam_tp.png</span>
+              <span>Correct detection</span>
+            </div>
           </div>
-          <p class="note">Spurious activation over devices and lines; mitigated by data augmentation and more diverse training subsets.</p>
+          <p class="note" style="margin-top:.5rem">
+            Example where Cardiomegaly is correctly detected, with Grad-CAM highlighting the cardiac silhouette region.
+          </p>
         </article>
+
         <article class="card reveal reveal-delay-2">
-          <h3>False Negative</h3>
-          <div class="shot" data-lightbox-src="assets/gradcam_fn.png" data-lightbox-label="Grad-CAM false negative example">
-            <img src="assets/gradcam_fn.png" alt="Grad-CAM false negative example" />
-            <div class="shot-label"><i></i> gradcam_fn.png</div>
+          <h3>False positive</h3>
+          <div class="shot" data-lightbox>
+            <img src="assets/gradcam_fp.png" alt="Grad-CAM false positive example" />
+            <div class="shot-label">
+              <span>gradcam_fp.png</span>
+              <span>Spurious activation</span>
+            </div>
           </div>
-          <p class="note">Small effusions and subtle findings remain challenging; careful threshold tuning and calibration can partially improve recall.</p>
+          <p class="note" style="margin-top:.5rem">
+            Case where device artifacts drive spurious activations; mitigated through augmentations and robustness checks.
+          </p>
+        </article>
+
+        <article class="card reveal reveal-delay-3">
+          <h3>False negative</h3>
+          <div class="shot" data-lightbox>
+            <img src="assets/gradcam_fn.png" alt="Grad-CAM false negative example" />
+            <div class="shot-label">
+              <span>gradcam_fn.png</span>
+              <span>Missed signal</span>
+            </div>
+          </div>
+          <p class="note" style="margin-top:.5rem">
+            Missed small effusion signal; performance improves with threshold tuning and better handling of borderline labels.
+          </p>
         </article>
       </div>
     </div>
@@ -1489,220 +1693,157 @@
 
   <section id="team">
     <div class="container">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">Team 11</h2>
-          <p class="section-sub">STA 160 — Chest X-ray Classification Using Deep Neural Networks.</p>
+      <div class="section-head reveal">
+        <div class="section-title-wrap">
+          <span class="section-eyebrow">Team</span>
+          <h2>STA 160 · Team 11</h2>
         </div>
-        <div class="section-tag-row">
-          <div class="tag"><span class="tag-dot"></span> STA 160 • UC Davis</div>
+        <div class="section-tag">
+          <span class="section-tag-dot"></span>
+          UC Davis
         </div>
       </div>
+
       <div class="team">
-        <div class="member reveal">
-          <div class="avatar">
-            <div class="avatar-inner">ML</div>
-          </div>
+        <div class="member reveal reveal-delay-1">
+          <div class="avatar" aria-hidden="true">ML</div>
           <h3>Muhammad Laiq</h3>
-          <div class="role">Lead • Modeling & Documentation</div>
-          <div class="affil">Model selection, training pipeline, and report writing.</div>
+          <div class="role">Lead · Modeling & documentation</div>
         </div>
         <div class="member reveal reveal-delay-1">
-          <div class="avatar">
-            <div class="avatar-inner">KS</div>
-          </div>
+          <div class="avatar" aria-hidden="true">KS</div>
           <h3>Kayla Sham</h3>
-          <div class="role">Data & EDA</div>
-          <div class="affil">Dataset exploration, preprocessing choices, and split design.</div>
+          <div class="role">Data curation & EDA</div>
         </div>
         <div class="member reveal reveal-delay-2">
-          <div class="avatar">
-            <div class="avatar-inner">TY</div>
-          </div>
+          <div class="avatar" aria-hidden="true">TY</div>
           <h3>Tina Yu</h3>
-          <div class="role">Training Ops</div>
-          <div class="affil">Hyperparameter tuning, checkpointing, and experiments.</div>
+          <div class="role">Training operations</div>
         </div>
-        <div class="member reveal reveal-delay-3">
-          <div class="avatar">
-            <div class="avatar-inner">LL</div>
-          </div>
+        <div class="member reveal reveal-delay-2">
+          <div class="avatar" aria-hidden="true">LL</div>
           <h3>Lauren Le</h3>
-          <div class="role">Training Ops</div>
-          <div class="affil">Experiment tracking, comparison across backbones.</div>
+          <div class="role">Training operations</div>
         </div>
         <div class="member reveal reveal-delay-3">
-          <div class="avatar">
-            <div class="avatar-inner">FS</div>
-          </div>
+          <div class="avatar" aria-hidden="true">FS</div>
           <h3>Fang Shang</h3>
-          <div class="role">Training Ops & Website</div>
-          <div class="affil">Evaluation, Grad-CAM examples, and web presentation.</div>
+          <div class="role">Training operations</div>
         </div>
       </div>
     </div>
   </section>
 
-  <footer>
+  <footer id="contact">
     <div class="container footer-grid">
       <div>
-        <div class="brand" style="margin-bottom:.5rem">
-          <div class="brand-logo">
-            <div class="brand-logo-inner">XR</div>
-          </div>
-          <div>
-            <div class="brand-text-main">Chest X-ray Project</div>
-            <div class="brand-text-sub">STA 160 • Team 11 • UC Davis</div>
-          </div>
+        <div class="footer-brand">
+          <div class="footer-logo" aria-hidden="true">XR</div>
+          <div>Chest X-ray Project</div>
         </div>
-        <p>Deep learning for thoracic pathology detection from chest X-rays, combining NIH ChestX-ray14 and CheXpert with modern CNN-based transfer learning and rigorous evaluation.</p>
+        <p class="footer-note">
+          Course: STA 160 · Quarter: Fall 2025 · UC Davis · Team 11.
+          Chest X-ray classification using transfer learning on NIH ChestX-ray14 (112k images).
+        </p>
       </div>
       <div>
-        <strong>Links</strong>
+        <div class="footer-group-title">Sections</div>
         <ul class="footer-links">
-          <li><a href="#datasets">Datasets & Preprocessing</a></li>
-          <li><a href="#method">Method & Training</a></li>
-          <li><a href="#results">Results Dashboard</a></li>
-          <li><a href="#gallery">Grad-CAM Examples</a></li>
+          <li><a href="#datasets">Datasets</a></li>
+          <li><a href="#method">Method</a></li>
+          <li><a href="#results">Results</a></li>
+          <li><a href="#gallery">Grad-CAM gallery</a></li>
         </ul>
       </div>
       <div>
-        <strong>Contact</strong>
+        <div class="footer-group-title">Contact · assets</div>
         <ul class="footer-links">
           <li><a href="mailto:you@example.edu">Project email</a></li>
           <li><a href="#">GitHub repository</a></li>
-          <li><a href="#">Final report (PDF)</a></li>
+          <li><a href="#">Report / paper PDF</a></li>
         </ul>
       </div>
     </div>
   </footer>
 
+  <a href="#top" class="back-to-top" aria-label="Back to top">↑</a>
+
   <div class="lightbox" id="lightbox">
-    <div class="lightbox-inner">
-      <div class="lightbox-header">
-        <span><i></i><span id="lightbox-label">Image preview</span></span>
-        <button class="lightbox-close" type="button" id="lightbox-close">Close ✕</button>
-      </div>
-      <div class="lightbox-body">
-        <img id="lightbox-img" src="" alt="">
-      </div>
-    </div>
+    <img src="" alt="" />
   </div>
 
   <script>
-    const revealElements = document.querySelectorAll(".reveal");
-    const revealObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          revealObserver.unobserve(entry.target);
-        }
+    const navGroups = document.querySelectorAll(".nav-group");
+    navGroups.forEach(group => {
+      const btn = group.querySelector(".nav-toggle-btn");
+      if (!btn) return;
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        const isOpen = group.classList.contains("open");
+        navGroups.forEach(g => g.classList.remove("open"));
+        if (!isOpen) group.classList.add("open");
       });
-    }, { threshold: 0.16 });
-    revealElements.forEach(el => revealObserver.observe(el));
+    });
 
-    const resultsTabs = document.querySelectorAll(".results-tab");
-    const resultsPanels = {
-      summary: document.getElementById("results-summary"),
-      perlabel: document.getElementById("results-perlabel")
-    };
-    resultsTabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        const target = tab.getAttribute("data-panel");
-        resultsTabs.forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-        Object.keys(resultsPanels).forEach(key => {
-          resultsPanels[key].classList.toggle("active", key === target);
-        });
+    document.addEventListener("click", () => {
+      navGroups.forEach(g => g.classList.remove("open"));
+    });
+
+    const navToggle = document.getElementById("nav-toggle");
+    document.querySelectorAll(".nav-links a[href^='#']").forEach(link => {
+      link.addEventListener("click", () => {
+        if (navToggle && navToggle.checked) navToggle.checked = false;
       });
     });
 
     const lightbox = document.getElementById("lightbox");
-    const lightboxImg = document.getElementById("lightbox-img");
-    const lightboxLabel = document.getElementById("lightbox-label");
-    const lightboxClose = document.getElementById("lightbox-close");
-
-    function openLightbox(src, label) {
-      if (!src) return;
-      lightboxImg.src = src;
-      lightboxImg.alt = label || "";
-      lightboxLabel.textContent = label || "Image preview";
-      lightbox.classList.add("open");
-    }
-    function closeLightbox() {
+    const lightboxImg = lightbox.querySelector("img");
+    document.querySelectorAll("[data-lightbox]").forEach(tile => {
+      tile.addEventListener("click", () => {
+        const img = tile.querySelector("img");
+        if (!img || !img.src) return;
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt || "";
+        lightbox.classList.add("open");
+      });
+    });
+    lightbox.addEventListener("click", () => {
       lightbox.classList.remove("open");
       lightboxImg.src = "";
-      lightboxImg.alt = "";
-    }
+    });
 
-    document.querySelectorAll("[data-lightbox-src]").forEach(tile => {
-      tile.addEventListener("click", () => {
-        const src = tile.getAttribute("data-lightbox-src");
-        const label = tile.getAttribute("data-lightbox-label");
-        openLightbox(src, label);
-      });
-    });
-    lightboxClose.addEventListener("click", e => {
-      e.stopPropagation();
-      closeLightbox();
-    });
-    lightbox.addEventListener("click", e => {
-      if (e.target === lightbox) {
-        closeLightbox();
-      }
-    });
-    document.addEventListener("keydown", e => {
-      if (e.key === "Escape" && lightbox.classList.contains("open")) {
-        closeLightbox();
+    const backToTop = document.querySelector(".back-to-top");
+    window.addEventListener("scroll", () => {
+      const y = window.scrollY || window.pageYOffset;
+      if (y > 260) {
+        backToTop.classList.add("show");
+      } else {
+        backToTop.classList.remove("show");
       }
     });
 
-    document.querySelectorAll(".nav-drop-card").forEach(card => {
-      card.addEventListener("click", () => {
-        const target = card.getAttribute("data-jump");
-        if (target) {
-          const el = document.querySelector(target);
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      });
-    });
-
-    const scrollDots = document.querySelectorAll(".scroll-dot");
-    const sections = [
-      { id: "#hero", dot: scrollDots[0] },
-      { id: "#datasets", dot: scrollDots[1] },
-      { id: "#method", dot: scrollDots[2] },
-      { id: "#results", dot: scrollDots[3] },
-      { id: "#gallery", dot: scrollDots[4] },
-      { id: "#team", dot: scrollDots[5] }
-    ];
-    scrollDots.forEach(dot => {
-      dot.addEventListener("click", () => {
-        const target = dot.getAttribute("data-jump");
-        if (target) {
-          const el = document.querySelector(target);
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      });
-    });
-    const dotObserver = new IntersectionObserver(entries => {
+    const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          const id = "#" + entry.target.id;
-          sections.forEach(s => {
-            if (s.id === id) {
-              s.dot.classList.add("active");
-            } else {
-              s.dot.classList.remove("active");
-            }
-          });
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.35 });
-    sections.forEach(s => {
-      const el = document.querySelector(s.id);
-      if (el) dotObserver.observe(el);
+    }, { threshold: 0.16 });
+
+    document.querySelectorAll(".reveal").forEach(el => {
+      observer.observe(el);
     });
+
+    const heroPreview = document.querySelector(".preview img");
+    if (heroPreview) {
+      window.addEventListener("scroll", () => {
+        const rect = heroPreview.getBoundingClientRect();
+        const center = window.innerHeight / 2;
+        const offset = (rect.top + rect.height / 2 - center) / center;
+        heroPreview.style.transform = "scale(1.03) translateY(" + (offset * 10) + "px)";
+      });
+    }
   </script>
 </body>
 </html>
