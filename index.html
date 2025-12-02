@@ -27,12 +27,13 @@
     html {
       height: 100%;
       background: #05060a;
+      scroll-behavior: smooth;
     }
     body {
       margin: 0;
       min-height: 100%;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(circle at top, #141825 0%, #05060a 55%, #05060a 100%);
+      background: radial-gradient(circle at top, #141825 0%, #05060a 60%, #020308 100%);
       color: var(--text);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
@@ -40,24 +41,36 @@
       position: relative;
       overflow-x: hidden;
     }
+
     body::before {
       content: "";
       position: fixed;
       inset: -40%;
       background:
-        radial-gradient(circle at 0% 0%, rgba(122,162,255,.23), transparent 60%),
-        radial-gradient(circle at 100% 100%, rgba(158,255,204,.20), transparent 55%),
-        radial-gradient(circle at 0% 100%, rgba(124,252,214,.18), transparent 55%);
-      opacity: .6;
-      filter: blur(2px);
+        radial-gradient(circle at 0% 0%, rgba(122,162,255,.26), transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(158,255,204,.22), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(124,252,214,.20), transparent 55%);
+      opacity: .7;
+      filter: blur(3px);
       z-index: -1;
-      animation: bgFloat 26s ease-in-out infinite alternate;
+      animation: bgFloat 30s ease-in-out infinite alternate;
     }
 
     @keyframes bgFloat {
       0% { transform: translate3d(0,0,0) scale(1); }
-      50% { transform: translate3d(-40px, 10px,0) scale(1.05); }
-      100% { transform: translate3d(20px,-20px,0) scale(1.03); }
+      50% { transform: translate3d(-40px, 20px,0) scale(1.06); }
+      100% { transform: translate3d(25px,-25px,0) scale(1.03); }
+    }
+
+    body[data-theme="light"] {
+      --bg: #f4f6fb;
+      --bg-soft: #e3e7f3;
+      --surface: #ffffff;
+      --text: #111827;
+      --muted: #4b5563;
+      --brand: #2563eb;
+      --brand-2: #06b6d4;
+      background: radial-gradient(circle at top, #ffffff 0%, #e5ecfb 40%, #dbe4ff 100%);
     }
 
     img { max-width: 100%; display: block; }
@@ -67,38 +80,102 @@
     header {
       position: sticky; top: 0; z-index: 50;
       backdrop-filter: saturate(140%) blur(10px);
-      background: linear-gradient(90deg, rgba(9,12,18,.9), rgba(15,18,26,.8));
-      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: linear-gradient(90deg, rgba(9,12,18,.92), rgba(15,18,26,.86));
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
-    .nav { display: flex; align-items: center; justify-content: space-between; padding: .9rem 0; }
+    body[data-theme="light"] header {
+      background: linear-gradient(90deg, rgba(255,255,255,.92), rgba(237,242,255,.9));
+      border-bottom-color: rgba(15,23,42,.08);
+    }
+
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: .9rem 0; column-gap: 1rem; }
     .brand { display: flex; gap: .65rem; align-items: center; font-weight: 700; letter-spacing: .3px; }
     .brand .logo {
       inline-size: 36px; block-size: 36px;
       border-radius: 10px;
       background: linear-gradient(135deg, var(--brand), var(--brand-2));
-      box-shadow: 0 0 0 1px rgba(255,255,255,.12), var(--shadow);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.14), var(--shadow);
       display: grid; place-items: center;
       font-size: 18px; color: #0b0f14;
     }
+    .brand span.small {
+      display: block;
+      font-size: .7rem;
+      opacity: .65;
+      font-weight: 500;
+    }
+
+    .nav-main { display: flex; align-items: center; gap: .75rem; }
+
     .nav a.link {
-      opacity: .9; padding: .5rem .8rem; border-radius: 999px;
-      transition: background .2s, transform .15s, box-shadow .15s;
+      opacity: .9; padding: .45rem .85rem; border-radius: 999px;
+      font-size: .9rem;
+      transition: background .2s, transform .15s, box-shadow .15s, color .15s;
     }
     .nav a.link:hover {
-      background: rgba(255,255,255,.06);
+      background: rgba(255,255,255,.08);
       transform: translateY(-1px);
       box-shadow: 0 8px 18px rgba(0,0,0,.45);
     }
+    .nav a.link.active {
+      background: rgba(122,162,255,.22);
+      color: #e5edff;
+      box-shadow: 0 10px 24px rgba(15,23,42,.75);
+    }
+    body[data-theme="light"] .nav a.link.active {
+      background: rgba(37,99,235,.12);
+      color: #1f2937;
+      box-shadow: 0 10px 24px rgba(148,163,184,.55);
+    }
 
     #nav-toggle { display: none; }
-    .nav-links { display: flex; gap: .25rem; flex-wrap: wrap; }
-    .hamburger { display: none; cursor: pointer; padding: .45rem .6rem; border-radius: 10px; border: 1px solid rgba(255,255,255,.12); }
+    .nav-links { display: flex; gap: .25rem; flex-wrap: wrap; align-items: center; }
+
+    .hamburger {
+      display: none; cursor: pointer; padding: .35rem .55rem;
+      border-radius: 10px; border: 1px solid rgba(255,255,255,.14);
+      font-size: 1rem;
+    }
+    body[data-theme="light"] .hamburger {
+      border-color: rgba(15,23,42,.12);
+    }
+
+    .mode-toggle {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.28), transparent 60%), rgba(15,23,42,.9);
+      color: #e5edff;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      font-size: .9rem;
+      margin-left: .35rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,.6);
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .mode-toggle:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(0,0,0,.7);
+      border-color: rgba(148,163,253,.6);
+    }
+    body[data-theme="light"] .mode-toggle {
+      background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.18), transparent 60%), #ffffff;
+      color: #111827;
+      border-color: rgba(148,163,184,.8);
+      box-shadow: 0 8px 20px rgba(148,163,184,.5);
+    }
 
     @media (max-width: 800px) {
       .hamburger { display: block; }
-      .nav-links { display: none; width: 100%; padding-top: .75rem; }
+      .nav-main { flex: 1; justify-content: flex-end; }
+      .nav-links {
+        display: none; width: 100%; padding-top: .55rem;
+        justify-content: flex-start;
+      }
       #nav-toggle:checked ~ .nav-links { display: grid; gap: .25rem; }
-      .nav { flex-wrap: wrap; }
+      .nav { flex-wrap: wrap; align-items: flex-start; }
     }
 
     .hero {
@@ -111,20 +188,25 @@
       position: absolute;
       inset: auto -20% -40% -20%;
       background: radial-gradient(circle at 50% 120%, rgba(122,162,255,.25), transparent 55%);
-      opacity: .6;
+      opacity: .65;
       pointer-events: none;
       z-index: -1;
     }
+    body[data-theme="light"] .hero::after {
+      background: radial-gradient(circle at 50% 120%, rgba(56,189,248,.25), transparent 55%);
+    }
+
     .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: center; }
     .kicker { color: var(--brand-2); font-weight: 600; letter-spacing: .3px; text-transform: uppercase; font-size: .8rem; }
     .title { font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.1; margin: .5rem 0 1rem; }
     .subtitle { color: var(--muted); max-width: 60ch; }
     .actions { display: flex; gap: .8rem; margin-top: 1.25rem; flex-wrap: wrap; }
+
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
       gap: .5rem; padding: .85rem 1.2rem;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.14);
       background: #101623;
       cursor: pointer;
       font-size: .95rem;
@@ -146,15 +228,33 @@
     .btn.primary:hover {
       background: linear-gradient(135deg, #8ab1ff, #6b92ff);
     }
+    body[data-theme="light"] .btn {
+      background: #e5edff;
+      border-color: rgba(148,163,184,.6);
+      color: #111827;
+      box-shadow: 0 10px 24px rgba(148,163,184,.45);
+    }
+    body[data-theme="light"] .btn.primary {
+      background: linear-gradient(135deg, #2563eb, #0ea5e9);
+      color: #f9fafb;
+      box-shadow: 0 16px 40px rgba(37,99,235,.5);
+    }
 
     .hero-card {
-      background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.15), transparent 60%),
-                  linear-gradient(180deg, rgba(12,18,30,.95), rgba(8,12,20,.98));
+      background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.2), transparent 60%),
+                  linear-gradient(180deg, rgba(12,18,30,.98), rgba(8,12,20,.99));
       border: 1px solid rgba(122,162,255,.35);
       border-radius: var(--card-radius);
       padding: 1rem;
       box-shadow: 0 18px 45px rgba(0,0,0,.7);
     }
+    body[data-theme="light"] .hero-card {
+      background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.16), transparent 60%),
+                  linear-gradient(180deg, #ffffff, #e5edff);
+      border-color: rgba(148,163,184,.9);
+      box-shadow: 0 18px 45px rgba(148,163,184,.55);
+    }
+
     .preview {
       aspect-ratio: 4/3; border-radius: 12px;
       background: radial-gradient(1200px 400px at 10% 10%, rgba(122,162,255,.25), transparent 60%),
@@ -180,7 +280,7 @@
 
     .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2rem; }
     .stat {
-      background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.15), transparent 60%), var(--surface);
+      background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.16), transparent 60%), var(--surface);
       border-radius: 14px;
       padding: 1rem;
       border: 1px solid rgba(255,255,255,.06);
@@ -191,6 +291,11 @@
       transform: translateY(-3px);
       box-shadow: 0 18px 36px rgba(0,0,0,.6);
       border-color: rgba(122,162,255,.45);
+    }
+    body[data-theme="light"] .stat {
+      background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.12), transparent 60%), #ffffff;
+      border-color: rgba(148,163,184,.6);
+      box-shadow: 0 16px 40px rgba(148,163,184,.55);
     }
     .stat .num { font-weight: 800; font-size: clamp(1.4rem, 3.5vw, 1.9rem); }
     .stat .label { color: var(--muted); font-size: .95rem; }
@@ -204,6 +309,7 @@
     .grid { display: grid; gap: 1rem; }
     .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
     .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
     .card {
       background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.12), transparent 65%), var(--surface);
       border: 1px solid rgba(255,255,255,.06);
@@ -213,30 +319,39 @@
       transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, background .15s ease;
     }
     .card:hover {
-      transform: translateY(-3px);
+      transform: translateY(-3px) translateZ(0);
       box-shadow: 0 16px 32px rgba(0,0,0,.55);
       border-color: rgba(122,162,255,.45);
       background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.18), transparent 65%), var(--surface);
     }
+    body[data-theme="light"] .card {
+      background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.1), transparent 65%), #ffffff;
+      border-color: rgba(148,163,184,.7);
+      box-shadow: 0 16px 40px rgba(148,163,184,.55);
+    }
     .card h3 { margin: .2rem 0 .2rem; font-size: 1.05rem; }
     .card p { margin: .2rem 0 0; color: var(--muted); }
+
     @media (max-width: 1000px) { .grid.cols-3 { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 700px) { .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; } }
 
-    .timeline { display: grid; gap: .8rem; }
+    .timeline { display: grid; gap: .9rem; }
     .step { display: grid; grid-template-columns: auto 1fr; gap: .8rem; align-items: start; }
     .bullet {
       inline-size: 14px; block-size: 14px;
       border-radius: 999px;
       background: var(--brand);
       margin-top: .35rem;
-      box-shadow: 0 0 0 4px rgba(122,162,255,.15);
+      box-shadow: 0 0 0 4px rgba(122,162,255,.18);
     }
 
     table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 12px; }
     th, td { padding: .8rem .9rem; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; }
     thead th { background: rgba(122,162,255,.14); font-weight: 700; }
     tbody tr:hover { background: rgba(255,255,255,.03); }
+    body[data-theme="light"] thead th {
+      background: rgba(191,219,254,.9);
+    }
     .tag {
       display: inline-block;
       padding: .15rem .5rem;
@@ -245,8 +360,13 @@
       border: 1px solid rgba(255,255,255,.1);
       font-size: .85rem;
     }
+    body[data-theme="light"] .tag {
+      background: rgba(219,234,254,.9);
+      border-color: rgba(148,163,184,.6);
+    }
 
     .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+
     .shot {
       aspect-ratio: 4/3;
       border-radius: 10px;
@@ -282,6 +402,10 @@
       background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
       font-size: .8rem;
     }
+    body[data-theme="light"] .shot {
+      background: #0f172a;
+      border-color: rgba(148,163,184,.8);
+    }
 
     @media (max-width: 850px) { .gallery { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 520px) { .gallery { grid-template-columns: 1fr; } }
@@ -301,6 +425,11 @@
       border-color: rgba(122,162,255,.5);
       background: radial-gradient(circle at 0% 0%, rgba(122,162,255,.22), transparent 60%), var(--surface);
     }
+    body[data-theme="light"] .member {
+      background: radial-gradient(circle at 0% 0%, rgba(37,99,235,.12), transparent 60%), #ffffff;
+      border-color: rgba(148,163,184,.8);
+      box-shadow: 0 18px 40px rgba(148,163,184,.6);
+    }
     .avatar {
       inline-size: 74px; block-size: 74px;
       border-radius: 999px;
@@ -318,6 +447,9 @@
     @media (max-width: 520px) { .team { grid-template-columns: 1fr; } }
 
     footer { padding: 2.2rem 0; border-top: 1px solid rgba(255,255,255,.06); color: var(--muted); }
+    body[data-theme="light"] footer {
+      border-top-color: rgba(148,163,184,.5);
+    }
     .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1rem; }
     .footer-grid a { color: var(--text); opacity: .85; }
     .footer-grid a:hover { opacity: 1; text-decoration: underline; }
@@ -345,293 +477,401 @@
       opacity: 1;
       pointer-events: auto;
     }
-    .lightbox-inner {
-      position: relative;
+    .lightbox img {
       max-width: 92vw;
       max-height: 92vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: grab;
-    }
-    .lightbox img {
-      max-width: 100%;
-      max-height: 100%;
       border-radius: 14px;
       box-shadow: 0 20px 60px rgba(0,0,0,.85);
-      transform-origin: center center;
-      transition: transform .05s linear;
     }
-    .lightbox-close {
-      position: absolute;
-      top: 8px;
-      right: 10px;
-      width: 32px;
-      height: 32px;
+
+    .slider-scroll {
+      display: flex;
+      gap: .75rem;
+      overflow-x: auto;
+      padding-bottom: .3rem;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+    }
+    .slider-scroll > * {
+      flex: 0 0 auto;
+      min-width: min(320px, 85vw);
+      scroll-snap-align: center;
+    }
+    .slider-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+    .slider-scroll::-webkit-scrollbar-track {
+      background: rgba(15,23,42,.85);
+    }
+    .slider-scroll::-webkit-scrollbar-thumb {
+      background: rgba(148,163,184,.85);
       border-radius: 999px;
-      border: none;
-      background: rgba(0,0,0,.7);
-      color: #fff;
+    }
+    body[data-theme="light"] .slider-scroll::-webkit-scrollbar-track {
+      background: rgba(209,213,219,.9);
+    }
+    body[data-theme="light"] .slider-scroll::-webkit-scrollbar-thumb {
+      background: rgba(107,114,128,.9);
+    }
+
+    .slider-nav {
+      display: flex;
+      justify-content: flex-end;
+      gap: .4rem;
+      margin-bottom: .4rem;
+    }
+    .slider-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(15,23,42,.92);
+      color: #e5edff;
       display: grid;
       place-items: center;
       cursor: pointer;
-      font-size: 20px;
+      font-size: .9rem;
+      transition: transform .15s ease, background .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .slider-btn:hover {
+      transform: translateY(-1px);
+      background: rgba(30,64,175,.95);
+      border-color: rgba(191,219,254,.9);
+      box-shadow: 0 10px 26px rgba(15,23,42,.8);
+    }
+    body[data-theme="light"] .slider-btn {
+      background: #ffffff;
+      border-color: rgba(148,163,184,.8);
+      color: #111827;
+      box-shadow: 0 10px 24px rgba(148,163,184,.55);
+    }
+    body[data-theme="light"] .slider-btn:hover {
+      background: #dbeafe;
+    }
+
+    .reveal-section {
+      opacity: 0;
+      transform: translateY(40px) rotateX(3deg);
+      transform-origin: top;
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal-section.visible {
+      opacity: 1;
+      transform: translateY(0) rotateX(0deg);
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
+
   <header role="banner">
     <div class="container nav" aria-label="Top navigation">
       <div class="brand">
         <div class="logo" aria-hidden="true">XR</div>
-        <div>STA 160 — Chest X-ray</div>
+        <div>
+          STA 160 — Chest X-ray
+          <span class="small">Team 11</span>
+        </div>
       </div>
 
-      <label class="hamburger" for="nav-toggle" aria-label="Open navigation" aria-controls="nav-links">☰</label>
-      <input type="checkbox" id="nav-toggle" class="sr-only" aria-hidden="true">
+      <div class="nav-main">
+        <label class="hamburger" for="nav-toggle" aria-label="Open navigation" aria-controls="nav-links">☰</label>
+        <input type="checkbox" id="nav-toggle" class="sr-only" aria-hidden="true">
 
-      <nav id="nav-links" class="nav-links" role="navigation">
-        <a class="link" href="#datasets">Datasets</a>
-        <a class="link" href="#method">Method</a>
-        <a class="link" href="#results">Results</a>
-        <a class="link" href="#gallery">Gallery</a>
-        <a class="link" href="#team">Team</a>
-      </nav>
+        <nav id="nav-links" class="nav-links" role="navigation">
+          <a class="link" href="#datasets">Datasets</a>
+          <a class="link" href="#method">Method</a>
+          <a class="link" href="#results">Results</a>
+          <a class="link" href="#gallery">Gallery</a>
+          <a class="link" href="#team">Team</a>
+        </nav>
+
+        <div class="mode-toggle" id="themeToggle" aria-label="Toggle color mode">☾</div>
+      </div>
     </div>
   </header>
 
-  <section class="hero">
+  <section class="hero reveal-section">
     <div class="container hero-grid">
       <div>
         <div class="kicker">NIH + CheXpert • CNNs • Transfer Learning</div>
         <h1 class="title">Chest X-ray Classification for Multi-Label Pathologies</h1>
-        <p class="subtitle">We benchmark pre-trained CNNs to detect common thoracic findings from frontal chest X-rays. Our pipeline covers curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.</p>
+        <p class="subtitle">
+          We benchmark pre-trained CNNs to detect common thoracic findings from frontal chest X-rays.
+          Our pipeline covers data curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.
+        </p>
+
         <div class="actions">
           <a class="btn primary" href="#results">View Results</a>
           <a class="btn" href="#method">See the Method</a>
         </div>
+
         <div class="stats" aria-label="Project stats">
-          <div class="stat"><div class="num" data-count="112" data-suffix="k+">112k+</div><div class="label">Images (NIH14)</div></div>
-          <div class="stat"><div class="num" data-count="224" data-suffix="k+">224k+</div><div class="label">Images (CheXpert)</div></div>
-          <div class="stat"><div class="num" data-count="14" data-suffix="">14</div><div class="label">NIH labels</div></div>
-          <div class="stat"><div class="num" data-count="5" data-suffix="">5</div><div class="label">CheXpert labels</div></div>
+          <div class="stat"><div class="num" data-count="112000">112k+</div><div class="label">Images (NIH14)</div></div>
+          <div class="stat"><div class="num" data-count="224000">224k+</div><div class="label">Images (CheXpert)</div></div>
+          <div class="stat"><div class="num" data-count="14">14</div><div class="label">NIH labels</div></div>
+          <div class="stat"><div class="num" data-count="5">5</div><div class="label">CheXpert labels</div></div>
         </div>
       </div>
 
-      <aside class="hero-card" aria-label="Preview">
+      <aside class="hero-card reveal-section" aria-label="Preview">
         <div class="preview">
-          <img src="assets/hero_roc.png" alt="Sample ROC curves preview (replace hero_roc.png in assets)" />
-          <small>Replace <strong>assets/hero_roc.png</strong> with your favorite ROC / confusion matrix figure.</small>
+          <img src="assets/hero_roc.png" alt="Sample ROC curves preview" />
+          <small>Replace <strong>assets/hero_roc.png</strong> with your customized ROC image.</small>
         </div>
-        <p class="note" style="margin-top:.8rem">Tip: you can change the hero image by swapping <code>assets/hero_roc.png</code>.</p>
+        <p class="note" style="margin-top:.8rem">Tip: swap out the hero preview anytime.</p>
       </aside>
     </div>
   </section>
 
-  <section id="datasets">
+  <section id="datasets" class="reveal-section">
     <div class="container">
       <div class="section-head">
         <h2>Datasets</h2>
         <span class="tag">Data curation</span>
       </div>
+
       <div class="grid cols-3">
         <article class="card">
           <h3>NIH ChestX-ray14</h3>
           <p>112,120 frontal CXRs annotated for 14 pathologies. Multi-label; long-tailed distributions.</p>
           <div class="spacer"></div>
-          <div class="row note"><span class="tag">Train/Valid/Test split</span><span class="tag">224×224</span><span class="tag">Augment: flip/crop</span></div>
+          <div class="row note">
+            <span class="tag">Patient split</span>
+            <span class="tag">224×224</span>
+            <span class="tag">Augment: flip/crop</span>
+          </div>
         </article>
+
         <article class="card">
           <h3>CheXpert</h3>
-          <p>224,316 images with 5 competition labels (No Finding, Edema, Cardiomegaly, Consolidation, Pleural Effusion). Uncertainty handled with U-ignore/U-zero.</p>
+          <p>224,316 images with 5 competition labels. U-zero / U-ignore uncertainty handling.</p>
           <div class="spacer"></div>
-          <div class="row note"><span class="tag">U-label policy</span><span class="tag">CLAHE</span><span class="tag">Center-crop</span></div>
+          <div class="row note">
+            <span class="tag">U-policy</span>
+            <span class="tag">CLAHE</span>
+            <span class="tag">Center crop</span>
+          </div>
         </article>
+
         <article class="card">
           <h3>Test Set & Ethics</h3>
-          <p>Held-out test set balanced per label prevalence. PHI-free, academic use only; models audited for shortcut learning.</p>
+          <p>Held-out test set balanced per label prevalence. PHI-free; audited for shortcut learning.</p>
           <div class="spacer"></div>
-          <div class="row note"><span class="tag">Stratified</span><span class="tag">Label smoothing</span><span class="tag">AUC-PR focus</span></div>
+          <div class="row note">
+            <span class="tag">Stratified</span>
+            <span class="tag">Label smoothing</span>
+            <span class="tag">AUC-PR focus</span>
+          </div>
         </article>
       </div>
     </div>
   </section>
 
-  <section id="method">
+  <section id="method" class="reveal-section">
     <div class="container">
       <div class="section-head">
         <h2>Method</h2>
-        <span class="tag">Reproducible pipeline</span>
+        <span class="tag">Reproducible Pipeline</span>
       </div>
-      <div class="card">
-        <div class="timeline">
-          <div class="step">
-            <div class="bullet" aria-hidden="true"></div>
-            <div>
-              <strong>Preprocessing</strong>
-              <p class="muted">DICOM/PNG read → resize 224×224 → grayscale normalization → optional CLAHE → train/valid/test split (patient-wise).</p>
-            </div>
+
+      <div class="card" id="methodAccordion">
+
+        <div class="accordion-item">
+          <button class="accordion-title">Preprocessing</button>
+          <div class="accordion-content">
+            <p class="muted">
+              DICOM/PNG → Normalize → Resize 224×224 → CLAHE optional →
+              Patient-wise split.
+            </p>
           </div>
-          <div class="step">
-            <div class="bullet" aria-hidden="true"></div>
-            <div>
-              <strong>Models</strong>
-              <p class="muted">Transfer learning with ResNet-50, DenseNet-121, EfficientNet-B0. Final linear head with sigmoid for multi-label BCE.</p>
-            </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-title">Models</button>
+          <div class="accordion-content">
+            <p class="muted">
+              DenseNet-121, ResNet-50, EfficientNet-B0 with sigmoid multi-label heads.
+            </p>
           </div>
-          <div class="step">
-            <div class="bullet" aria-hidden="true"></div>
-            <div>
-              <strong>Training</strong>
-              <p class="muted">BCEWithLogitsLoss + class weights; AdamW; cosine LR; early stopping on macro AUC-ROC.</p>
-            </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-title">Training</button>
+          <div class="accordion-content">
+            <p class="muted">
+              BCEWithLogits + class weights; AdamW; cosine LR; early stopping on macro AUC.
+            </p>
           </div>
-          <div class="step">
-            <div class="bullet" aria-hidden="true"></div>
-            <div>
-              <strong>Evaluation</strong>
-              <p class="muted">Per-label AUC-ROC/PR, threshold tuning via Youden’s J; report macro/micro metrics; calibration with temperature scaling.</p>
-            </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-title">Evaluation</button>
+          <div class="accordion-content">
+            <p class="muted">
+              Per-label AUC-ROC & AUC-PR; threshold tuning; calibration with temperature scaling.
+            </p>
           </div>
-          <div class="step">
-            <div class="bullet" aria-hidden="true"></div>
-            <div>
-              <strong>Error Analysis</strong>
-              <p class="muted">Confusions by view, device, and sex; Grad-CAM sanity checks; slice-wise breakdown for long-tail classes.</p>
-            </div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="accordion-title">Error Analysis</button>
+          <div class="accordion-content">
+            <p class="muted">
+              Confusions by projection / device / sex; Grad-CAM sanity checks.
+            </p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="results">
+  <section id="results" class="reveal-section">
     <div class="container">
       <div class="section-head">
         <h2>Results</h2>
         <span class="tag">Metrics</span>
       </div>
-      <div class="grid cols-2">
-        <article class="card">
-          <h3 style="margin-bottom:.6rem">Summary (Validation)</h3>
-          <table aria-label="validation summary">
-            <thead>
-              <tr><th>Model</th><th>Macro AUC-ROC</th><th>Macro AUC-PR</th><th>Params</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>DenseNet-121</td><td>0.86</td><td>0.41</td><td>8.0M</td></tr>
-              <tr><td>ResNet-50</td><td>0.84</td><td>0.38</td><td>25.6M</td></tr>
-              <tr><td>EfficientNet-B0</td><td>0.83</td><td>0.36</td><td>5.3M</td></tr>
-            </tbody>
-          </table>
-          <p class="note">Replace with your numbers. Keep both ROC and PR due to class imbalance.</p>
-        </article>
-        <article class="card">
-          <h3 style="margin-bottom:.6rem">Per-Label AUC-ROC (Sample)</h3>
-          <table aria-label="per label auc">
-            <thead>
-              <tr><th>Label</th><th>AUC</th><th>Support</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>Cardiomegaly</td><td>0.92</td><td>8,753</td></tr>
-              <tr><td>Pleural Effusion</td><td>0.90</td><td>13,842</td></tr>
-              <tr><td>Edema</td><td>0.88</td><td>6,410</td></tr>
-              <tr><td>Consolidation</td><td>0.81</td><td>5,102</td></tr>
-              <tr><td>No Finding</td><td>0.78</td><td>—</td></tr>
-            </tbody>
-          </table>
-          <p class="note">Populate from your experiment logs or CSV exports.</p>
-        </article>
+
+      <div class="results-tabs">
+        <div class="tabs-row">
+          <button class="tab-btn active" data-tab="dense">DenseNet-121</button>
+          <button class="tab-btn" data-tab="resnet">ResNet-50</button>
+          <button class="tab-btn" data-tab="eff">EfficientNet-B0</button>
+        </div>
+
+        <div class="tab-content active" id="tab-dense">
+          <article class="card">
+            <h3>Validation Summary</h3>
+            <table>
+              <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+              <tbody>
+                <tr><td>AUC-ROC</td><td>0.86</td></tr>
+                <tr><td>AUC-PR</td><td>0.41</td></tr>
+                <tr><td>Params</td><td>8.0M</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+
+        <div class="tab-content" id="tab-resnet">
+          <article class="card">
+            <h3>Validation Summary</h3>
+            <table>
+              <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+              <tbody>
+                <tr><td>AUC-ROC</td><td>0.84</td></tr>
+                <tr><td>AUC-PR</td><td>0.38</td></tr>
+                <tr><td>Params</td><td>25.6M</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
+
+        <div class="tab-content" id="tab-eff">
+          <article class="card">
+            <h3>Validation Summary</h3>
+            <table>
+              <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+              <tbody>
+                <tr><td>AUC-ROC</td><td>0.83</td></tr>
+                <tr><td>AUC-PR</td><td>0.36</td></tr>
+                <tr><td>Params</td><td>5.3M</td></tr>
+              </tbody>
+            </table>
+          </article>
+        </div>
       </div>
 
       <div class="spacer"></div>
+      
+      <div class="slider-nav">
+        <div class="slider-btn" id="slidePrev">←</div>
+        <div class="slider-btn" id="slideNext">→</div>
+      </div>
 
-      <div class="card">
-        <h3 style="margin:0 0 .6rem">Confusion Matrix / ROC Gallery</h3>
-        <div class="gallery">
-          <div class="shot" data-lightbox>
-            <img src="assets/roc_dense.png" alt="ROC curves for DenseNet-121" />
-            <span>roc_dense.png</span>
-          </div>
-          <div class="shot" data-lightbox>
-            <img src="assets/roc_resnet.png" alt="ROC curves for ResNet-50" />
-            <span>roc_resnet.png</span>
-          </div>
-          <div class="shot" data-lightbox>
-            <img src="assets/cm_cardio.png" alt="Confusion matrix for Cardiomegaly" />
-            <span>cm_cardio.png</span>
-          </div>
+      <div class="slider-scroll" id="resultSlider">
+        <div class="card shot" data-lightbox>
+          <img src="assets/roc_dense.png" alt="ROC DenseNet" />
         </div>
-        <p class="note" style="margin-top:.6rem">Put your PNGs in the <code>assets/</code> folder with these filenames, or change the <code>src</code> paths above.</p>
+        <div class="card shot" data-lightbox>
+          <img src="assets/roc_resnet.png" alt="ROC ResNet" />
+        </div>
+        <div class="card shot" data-lightbox>
+          <img src="assets/cm_cardio.png" alt="Confusion Matrix Cardiomegaly" />
+        </div>
       </div>
     </div>
   </section>
-
-  <section id="gallery">
+  <!-- ========================= -->
+  <!-- Gallery (Grad-CAM) -->
+  <!-- ========================= -->
+  <section id="gallery" class="reveal-section">
     <div class="container">
       <div class="section-head">
         <h2>Qualitative Examples</h2>
         <span class="tag">Grad-CAM / Predictions</span>
       </div>
+
       <div class="grid cols-3">
-        <article class="card">
-          <h3>True Positive</h3>
-          <div class="shot" data-lightbox>
-            <img src="assets/gradcam_tp.png" alt="Grad-CAM true positive example" />
-            <span>gradcam_tp.png</span>
-          </div>
-          <p class="note">E.g., Cardiomegaly correctly detected; attention over cardiac silhouette.</p>
+        <article class="card shot" data-lightbox>
+          <img src="assets/gradcam_tp.png" alt="True Positive GradCAM" />
+          <span>True Positive</span>
         </article>
-        <article class="card">
-          <h3>False Positive</h3>
-          <div class="shot" data-lightbox>
-            <img src="assets/gradcam_fp.png" alt="Grad-CAM false positive example" />
-            <span>gradcam_fp.png</span>
-          </div>
-          <p class="note">Spurious focus on devices; mitigated by augmentations.</p>
+
+        <article class="card shot" data-lightbox>
+          <img src="assets/gradcam_fp.png" alt="False Positive GradCAM" />
+          <span>False Positive</span>
         </article>
-        <article class="card">
-          <h3>False Negative</h3>
-          <div class="shot" data-lightbox>
-            <img src="assets/gradcam_fn.png" alt="Grad-CAM false negative example" />
-            <span>gradcam_fn.png</span>
-          </div>
-          <p class="note">Missed small effusion; improved with threshold tuning.</p>
+
+        <article class="card shot" data-lightbox>
+          <img src="assets/gradcam_fn.png" alt="False Negative GradCAM" />
+          <span>False Negative</span>
         </article>
       </div>
     </div>
   </section>
 
-  <section id="team">
+  <!-- ========================= -->
+  <!-- Team -->
+  <!-- ========================= -->
+  <section id="team" class="reveal-section">
     <div class="container">
       <div class="section-head">
         <h2>Team</h2>
-        <span class="tag">STA 160 • UC Davis</span>
+        <span class="tag">STA 160 • UC Davis • Team 11</span>
       </div>
+
       <div class="team">
         <div class="member">
-          <div class="avatar" aria-hidden="true">ML</div>
+          <div class="avatar">ML</div>
           <h3>Muhammad Laiq</h3>
-          <div class="role">Lead • Modeling & Docs</div>
+          <div class="role">Lead • Modeling</div>
         </div>
+
         <div class="member">
-          <div class="avatar" aria-hidden="true">KS</div>
+          <div class="avatar">KS</div>
           <h3>Kayla Sham</h3>
           <div class="role">Data & EDA</div>
         </div>
+
         <div class="member">
-          <div class="avatar" aria-hidden="true">TY</div>
+          <div class="avatar">TY</div>
           <h3>Tina Yu</h3>
-          <div class="role">Training Ops</div>
+          <div class="role">Training</div>
         </div>
+
         <div class="member">
-          <div class="avatar" aria-hidden="true">LL</div>
+          <div class="avatar">LL</div>
           <h3>Lauren Le</h3>
-          <div class="role">Training Ops</div>
+          <div class="role">Training</div>
         </div>
+
         <div class="member">
-          <div class="avatar" aria-hidden="true">FS</div>
+          <div class="avatar">FS</div>
           <h3>Fang Shang</h3>
           <div class="role">Training Ops</div>
         </div>
@@ -643,145 +883,183 @@
     <div class="container footer-grid">
       <div>
         <div class="brand" style="margin-bottom:.5rem">
-          <div class="logo" aria-hidden="true">XR</div>
+          <div class="logo">XR</div>
           <div>Chest X-ray Project</div>
         </div>
-        <p class="note">Course: STA 160 • Quarter: Fall 2025 • UC Davis</p>
+        <p class="note">STA 160 • Fall 2025 • Team 11 • UC Davis</p>
       </div>
+
       <div>
         <strong>Links</strong>
         <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
           <li><a href="#datasets">Datasets</a></li>
           <li><a href="#method">Method</a></li>
           <li><a href="#results">Results</a></li>
+          <li><a href="#gallery">Gallery</a></li>
         </ul>
       </div>
+
       <div>
         <strong>Contact</strong>
         <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
-          <li><a href="mailto:you@example.edu">you@example.edu</a></li>
+          <li><a href="mailto:team11@ucdavis.edu">team11@ucdavis.edu</a></li>
           <li><a href="#">GitHub repo</a></li>
-          <li><a href="#">Paper / Report</a></li>
+          <li><a href="#">Report PDF</a></li>
         </ul>
       </div>
     </div>
   </footer>
 
+
   <div class="lightbox" id="lightbox">
-    <div class="lightbox-inner">
-      <button class="lightbox-close" aria-label="Close viewer">×</button>
-      <img id="lightbox-img" src="" alt="" />
-    </div>
+    <img src="" alt="" />
   </div>
 
+
+  <canvas id="bgParticles"></canvas>
+
   <script>
-    document.querySelectorAll('.stat .num').forEach(function (el) {
-      var target = parseInt(el.dataset.count, 10);
-      if (isNaN(target)) return;
-      var suffix = el.dataset.suffix || '';
-      var startTime = null;
-      var duration = 900 + target * 3;
-      function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        var progress = Math.min((timestamp - startTime) / duration, 1);
-        var value = Math.floor(target * progress);
-        el.textContent = value.toLocaleString() + suffix;
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        } else {
-          el.textContent = target.toLocaleString() + suffix;
-        }
-      }
-      requestAnimationFrame(step);
+
+    const themeToggle = document.getElementById("themeToggle");
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      themeToggle.textContent = document.body.classList.contains("light") ? "☀" : "☾";
     });
 
-    var lightbox = document.getElementById('lightbox');
-    var lightboxImg = document.getElementById('lightbox-img');
-    var lightboxInner = document.querySelector('.lightbox-inner');
-    var scale = 1;
-    var translateX = 0;
-    var translateY = 0;
-    var isDragging = false;
-    var startX = 0;
-    var startY = 0;
 
-    function updateTransform() {
-      if (!lightboxImg) return;
-      lightboxImg.style.transform = 'translate(' + translateX + 'px,' + translateY + 'px) scale(' + scale + ')';
-    }
-    function resetTransform() {
-      scale = 1;
-      translateX = 0;
-      translateY = 0;
-      updateTransform();
-    }
-    function openLightbox(src, alt) {
-      if (!src) return;
-      lightboxImg.src = src;
-      lightboxImg.alt = alt || '';
-      resetTransform();
-      lightbox.classList.add('open');
-    }
-    function closeLightbox() {
-      lightbox.classList.remove('open');
-    }
+    const lightbox = document.getElementById("lightbox");
+    const lbImg = lightbox.querySelector("img");
 
-    document.querySelectorAll('[data-lightbox]').forEach(function (tile) {
-      tile.addEventListener('click', function () {
-        var img = tile.querySelector('img');
-        if (!img) return;
-        openLightbox(img.src, img.alt);
+    document.querySelectorAll("[data-lightbox]").forEach(item => {
+      item.addEventListener("click", () => {
+        lbImg.src = item.querySelector("img").src;
+        lightbox.classList.add("open");
+      });
+    });
+    lightbox.addEventListener("click", () => {
+      lightbox.classList.remove("open");
+      lbImg.src = "";
+    });
+
+    const revealItems = document.querySelectorAll(".reveal-section");
+    const callback = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("visible");
+      });
+    };
+    const observer = new IntersectionObserver(callback, { threshold: 0.15 });
+    revealItems.forEach(item => observer.observe(item));
+
+    const counters = document.querySelectorAll("[data-count]");
+    const startCount = entry => {
+      const el = entry.target;
+      const end = parseInt(el.dataset.count);
+      let cur = 0;
+      const step = end / 120;
+      const timer = setInterval(() => {
+        cur += step;
+        if (cur >= end) { cur = end; clearInterval(timer); }
+        el.textContent = Math.floor(cur).toLocaleString();
+      }, 16);
+    };
+    const counterObs = new IntersectionObserver((ents) => {
+      ents.forEach(e => { if (e.isIntersecting) startCount(e); });
+    }, { threshold: 0.4 });
+    counters.forEach(c => counterObs.observe(c));
+
+    document.querySelectorAll(".accordion-title").forEach(btn => {
+      btn.addEventListener("click", () => {
+        btn.classList.toggle("open");
+        btn.nextElementSibling.classList.toggle("open");
       });
     });
 
-    if (lightboxInner) {
-      lightboxInner.addEventListener('click', function (e) {
-        e.stopPropagation();
-      });
-    }
 
-    lightbox.addEventListener('click', function (e) {
-      if (e.target === lightbox) {
-        closeLightbox();
-      }
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    const tabContents = document.querySelectorAll(".tab-content");
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach(b => b.classList.remove("active"));
+        tabContents.forEach(c => c.classList.remove("active"));
+
+        btn.classList.add("active");
+        document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+      });
     });
 
-    var closeBtn = document.querySelector('.lightbox-close');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        closeLightbox();
+    const slider = document.getElementById("resultSlider");
+    document.getElementById("slidePrev").addEventListener("click", () => {
+      slider.scrollBy({ left: -320, behavior: "smooth" });
+    });
+    document.getElementById("slideNext").addEventListener("click", () => {
+      slider.scrollBy({ left: 320, behavior: "smooth" });
+    });
+
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll(".nav-links .link");
+
+    const highlighter = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach(l => l.classList.remove("active"));
+        const id = entry.target.id;
+        const active = document.querySelector(`.nav-links .link[href="#${id}"]`);
+        if (active) active.classList.add("active");
+      });
+    }, { threshold: 0.4 });
+
+    sections.forEach(sec => highlighter.observe(sec));
+
+    const tiltCards = document.querySelectorAll(".card, .shot");
+    window.addEventListener("scroll", () => {
+      tiltCards.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        const mid = window.innerHeight / 2;
+        const rotate = (rect.top - mid) / 80;
+        el.style.transform = `translateY(-3px) rotateX(${rotate}deg)`;
+      });
+    });
+
+    const canvas = document.getElementById("bgParticles");
+    const ctx = canvas.getContext("2d");
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    const particles = [];
+    for (let i = 0; i < 70; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        s: Math.random() * 2 + 0.5,
+        dx: (Math.random() - 0.5) * 0.4,
+        dy: (Math.random() - 0.5) * 0.4
       });
     }
 
-    if (lightboxImg) {
-      lightboxImg.addEventListener('mousedown', function (e) {
-        isDragging = true;
-        startX = e.clientX - translateX;
-        startY = e.clientY - translateY;
-        document.body.style.userSelect = 'none';
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+
+        ctx.fillStyle = "rgba(122,162,255,0.45)";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
+        ctx.fill();
       });
-      window.addEventListener('mousemove', function (e) {
-        if (!isDragging) return;
-        translateX = e.clientX - startX;
-        translateY = e.clientY - startY;
-        updateTransform();
-      });
-      window.addEventListener('mouseup', function () {
-        if (!isDragging) return;
-        isDragging = false;
-        document.body.style.userSelect = '';
-      });
-      lightboxImg.addEventListener('wheel', function (e) {
-        e.preventDefault();
-        var delta = e.deltaY < 0 ? 1.15 : 0.87;
-        var newScale = scale * delta;
-        if (newScale < 1) newScale = 1;
-        if (newScale > 4) newScale = 4;
-        scale = newScale;
-        updateTransform();
-      }, { passive: false });
+      requestAnimationFrame(animateParticles);
     }
+    animateParticles();
   </script>
+
 </body>
 </html>
