@@ -1,1576 +1,784 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>STA 160 · Chest X-ray Project</title>
-  <meta name="description" content="Chest X-ray multi-label pathology classification using NIH ChestX-ray14 and CheXpert datasets." />
-  <style>
-    :root {
-      --bg: #050814;
-      --bg-alt: #070b19;
-      --surface: rgba(13, 18, 32, 0.92);
-      --surface-soft: rgba(16, 22, 38, 0.9);
-      --text: #f4f7ff;
-      --muted: #9aa5c5;
-      --brand: #77a5ff;
-      --brand-soft: #95ffd9;
-      --brand-strong: #4b8bff;
-      --danger: #ff6b81;
-      --ok: #4ade80;
-      --card-radius: 20px;
-      --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.55);
-      --shadow-subtle: 0 10px 35px rgba(0, 0, 0, 0.45);
-      --nav-height: 70px;
-      --blur: 22px;
-      --maxw: 1240px;
-    }
-    * , *::before, *::after {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      scroll-behavior: smooth;
-    }
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(1200px 600px at 10% 0%, rgba(90, 182, 255, 0.2), transparent 60%),
-        radial-gradient(900px 500px at 90% 100%, rgba(149, 255, 217, 0.16), transparent 65%),
-        linear-gradient(180deg, #010308 0%, #050814 45%, #02020a 100%);
-      overflow-x: hidden;
-    }
-    img {
-      max-width: 100%;
-      display: block;
-    }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    .container {
-      width: min(100% - 3rem, var(--maxw));
-      margin-inline: auto;
-      position: relative;
-      z-index: 2;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>STA160 · Chest X-ray · Ultra Flagship</title>
+<style>
+:root{
+--bg:#02030a;
+--text:#eef3ff;
+--muted:#9aa3c7;
+--brand:#5bbdff;
+--brand2:#7fffd4;
+--glass:rgba(10,18,38,0.72);
+--card:rgba(14,20,40,0.80);
+--radius:24px;
+--shadow:0 25px 80px rgba(0,0,0,0.85);
+--blur:28px;
+--max:1280px;
+--glow:0 0 25px rgba(120,220,255,0.65);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+font-family:-apple-system,BlinkMacSystemFont,"SF Pro",system-ui,sans-serif;
+background:#02030a;
+color:var(--text);
+overflow-x:hidden;
+}
+img{display:block;max-width:100%;}
+a{text-decoration:none;color:inherit;}
+.container{width:min(100% - 3rem,var(--max));margin-inline:auto;position:relative;z-index:5;}
 
-    .nav-shell {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-    }
-    header {
-      height: var(--nav-height);
-      display: flex;
-      align-items: center;
-      backdrop-filter: blur(var(--blur)) saturate(140%);
-      background: linear-gradient(90deg, rgba(15, 22, 40, 0.92), rgba(6, 9, 25, 0.96));
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
-    }
-    .nav-inner {
-      width: min(100% - 3rem, var(--maxw));
-      margin-inline: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.25rem;
-    }
-    .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-    }
-    .nav-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: conic-gradient(from 220deg, #7af2ff, #77a5ff, #95ffd9, #7af2ff);
-      display: grid;
-      place-items: center;
-      color: #020617;
-      font-weight: 800;
-      font-size: 18px;
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.4), 0 12px 35px rgba(0,0,0,0.7);
-    }
-    .nav-title-main {
-      font-weight: 700;
-      letter-spacing: .02em;
-    }
-    .nav-title-sub {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.93rem;
-    }
-    .nav-link {
-      position: relative;
-      padding: 0.45rem 0.9rem;
-      border-radius: 999px;
-      color: #e5ecff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 0.23rem;
-      transition: background .18s ease, transform .18s ease, box-shadow .18s ease, color .18s ease;
-    }
-    .nav-link span.icon {
-      font-size: 0.8rem;
-      opacity: 0.78;
-    }
-    .nav-link:hover {
-      background: radial-gradient(circle at 0 0, rgba(124, 189, 255, 0.35), transparent 55%), rgba(15, 23, 42, 0.96);
-      box-shadow: 0 8px 26px rgba(4, 10, 30, 0.85);
-      transform: translateY(-1px);
-      color: #ffffff;
-    }
-    .nav-link.primary-pill {
-      background: linear-gradient(120deg, #74b0ff, #95ffd9);
-      color: #020617;
-      font-weight: 600;
-      box-shadow: 0 14px 40px rgba(6, 40, 120, 0.95);
-    }
-    .nav-link.primary-pill:hover {
-      box-shadow: 0 18px 48px rgba(5, 32, 104, 1);
-      transform: translateY(-1.5px);
-    }
+canvas#webgl-bg{
+position:fixed;inset:0;
+z-index:-10;
+pointer-events:none;
+}
 
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .nav-toggle {
-      display: none;
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: radial-gradient(circle at 30% 0, rgba(148, 255, 225, 0.4), transparent 55%), rgba(6, 10, 28, 0.95);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-    }
-    .nav-toggle-span {
-      width: 16px;
-      height: 1.7px;
-      border-radius: 999px;
-      background: #e5ecff;
-      position: relative;
-    }
-    .nav-toggle-span::before,
-    .nav-toggle-span::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      width: 16px;
-      height: 1.7px;
-      border-radius: 999px;
-      background: inherit;
-    }
-    .nav-toggle-span::before { top: -5px; }
-    .nav-toggle-span::after { top: 5px; }
+nav{
+position:fixed;top:0;left:0;right:0;
+height:80px;
+display:flex;align-items:center;
+background:rgba(5,10,25,0.68);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,0.08);
+z-index:50;
+}
+.nav-inner{
+width:min(100% - 3rem,var(--max));
+margin:auto;
+display:flex;align-items:center;
+justify-content:space-between;
+}
+.logo{
+display:flex;align-items:center;gap:.65rem;
+font-weight:700;font-size:1.1rem;
+}
+.logo-icon{
+width:46px;height:46px;border-radius:16px;
+background:conic-gradient(from 200deg,#7af2ff,#4daaff,#7fffd4,#7af2ff);
+display:grid;place-items:center;
+font-size:1rem;font-weight:800;
+color:#020617;
+box-shadow:0 0 0 2px rgba(255,255,255,0.4),var(--shadow);
+}
+.nav-links{
+display:flex;align-items:center;gap:1rem;font-size:.95rem;
+}
+.nav-links a{
+padding:.5rem 1rem;border-radius:999px;
+transition:.2s;
+}
+.nav-links a:hover{
+background:rgba(120,220,255,0.15);
+box-shadow:0 8px 25px rgba(80,150,255,0.35);
+transform:translateY(-2px);
+}
 
-    .mega-wrapper {
-      position: relative;
-    }
-    .nav-link.has-mega::after {
-      content: "▾";
-      font-size: 0.65rem;
-      opacity: 0.7;
-      transform: translateY(-1px);
-    }
-    .mega-menu {
-      position: absolute;
-      top: calc(100% + 12px);
-      left: 50%;
-      transform: translateX(-50%);
-      width: 680px;
-      max-width: calc(100vw - 2rem);
-      padding: 1.1rem 1.2rem;
-      border-radius: 22px;
-      background: radial-gradient(circle at 0 0, rgba(116, 176, 255, 0.4), transparent 55%), rgba(7, 12, 29, 0.98);
-      border: 1px solid rgba(148, 163, 255, 0.4);
-      box-shadow: 0 22px 60px rgba(0,0,0,0.85);
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 1rem;
-      opacity: 0;
-      pointer-events: none;
-      transform-origin: top center;
-      transition: opacity .18s ease, transform .18s ease;
-    }
-    .mega-wrapper:hover .mega-menu {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translate(-50%, 0);
-    }
-    .mega-col h4 {
-      margin: 0 0 .4rem;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: .12em;
-      color: #9fa8ff;
-    }
-    .mega-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      font-size: 0.86rem;
-      color: var(--muted);
-      display: grid;
-      gap: 0.25rem;
-    }
-    .mega-list li a {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.26rem 0;
-      border-radius: 8px;
-    }
-    .mega-list li a span.label {
-      font-weight: 500;
-      color: #e5ecff;
-    }
-    .mega-list li a span.desc {
-      font-size: 0.8rem;
-      opacity: 0.75;
-      margin-left: 0.4rem;
-    }
-    .mega-list li a:hover {
-      background: radial-gradient(circle at 0 0, rgba(148, 255, 217, 0.4), transparent 55%);
-      color: #fff;
-    }
-    .mega-highlight {
-      border-radius: 18px;
-      padding: 0.9rem 1rem;
-      background: radial-gradient(circle at 0 0, rgba(125, 211, 252, 0.45), transparent 65%), rgba(6, 10, 28, 0.92);
-      border: 1px solid rgba(148, 163, 255, 0.4);
-      box-shadow: 0 16px 50px rgba(0,0,0,0.75);
-      display: grid;
-      gap: 0.35rem;
-      font-size: 0.86rem;
-    }
-    .mega-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.16rem 0.7rem;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(148, 163, 255, 0.7);
-      font-size: 0.78rem;
-      width: fit-content;
-    }
-    .mega-pill span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
-    }
-    .mega-highlight strong {
-      font-size: 0.94rem;
-    }
-    .mega-highlight p {
-      margin: 0;
-      color: var(--muted);
-    }
+.hero{
+min-height:100vh;
+display:flex;align-items:center;
+padding-top:120px;
+padding-bottom:4rem;
+position:relative;
+}
+.hero-grid{
+display:grid;
+grid-template-columns:1.1fr .9fr;
+gap:2.5rem;
+align-items:center;
+}
+.hero-title{
+font-size:clamp(2.5rem,5vw,3.6rem);
+font-weight:700;
+line-height:1.08;
+}
+.hero-title span{
+background:linear-gradient(120deg,#e3f3ff,#a4c7ff,#88ffe2);
+-webkit-background-clip:text;
+color:transparent;
+}
+.hero-sub{
+margin-top:1rem;font-size:1.05rem;color:var(--muted);max-width:40rem;
+}
+.hero-buttons{
+display:flex;gap:1rem;margin-top:1.8rem;
+}
+.btn{
+padding:1rem 1.6rem;border-radius:999px;font-weight:600;
+font-size:.95rem;cursor:pointer;border:none;transition:.18s;
+}
+.btn-primary{
+background-image:linear-gradient(120deg,#4f46e5,#5da8ff,#21e6b6);
+background-size:200% 200%;
+animation:btnFlow 6s infinite alternate;
+color:#020617;
+box-shadow:0 18px 45px rgba(70,150,255,0.55);
+}
+.btn-primary:hover{
+filter:brightness(1.1);transform:translateY(-2px);
+}
+.btn-ghost{
+border:1px solid rgba(148,163,255,0.55);
+background:rgba(20,30,55,0.7);
+color:#eaf1ff;
+box-shadow:0 12px 35px rgba(0,0,0,0.8);
+}
+.btn-ghost:hover{
+background:rgba(120,200,255,0.2);
+transform:translateY(-2px);
+}
 
-    .hero {
-      position: relative;
-      min-height: calc(100vh - var(--nav-height));
-      display: flex;
-      align-items: center;
-      padding: 3.8rem 0 4rem;
-      overflow: hidden;
-      isolation: isolate;
-    }
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(1200px 900px at 10% 0, rgba(59, 130, 246, 0.55), transparent 60%),
-        radial-gradient(1200px 1000px at 100% 20%, rgba(56, 189, 248, 0.45), transparent 60%),
-        radial-gradient(1200px 1000px at 0 100%, rgba(96, 165, 250, 0.36), transparent 60%);
-      opacity: 0.35;
-      transform: translate3d(0,0,0);
-      will-change: transform;
-      z-index: 0;
-    }
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 2.4rem;
-      align-items: center;
-    }
-    .hero-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.14rem 0.7rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      background: radial-gradient(circle at 0 0, rgba(125, 211, 252, 0.38), transparent 55%), rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(148, 163, 255, 0.7);
-      color: #e0f2fe;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-      margin-bottom: 0.9rem;
-    }
-    .hero-kicker span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
-    }
-    .hero-title {
-      font-size: clamp(2.4rem, 4vw, 3.3rem);
-      line-height: 1.08;
-      letter-spacing: .01em;
-    }
-    .hero-title span {
-      background: linear-gradient(120deg, #e5f3ff, #b8d5ff, #a5ffe1);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-    .hero-subtitle {
-      margin-top: 0.7rem;
-      font-size: 0.98rem;
-      max-width: 40rem;
-      color: #c7d2ff;
-    }
-    .hero-subtitle span.highlight {
-      color: #e5f3ff;
-      font-weight: 500;
-    }
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.7rem;
-      margin-top: 1.6rem;
-    }
-    .btn-primary {
-      background-image: linear-gradient(120deg, #4f46e5, #60a5fa, #2dd4bf);
-      background-size: 200% 200%;
-      border-radius: 999px;
-      padding: 0.85rem 1.45rem;
-      border: none;
-      color: #020617;
-      font-weight: 600;
-      font-size: 0.96rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      box-shadow: 0 16px 50px rgba(15, 23, 42, 0.9);
-      transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
-      animation: gradientShift 7s ease-in-out infinite;
-    }
-    .btn-primary span.icon {
-      font-size: 0.95rem;
-      margin-left: 0.1rem;
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 22px 60px rgba(15, 23, 42, 1);
-      filter: brightness(1.05);
-    }
-    .btn-ghost {
-      padding: 0.8rem 1.3rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 255, 0.7);
-      background: radial-gradient(circle at 0 0, rgba(96, 165, 250, 0.35), transparent 60%), rgba(15, 23, 42, 0.96);
-      color: #e5ecff;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      cursor: pointer;
-      font-size: 0.93rem;
-      box-shadow: 0 14px 40px rgba(0,0,0,0.9);
-      transition: transform .14s ease, box-shadow .14s ease, background .16s ease;
-    }
-    .btn-ghost span.icon {
-      font-size: 0.9rem;
-    }
-    .btn-ghost:hover {
-      transform: translateY(-2px);
-      background: radial-gradient(circle at 0 0, rgba(59, 130, 246, 0.55), transparent 60%), rgba(15, 23, 42, 0.96);
-      box-shadow: 0 20px 55px rgba(15, 23, 42, 0.95);
-    }
-    .hero-metrics {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 2.1rem;
-    }
-    .metric-chip {
-      flex: 1 1 140px;
-      min-width: 135px;
-      padding: 0.85rem 1rem;
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 255, 0.55);
-      background: linear-gradient(145deg, rgba(15, 23, 42, 0.94), rgba(15, 23, 42, 0.6));
-      box-shadow: var(--shadow-subtle);
-    }
-    .metric-label {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: .16em;
-      color: #a5b4fc;
-      margin-bottom: 0.15rem;
-    }
-    .metric-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-      display: flex;
-      align-items: baseline;
-      gap: 0.15rem;
-    }
-    .metric-value span.suffix {
-      font-size: 0.92rem;
-      opacity: 0.8;
-    }
-    .metric-sub {
-      font-size: 0.81rem;
-      color: var(--muted);
-      margin-top: 0.05rem;
-    }
+.hero-holo{
+height:340px;border-radius:32px;
+background:radial-gradient(circle at 50% 20%,rgba(120,220,255,0.45),transparent 70%),rgba(10,20,45,0.9);
+border:1px solid rgba(140,170,255,0.55);
+box-shadow:var(--shadow);
+backdrop-filter:blur(25px);
+position:relative;overflow:hidden;
+transform-style:preserve-3d;
+}
+.hero-holo img{
+width:100%;height:100%;object-fit:contain;
+opacity:0.92;mix-blend-mode:screen;
+transform:translateZ(35px);
+}
+.holo-scan{
+position:absolute;left:0;right:0;top:-40%;
+height:40%;
+background:linear-gradient(to bottom,rgba(120,255,255,0.5),transparent);
+filter:blur(8px);
+animation:scan 4s infinite;
+}
 
-    .hero-panel {
-      position: relative;
-      border-radius: 28px;
-      background: radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.38), transparent 60%), rgba(10, 17, 40, 0.97);
-      border: 1px solid rgba(148, 163, 255, 0.7);
-      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.9);
-      padding: 1.15rem 1.15rem 1.25rem;
-      overflow: hidden;
-      backdrop-filter: blur(30px);
-      transform-style: preserve-3d;
-    }
-    .hero-panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.7rem;
-    }
-    .hero-panel-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-    .hero-panel-tag {
-      padding: 0.15rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      background: rgba(15, 23, 42, 0.96);
-      border: 1px solid rgba(148, 163, 255, 0.65);
-      color: #a5b4fc;
-    }
-    .hero-panel-main {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      background: radial-gradient(circle at 50% 0, rgba(125, 211, 252, 0.5), transparent 60%), #020617;
-      height: 240px;
-      display: grid;
-      place-items: center;
-      border: 1px solid rgba(148, 163, 255, 0.6);
-    }
-    .hero-panel-main img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      opacity: 0.93;
-      mix-blend-mode: screen;
-    }
-    .hero-panel-overlay {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.2), transparent 50%), radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.35), transparent 55%);
-      opacity: 0.9;
-    }
-    .hero-panel-bottom {
-      margin-top: 0.75rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 0.85rem;
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
-    .hero-panel-bottom strong {
-      color: #e5ecff;
-    }
-    .hero-panel-pillrow {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      justify-content: flex-end;
-    }
-    .hero-pill {
-      border-radius: 999px;
-      padding: 0.16rem 0.6rem;
-      font-size: 0.74rem;
-      border: 1px solid rgba(148, 163, 255, 0.6);
-      background: rgba(15, 23, 42, 0.9);
-      color: #c7d2fe;
-    }
+@keyframes scan{
+0%{top:-40%;}
+100%{top:100%;}
+}
+@keyframes btnFlow{
+0%{background-position:0% 50%;}
+100%{background-position:100% 50%;}
+}
 
-    section {
-      padding: 3.4rem 0 3.6rem;
-      position: relative;
-      z-index: 1;
-    }
-    section::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      opacity: 0.35;
-      pointer-events: none;
-      background-image:
-        radial-gradient(800px 400px at 10% 0, rgba(59, 130, 246, 0.22), transparent 60%),
-        radial-gradient(600px 350px at 90% 100%, rgba(56, 189, 248, 0.18), transparent 60%);
-      mix-blend-mode: soft-light;
-      z-index: -1;
-    }
-    .section-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 1.2rem;
-      margin-bottom: 1.5rem;
-    }
-    .section-title {
-      font-size: 1.4rem;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .section-sub {
-      font-size: 0.9rem;
-      color: var(--muted);
-      max-width: 26rem;
-    }
-    .section-tag {
-      padding: 0.18rem 0.7rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 255, 0.7);
-      background: rgba(15, 23, 42, 0.96);
-      font-size: 0.78rem;
-      color: #a5b4fc;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.28rem;
-    }
-    .section-tag span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
-    }
+.metric-row{
+margin-top:2.4rem;display:flex;flex-wrap:wrap;gap:1rem;
+}
+.metric{
+flex:1 1 180px;
+padding:1rem 1.2rem;
+border-radius:20px;
+background:rgba(15,25,50,0.9);
+border:1px solid rgba(120,160,255,0.55);
+box-shadow:var(--shadow);
+transform-style:preserve-3d;
+}
+.metric-label{
+font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:#a8b6ff;
+}
+.metric-value{
+font-weight:700;font-size:1.45rem;margin-top:.2rem;
+}
+.metric-sub{font-size:.85rem;color:var(--muted);margin-top:.25rem;}
 
-    .grid {
-      display: grid;
-      gap: 1.1rem;
-    }
-    .grid-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .grid-2 {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-    @media (max-width: 1000px) {
-      .hero-inner {
-        grid-template-columns: 1fr;
-      }
-      .hero-panel {
-        order: -1;
-      }
-      .grid-3 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-    @media (max-width: 780px) {
-      .grid-3, .grid-2 {
-        grid-template-columns: 1fr;
-      }
-      .hero {
-        padding-top: 2.8rem;
-      }
-      .hero-metrics {
-        gap: 0.8rem;
-      }
-      .nav-links {
-        display: none;
-      }
-      .nav-toggle {
-        display: flex;
-      }
-      .nav-inner {
-        justify-content: space-between;
-      }
-      .nav-mobile-open .nav-links {
-        position: fixed;
-        inset: var(--nav-height) 0 auto 0;
-        background: radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.38), transparent 60%), rgba(6, 10, 28, 0.98);
-        display: grid;
-        gap: 0.2rem;
-        padding: 0.8rem 1.2rem 1.2rem;
-        border-bottom: 1px solid rgba(148, 163, 255, 0.5);
-        box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-        z-index: 50;
-      }
-      .mega-wrapper:hover .mega-menu {
-        opacity: 0;
-        pointer-events: none;
-      }
-      .nav-mobile-open .mega-menu {
-        position: static;
-        transform: none;
-        width: 100%;
-        margin-top: 0.5rem;
-        opacity: 1;
-        pointer-events: auto;
-      }
-      .nav-link.has-mega::after {
-        display: none;
-      }
-    }
+.reveal{opacity:0;transform:translateY(35px);transition:.65s;}
+.reveal.show{opacity:1;transform:translateY(0);}
 
-    .card {
-      background: radial-gradient(circle at 0 0, rgba(125, 211, 252, 0.45), transparent 60%), var(--surface-soft);
-      border-radius: var(--card-radius);
-      border: 1px solid rgba(148, 163, 255, 0.5);
-      box-shadow: var(--shadow-soft);
-      padding: 1.15rem 1.15rem 1.2rem;
-      position: relative;
-      overflow: hidden;
-      transform-style: preserve-3d;
-      transform: translate3d(0,0,0);
-    }
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background: radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.4), transparent 60%), radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.35), transparent 60%);
-      mix-blend-mode: soft-light;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s ease;
-    }
-    .card:hover::before {
-      opacity: 0.9;
-    }
-    .card h3 {
-      margin: 0 0 0.45rem;
-      font-size: 1rem;
-    }
-    .card p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    .dataset-meta {
-      margin-top: 0.7rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-    }
-    .chip {
-      padding: 0.1rem 0.6rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 255, 0.5);
-      background: rgba(15, 23, 42, 0.95);
-      font-size: 0.78rem;
-      color: #cbd5ff;
-    }
-
-    .timeline {
-      display: grid;
-      gap: 0.9rem;
-    }
-    .step {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 0.75rem;
-      align-items: flex-start;
-    }
-    .step-index {
-      width: 22px;
-      height: 22px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 0, rgba(148, 255, 225, 0.7), transparent 60%), #1d283a;
-      border: 1px solid rgba(148, 163, 255, 0.9);
-      display: grid;
-      place-items: center;
-      font-size: 0.78rem;
-      color: #e5ecff;
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.55);
-    }
-    .step strong {
-      display: block;
-      font-size: 0.94rem;
-      margin-bottom: 0.05rem;
-    }
-    .step p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      margin: 0;
-    }
-
-    .table-wrap {
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(148, 163, 255, 0.55);
-      box-shadow: var(--shadow-soft);
-      background: rgba(15, 23, 42, 0.96);
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.86rem;
-    }
-    thead {
-      background: radial-gradient(circle at 0 0, rgba(96, 165, 250, 0.4), transparent 70%), rgba(15, 23, 42, 0.92);
-    }
-    th, td {
-      padding: 0.7rem 0.9rem;
-      text-align: left;
-    }
-    th {
-      font-weight: 600;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: .16em;
-      color: #c7d2fe;
-      border-bottom: 1px solid rgba(148, 163, 255, 0.65);
-    }
-    tbody tr:nth-child(even) {
-      background: rgba(15, 23, 42, 0.9);
-    }
-    tbody tr:hover {
-      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.3), transparent 60%), rgba(15, 23, 42, 0.98);
-    }
-
-    .gallery-grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .gallery-item {
-      position: relative;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 1px solid rgba(148, 163, 255, 0.55);
-      background: radial-gradient(circle at 50% 0, rgba(148, 255, 225, 0.5), transparent 60%), rgba(15, 23, 42, 0.96);
-      cursor: zoom-in;
-      box-shadow: var(--shadow-soft);
-      transform-style: preserve-3d;
-      transform: translate3d(0,0,0);
-    }
-    .gallery-thumb {
-      position: relative;
-      aspect-ratio: 4/3;
-      overflow: hidden;
-    }
-    .gallery-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scale(1.02);
-      transition: transform .25s ease;
-    }
-    .gallery-item:hover .gallery-thumb img {
-      transform: scale(1.08);
-    }
-    .gallery-label {
-      position: absolute;
-      inset: auto 0 0 0;
-      padding: 0.45rem 0.8rem;
-      font-size: 0.82rem;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .gallery-caption {
-      padding: 0.65rem 0.9rem 0.8rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .team-grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-    .team-card {
-      position: relative;
-      border-radius: 24px;
-      border: 1px solid rgba(148, 163, 255, 0.6);
-      background: radial-gradient(circle at 50% 0, rgba(125, 211, 252, 0.45), transparent 60%), rgba(14, 23, 42, 0.97);
-      box-shadow: var(--shadow-soft);
-      padding: 1.15rem 1rem 1.3rem;
-      text-align: center;
-      transform-style: preserve-3d;
-      transform: translate3d(0,0,0);
-      overflow: hidden;
-    }
-    .team-card::before {
-      content: "";
-      position: absolute;
-      inset: -50%;
-      background: radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.4), transparent 60%), radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.5), transparent 60%);
-      mix-blend-mode: soft-light;
-      opacity: 0;
-      transition: opacity .25s ease;
-    }
-    .team-card:hover::before {
-      opacity: 1;
-    }
-    .avatar {
-      width: 80px;
-      height: 80px;
-      border-radius: 999px;
-      margin-inline: auto;
-      margin-bottom: 0.5rem;
-      background: conic-gradient(from 220deg, #7af2ff, #4f46e5, #a5ffe1, #7af2ff);
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      color: #020617;
-      box-shadow: 0 0 0 2px rgba(226,232,255,0.9), 0 20px 50px rgba(0,0,0,0.85);
-      transform: translateZ(20px);
-    }
-    .team-name {
-      font-weight: 600;
-      margin-bottom: 0.15rem;
-      transform: translateZ(16px);
-    }
-    .team-role-main {
-      font-size: 0.9rem;
-      color: #c7d2ff;
-      margin-bottom: 0.35rem;
-      transform: translateZ(12px);
-    }
-    .team-role-detail {
-      font-size: 0.83rem;
-      color: var(--muted);
-      transform: translateZ(10px);
-    }
-
-    footer {
-      padding: 2.4rem 0 2.2rem;
-      border-top: 1px solid rgba(148, 163, 255, 0.5);
-      background: linear-gradient(180deg, rgba(6, 9, 24, 0.99), #020617);
-      margin-top: 1.5rem;
-    }
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 1.6fr 1fr 1fr;
-      gap: 1.4rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      margin-bottom: 0.4rem;
-    }
-    .footer-logo-title {
-      font-weight: 600;
-    }
-    .footer-col strong {
-      font-size: 0.9rem;
-      color: #e5ecff;
-    }
-    .footer-links {
-      list-style: none;
-      margin: 0.6rem 0 0 0;
-      padding: 0;
-      display: grid;
-      gap: 0.3rem;
-    }
-    .footer-links a {
-      color: var(--muted);
-    }
-    .footer-links a:hover {
-      color: #e5ecff;
-    }
-    @media (max-width: 1100px) {
-      .team-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-    @media (max-width: 820px) {
-      .team-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-    @media (max-width: 620px) {
-      .team-grid {
-        grid-template-columns: 1fr;
-      }
-      .footer-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .lightbox {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 10% 0, rgba(125, 211, 252, 0.35), transparent 50%), rgba(2, 6, 23, 0.98);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .18s ease;
-      z-index: 60;
-    }
-    .lightbox.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .lightbox-inner {
-      max-width: 90vw;
-      max-height: 88vh;
-      border-radius: 22px;
-      overflow: hidden;
-      border: 1px solid rgba(148, 163, 255, 0.8);
-      box-shadow: 0 25px 80px rgba(0,0,0,0.95);
-      transform: scale(0.88);
-      opacity: 0;
-      transition: transform .2s ease, opacity .2s ease;
-      background: rgba(15, 23, 42, 0.98);
-      backdrop-filter: blur(26px);
-    }
-    .lightbox.open .lightbox-inner {
-      transform: scale(1);
-      opacity: 1;
-    }
-    .lightbox-img-wrap {
-      position: relative;
-      background: black;
-    }
-    .lightbox-img-wrap img {
-      display: block;
-      max-width: 100%;
-      max-height: 70vh;
-      margin-inline: auto;
-    }
-    .lightbox-caption {
-      padding: 0.7rem 0.9rem 0.85rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      gap: 0.6rem;
-      align-items: center;
-    }
-    .lightbox-close {
-      width: 28px;
-      height: 28px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 255, 0.8);
-      background: rgba(15, 23, 42, 0.96);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      font-size: 0.9rem;
-      color: #e5ecff;
-    }
-
-    .back-top {
-      position: fixed;
-      right: 1.4rem;
-      bottom: 1.4rem;
-      width: 42px;
-      height: 42px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 255, 0.8);
-      background: radial-gradient(circle at 30% 0, rgba(148, 255, 225, 0.8), transparent 60%), rgba(15, 23, 42, 0.96);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.9);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(10px);
-      transition: opacity .16s ease, transform .16s ease;
-      z-index: 45;
-    }
-    .back-top.visible {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-
-    .stats-row {
-      margin-top: 1.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.85rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .stat-pill {
-      padding: 0.2rem 0.65rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 255, 0.55);
-      background: rgba(15, 23, 42, 0.95);
-    }
-
-    .canvas-bg {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      mix-blend-mode: screen;
-      opacity: 0.85;
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(26px);
-      transition: opacity .5s ease, transform .5s ease;
-    }
-    .reveal.in-view {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-  </style>
+</style>
 </head>
 <body>
-<canvas id="particle-canvas" class="canvas-bg"></canvas>
 
-<div class="nav-shell">
-  <header>
-    <div class="nav-inner">
-      <div class="nav-left">
-        <div class="nav-logo">XR</div>
-        <div>
-          <div class="nav-title-main">STA 160 — Chest X-ray</div>
-          <div class="nav-title-sub">Multi-label pathology classification · UC Davis</div>
-        </div>
-      </div>
-      <nav class="nav-links">
-        <div class="mega-wrapper">
-          <div class="nav-link has-mega">
-            Project
-          </div>
-          <div class="mega-menu">
-            <div class="mega-col">
-              <h4>Overview</h4>
-              <ul class="mega-list">
-                <li><a href="#hero"><span class="label">Abstract</span><span class="desc">NIH ChestX-ray14 · transfer learning</span></a></li>
-                <li><a href="#datasets"><span class="label">Datasets</span><span class="desc">NIH + CheXpert + test split</span></a></li>
-                <li><a href="#method"><span class="label">Pipeline</span><span class="desc">Preprocessing → models → eval</span></a></li>
-                <li><a href="#results"><span class="label">Metrics</span><span class="desc">AUC-ROC, AUC-PR, Grad-CAM</span></a></li>
-              </ul>
-            </div>
-            <div class="mega-col mega-highlight">
-              <div class="mega-pill"><span class="dot"></span><span>Live snapshot</span></div>
-              <strong>112k+ NIH images · 14 labels · CNN transfer learning</strong>
-              <p>We fine-tune X-ray models and visualize failure cases to understand model bias, uncertainty, and clinical plausibility.</p>
-            </div>
-          </div>
-        </div>
-        <a class="nav-link" href="#datasets">Datasets</a>
-        <a class="nav-link" href="#method">Method</a>
-        <a class="nav-link" href="#results">Results</a>
-        <a class="nav-link" href="#gallery">Gallery</a>
-        <a class="nav-link" href="#team">Team</a>
-        <a class="nav-link primary-pill" href="#results">View Metrics<span class="icon">↗</span></a>
-      </nav>
-      <div class="nav-right">
-        <button type="button" class="nav-toggle" id="navToggle">
-          <span class="nav-toggle-span"></span>
-        </button>
-      </div>
-    </div>
-  </header>
+<canvas id="webgl-bg"></canvas>
+
+<nav>
+<div class="nav-inner">
+<div class="logo">
+<div class="logo-icon">XR</div>
+<div>Chest X-ray · STA160</div>
 </div>
+<div class="nav-links">
+<a href="#hero">Abstract</a>
+<a href="#datasets">Datasets</a>
+<a href="#method">Method</a>
+<a href="#results">Results</a>
+<a href="#gallery">Gallery</a>
+<a href="#team">Team</a>
+</div>
+</div>
+</nav>
 
 <section class="hero" id="hero">
-  <div class="container hero-inner">
-    <div class="reveal">
-      <div class="hero-kicker"><span class="dot"></span><span>NIH ChestX-ray14 · CheXpert · CNNs</span></div>
-      <h1 class="hero-title">Chest X-ray Classification for <span>Multi-Label Pathologies</span></h1>
-      <p class="hero-subtitle">
-        This project explores deep learning methods to automatically detect thoracic diseases from chest X-ray images. Using the NIH ChestX-ray14 dataset with 112,120 frontal CXRs across 14 labels, we apply transfer learning with a pre-trained X-ray pathology classifier, then fine-tune, calibrate, and analyze errors across views, devices, and demographics.
+<div class="container hero-grid">
+<div>
+<div class="reveal">
+<h1 class="hero-title">Chest X-ray <span>Multi-Label</span> Classification</h1>
+<p class="hero-sub">
+Deep learning system for thoracic disease detection using NIH ChestX-ray14 (112k+ images) and CheXpert. Fine-tuned CNNs, calibrated outputs, Grad-CAM interpretability.
+</p>
+
+<div class="hero-buttons">
+<button class="btn btn-primary">View Metrics →</button>
+<button class="btn btn-ghost">Explore Pipeline</button>
+</div>
+
+<div class="metric-row">
+<div class="metric reveal">
+<div class="metric-label">Images</div>
+<div class="metric-value" data-count="112">112k+</div>
+<div class="metric-sub">NIH ChestX-ray14</div>
+</div>
+<div class="metric reveal">
+<div class="metric-label">Labels</div>
+<div class="metric-value" data-count="14">14</div>
+<div class="metric-sub">Thoracic pathologies</div>
+</div>
+<div class="metric reveal">
+<div class="metric-label">CheXpert</div>
+<div class="metric-value" data-count="224">224k+</div>
+<div class="metric-sub">Additional CXRs</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="hero-holo reveal">
+<div class="holo-scan"></div>
+<img src="assets/hero_roc.png"/>
+</div>
+
+</div>
+</section>
+
+<script>
+const reveals=document.querySelectorAll('.reveal');
+const ro=new IntersectionObserver(e=>{
+e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('show');});
+},{threshold:.25});
+reveals.forEach(r=>ro.observe(r));
+
+document.querySelectorAll('[data-count]').forEach(el=>{
+let max=+el.dataset.count;let cur=0;
+let step=max/60;
+let tick=()=>{cur+=step;if(cur>=max){cur=max;}
+el.textContent=Math.floor(cur)+(max>=100?'k+':'');
+if(cur<max)requestAnimationFrame(tick);}
+tick();
+});
+
+let c=document.getElementById("webgl-bg");
+let gl=c.getContext("webgl");
+function r(){c.width=innerWidth;c.height=innerHeight;}
+r();addEventListener("resize",r);
+
+let v=gl.createShader(gl.VERTEX_SHADER);
+gl.shaderSource(v,`
+attribute vec2 p;
+void main(){gl_Position=vec4(p,0,1);}
+`);
+gl.compileShader(v);
+
+let f=gl.createShader(gl.FRAGMENT_SHADER);
+gl.shaderSource(f,`
+precision highp float;
+uniform float t;
+uniform vec2 r;
+void main(){
+vec2 uv=gl_FragCoord.xy/r;
+float g=sin((uv.x+uv.y+t*0.2)*28.)*0.08+
+cos((uv.x*1.4-uv.y+t*0.15)*34.)*0.06;
+vec3 c=vec3(0.05,0.15,0.28)+g*vec3(0.15,0.45,0.85);
+gl_FragColor=vec4(c,1.0);
+}
+`);
+gl.compileShader(f);
+
+let prog=gl.createProgram();
+gl.attachShader(prog,v);
+gl.attachShader(prog,f);
+gl.linkProgram(prog);
+gl.useProgram(prog);
+
+let buf=gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+let loc=gl.getAttribLocation(prog,"p");
+gl.enableVertexAttribArray(loc);
+gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+let uTime=gl.getUniformLocation(prog,"t");
+let uRes=gl.getUniformLocation(prog,"r");
+
+function loop(T){
+gl.uniform1f(uTime,T*0.001);
+gl.uniform2f(uRes,c.width,c.height);
+gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+requestAnimationFrame(loop);
+}
+loop(0);
+</script>
+</body>
+</html>
+<!-- ========================= -->
+<!--       DATASETS V13        -->
+<!-- ========================= -->
+
+<section id="datasets" style="padding:5rem 0;">
+<div class="container">
+
+<div class="reveal" style="margin-bottom:2.5rem;">
+<h2 style="font-size:1.8rem;letter-spacing:.08em;text-transform:uppercase;">Datasets</h2>
+<p style="max-width:30rem;color:var(--muted);font-size:1rem;margin-top:.5rem;">
+NIH ChestX-ray14 and CheXpert curated with patient-wise splits, uncertainty handling, and ethics-aware evaluation.
+</p>
+</div>
+
+<div class="dataset-grid" style="
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:1.4rem;
+">
+
+<div class="data-card reveal tilt" style="
+background:var(--card);
+border-radius:var(--radius);
+padding:1.6rem;
+border:1px solid rgba(140,170,255,0.55);
+box-shadow:var(--shadow);
+backdrop-filter:blur(var(--blur));
+">
+<h3 style="margin-bottom:.5rem;">NIH ChestX-ray14</h3>
+<p style="color:var(--muted);font-size:.95rem;margin-bottom:1rem;">
+112,120 frontal CXRs with 14 labels. Patient-wise train/val/test split.
+</p>
+<div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+<div class="chip">112k+ images</div>
+<div class="chip">14 labels</div>
+<div class="chip">224×224 resize</div>
+</div>
+</div>
+
+<div class="data-card reveal tilt" style="
+background:var(--card);
+border-radius:var(--radius);
+padding:1.6rem;
+border:1px solid rgba(140,170,255,0.55);
+box-shadow:var(--shadow);
+backdrop-filter:blur(var(--blur));
+">
+<h3 style="margin-bottom:.5rem;">CheXpert</h3>
+<p style="color:var(--muted);font-size:.95rem;margin-bottom:1rem;">
+224k+ CXRs with 5 competition labels. Uncertainty handled via U-ignore / U-zero.
+</p>
+<div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+<div class="chip">224k+ images</div>
+<div class="chip">U-label policy</div>
+<div class="chip">Balanced split</div>
+</div>
+</div>
+
+<div class="data-card reveal tilt" style="
+background:var(--card);
+border-radius:var(--radius);
+padding:1.6rem;
+border:1px solid rgba(140,170,255,0.55);
+box-shadow:var(--shadow);
+backdrop-filter:blur(var(--blur));
+">
+<h3 style="margin-bottom:.5rem;">Test Set & Ethics</h3>
+<p style="color:var(--muted);font-size:.95rem;margin-bottom:1rem;">
+Ethics-aware selection, PHI-free, stratified sampling, shortcut audit.
+</p>
+<div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+<div class="chip">Stratified</div>
+<div class="chip">PHI-free</div>
+<div class="chip">Bias review</div>
+</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- ========================= -->
+<!--        METHOD V13         -->
+<!-- ========================= -->
+
+<section id="method" style="padding:5rem 0;">
+<div class="container">
+
+<div class="reveal" style="margin-bottom:2.6rem;">
+<h2 style="font-size:1.8rem;letter-spacing:.08em;text-transform:uppercase;">Method</h2>
+<p style="max-width:32rem;color:var(--muted);font-size:1rem;">
+A reproducible pipeline from raw CXRs → preprocessing → CNN models → calibration → Grad-CAM analysis.
+</p>
+</div>
+
+<div style="
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:1.4rem;
+">
+
+<!-- Left Pipeline -->
+<div class="pipe-card reveal" style="
+background:var(--card);
+padding:1.8rem;
+border-radius:var(--radius);
+border:1px solid rgba(120,150,255,0.6);
+box-shadow:var(--shadow);
+backdrop-filter:blur(var(--blur));
+">
+
+<div class="pipe-step">
+<div class="pipe-index">1</div>
+<div>
+<h4>Preprocessing</h4>
+<p>DICOM/PNG load → resize 224×224 → normalization → patient-wise split.</p>
+</div>
+</div>
+
+<div class="pipe-step">
+<div class="pipe-index">2</div>
+<div>
+<h4>Backbone Models</h4>
+<p>DenseNet-121, ResNet-50, EfficientNet, XRV pretrained pathology classifier.</p>
+</div>
+</div>
+
+<div class="pipe-step">
+<div class="pipe-index">3</div>
+<div>
+<h4>Training</h4>
+<p>AdamW · BCE-With-LogitsLoss · cosine LR schedule · early stopping.</p>
+</div>
+</div>
+
+<div class="pipe-step">
+<div class="pipe-index">4</div>
+<div>
+<h4>Evaluation & Calibration</h4>
+<p>AUC-ROC / AUC-PR · threshold tuning · temperature scaling.</p>
+</div>
+</div>
+
+<div class="pipe-step">
+<div class="pipe-index">5</div>
+<div>
+<h4>Error Analysis</h4>
+<p>Grad-CAM overlays · view/device bias · TP/FP/FN review.</p>
+</div>
+</div>
+
+</div>
+
+<!-- Right Training Stats -->
+<div class="pipe-card reveal" style="
+background:var(--card);
+padding:1.8rem;
+border-radius:var(--radius);
+border:1px solid rgba(120,150,255,0.6);
+box-shadow:var(--shadow);
+backdrop-filter:blur(var(--blur));
+">
+
+<h3 style="margin-bottom:1rem;">Training Configuration</h3>
+
+<div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.2rem;">
+<div class="chip">Batch 32</div>
+<div class="chip">AdamW</div>
+<div class="chip">Cosine LR</div>
+<div class="chip">BCE-Logits + weights</div>
+<div class="chip">Flip/Crop/CLAHE</div>
+<div class="chip">Calibration</div>
+</div>
+
+<div class="table-wrap" style="
+border-radius:18px;overflow:hidden;
+border:1px solid rgba(148,163,255,0.55);
+box-shadow:var(--shadow);
+">
+<table style="width:100%;border-collapse:collapse;font-size:.85rem;">
+<thead style="background:rgba(120,180,255,0.15);">
+<tr>
+<th style="padding:.7rem;">Model</th>
+<th>Backbone</th>
+<th>Init</th>
+<th>Params</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Model A</td><td>DenseNet-121</td><td>XRV</td><td>8.0M</td></tr>
+<tr><td>Model B</td><td>ResNet-50</td><td>ImageNet+XR</td><td>25.6M</td></tr>
+<tr><td>Model C</td><td>EfficientNet-B0</td><td>ImageNet</td><td>5.3M</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- ========================= -->
+<!--        RESULTS V13        -->
+<!-- ========================= -->
+
+<section id="results" style="padding:5rem 0;">
+<div class="container">
+
+<div class="reveal" style="margin-bottom:2.6rem;">
+<h2 style="font-size:1.8rem;letter-spacing:.08em;text-transform:uppercase;">Results</h2>
+<p style="max-width:32rem;color:var(--muted);font-size:1rem;">
+Macro AUC-ROC, AUC-PR, per-label metrics, and visual summaries using ROC curves and confusion matrices.
+</p>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;">
+
+<div class="result-card reveal" style="
+background:var(--card);
+padding:1.8rem;
+border-radius:var(--radius);
+border:1px solid rgba(120,150,255,0.55);
+box-shadow:var(--shadow);
+backdrop-filter:blur(var(--blur));
+">
+
+<h3>Summary Metrics</h3>
+
+<div class="table-wrap" style="margin-top:1rem;">
+<table style="width:100%;font-size:.9rem;border-collapse:collapse;">
+<thead style="background:rgba(120,180,255,0.15);">
+<tr>
+<th>Model</th><th>ROC</th><th>PR</th><th>Params</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>DenseNet-121</td><td>0.86</td><td>0.41</td><td>8.0M</td></tr>
+<tr><td>ResNet-50</td><td>0.84</td><td>0.38</td><td>25.6M</td></tr>
+<tr><td>Eff-Net B0</td><td>0.83</td><td>0.36</td><td>5.3M</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+
+<div class="result-card reveal" style="
+background:var(--card);
+padding:1.8rem;
+border-radius:var(--radius);
+border:1px solid rgba(120,150,255,0.55);
+box-shadow:var(--shadow);
+backdrop-filter:blur(var(--blur));
+">
+
+<h3>Per-Label AUC-ROC</h3>
+
+<div class="table-wrap" style="margin-top:1rem;">
+<table style="width:100%;font-size:.9rem;border-collapse:collapse;">
+<thead style="background:rgba(120,180,255,0.15);">
+<tr>
+<th>Label</th><th>AUC</th><th>Support</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Cardiomegaly</td><td>0.92</td><td>8753</td></tr>
+<tr><td>Pleural Eff.</td><td>0.90</td><td>13842</td></tr>
+<tr><td>Edema</td><td>0.88</td><td>6410</td></tr>
+<tr><td>Consolidation</td><td>0.81</td><td>5102</td></tr>
+<tr><td>No Finding</td><td>0.78</td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+
+<div class="gallery-grid" style="
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:1.4rem;
+margin-top:3rem;
+">
+
+<div class="g-item tilt reveal" data-lb="assets/roc_dense.png" data-cap="DenseNet ROC curves">
+<img src="assets/roc_dense.png" style="border-radius:var(--radius);border:1px solid rgba(120,150,255,0.5);box-shadow:var(--shadow);">
+</div>
+
+<div class="g-item tilt reveal" data-lb="assets/roc_resnet.png" data-cap="ResNet ROC curves">
+<img src="assets/roc_resnet.png" style="border-radius:var(--radius);border:1px solid rgba(120,150,255,0.5);box-shadow:var(--shadow);">
+</div>
+
+<div class="g-item tilt reveal" data-lb="assets/cm_cardio.png" data-cap="Cardiomegaly confusion matrix">
+<img src="assets/cm_cardio.png" style="border-radius:var(--radius);border:1px solid rgba(120,150,255,0.5);box-shadow:var(--shadow);">
+</div>
+
+</div>
+
+</div>
+</section>
+<!-- ========================= -->
+<!--      GALLERY  · V13      -->
+<!-- ========================= -->
+
+<section id="gallery" style="padding:5rem 0;">
+  <div class="container">
+    <div class="reveal" style="margin-bottom:2.6rem;">
+      <h2 style="font-size:1.8rem;letter-spacing:.08em;text-transform:uppercase;">Qualitative Examples</h2>
+      <p style="max-width:32rem;color:var(--muted);font-size:1rem;">
+        Grad-CAM heatmaps reveal whether the model attends to clinically plausible regions for each prediction.
       </p>
-      <div class="hero-actions">
-        <button type="button" class="btn-primary" data-scroll="#results">
-          View ROC & AUC<span class="icon">⟶</span>
-        </button>
-        <button type="button" class="btn-ghost" data-scroll="#method">
-          See full pipeline<span class="icon">▾</span>
-        </button>
-      </div>
-      <div class="hero-metrics">
-        <div class="metric-chip tilt" data-tilt>
-          <div class="metric-label">Images</div>
-          <div class="metric-value" data-count data-target="112" data-suffix="k+">
-            <span class="num">112</span><span class="suffix">k+</span>
-          </div>
-          <div class="metric-sub">NIH ChestX-ray14 frontal CXRs</div>
-        </div>
-        <div class="metric-chip tilt" data-tilt>
-          <div class="metric-label">CheXpert</div>
-          <div class="metric-value" data-count data-target="224" data-suffix="k+">
-            <span class="num">224</span><span class="suffix">k+</span>
-          </div>
-          <div class="metric-sub">Additional CXRs from CheXpert</div>
-        </div>
-        <div class="metric-chip tilt" data-tilt>
-          <div class="metric-label">NIH labels</div>
-          <div class="metric-value" data-count data-target="14" data-suffix="">
-            <span class="num">14</span><span class="suffix"></span>
-          </div>
-          <div class="metric-sub">Multi-label disease categories</div>
-        </div>
-        <div class="metric-chip tilt" data-tilt>
-          <div class="metric-label">CheXpert labels</div>
-          <div class="metric-value" data-count data-target="5" data-suffix="">
-            <span class="num">5</span><span class="suffix"></span>
-          </div>
-          <div class="metric-sub">Competition labels for evaluation</div>
-        </div>
-      </div>
-    </div>
-    <aside class="hero-panel tilt" data-tilt>
-      <div class="hero-panel-header">
-        <div class="hero-panel-title">Model snapshot · Validation ROC</div>
-        <div class="hero-panel-tag">DenseNet-121 · XRV</div>
-      </div>
-      <div class="hero-panel-main">
-        <img src="assets/hero_roc.png" alt="Sample ROC curves for multiple thoracic pathologies" />
-        <div class="hero-panel-overlay"></div>
-      </div>
-      <div class="hero-panel-bottom">
-        <div>
-          <strong>Macro AUC-ROC: 0.86</strong><br />
-          <span>Balanced across 14 NIH labels with calibration.</span>
-        </div>
-        <div class="hero-panel-pillrow">
-          <div class="hero-pill">Cardiomegaly</div>
-          <div class="hero-pill">Edema</div>
-          <div class="hero-pill">Pleural Effusion</div>
-        </div>
-      </div>
-    </aside>
-  </div>
-</section>
-
-<section id="datasets">
-  <div class="container">
-    <div class="section-header reveal">
-      <div>
-        <div class="section-title">Datasets</div>
-        <p class="section-sub">NIH ChestX-ray14 and CheXpert are curated with patient-wise splits, uncertainty handling, and ethics-aware test selection.</p>
-      </div>
-      <div class="section-tag"><span class="dot"></span>Data curation</div>
-    </div>
-    <div class="grid grid-3">
-      <article class="card tilt reveal" data-tilt>
-        <h3>NIH ChestX-ray14</h3>
-        <p>112,120 frontal CXRs annotated for 14 thoracic pathologies. We construct a patient-wise train/validation/test split to avoid leakage.</p>
-        <div class="dataset-meta">
-          <span class="chip">112k+ frontal CXRs</span>
-          <span class="chip">224×224 resize</span>
-          <span class="chip">Flip · crop · CLAHE</span>
-        </div>
-      </article>
-      <article class="card tilt reveal" data-tilt>
-        <h3>CheXpert</h3>
-        <p>224,316 CXRs with 5 competition labels (No Finding, Edema, Cardiomegaly, Consolidation, Pleural Effusion). Uncertainty handled via U-ignore / U-zero policies.</p>
-        <div class="dataset-meta">
-          <span class="chip">U-label policy</span>
-          <span class="chip">Class imbalance aware</span>
-          <span class="chip">View filtering</span>
-        </div>
-      </article>
-      <article class="card tilt reveal" data-tilt>
-        <h3>Test Set & Ethics</h3>
-        <p>Held-out test set balanced by label prevalence, PHI-free and limited to academic use. We audit for shortcut learning and spurious correlations.</p>
-        <div class="dataset-meta">
-          <span class="chip">Stratified sampling</span>
-          <span class="chip">Label smoothing</span>
-          <span class="chip">AUC-PR focus</span>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section id="method">
-  <div class="container">
-    <div class="section-header reveal">
-      <div>
-        <div class="section-title">Method</div>
-        <p class="section-sub">A reproducible pipeline from raw DICOMs to calibrated probabilities and interpretable Grad-CAM visualizations.</p>
-      </div>
-      <div class="section-tag"><span class="dot"></span>Reproducible pipeline</div>
-    </div>
-    <div class="grid grid-2">
-      <article class="card reveal">
-        <h3>End-to-end pipeline</h3>
-        <div class="timeline">
-          <div class="step">
-            <div class="step-index">1</div>
-            <div>
-              <strong>Preprocessing</strong>
-              <p>DICOM/PNG read → resize to 224×224 → grayscale normalization → optional CLAHE → patient-wise train/valid/test split.</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-index">2</div>
-            <div>
-              <strong>Backbone models</strong>
-              <p>Transfer learning with DenseNet-121, ResNet-50, and EfficientNet-B0 initialized from large-scale X-ray pre-training (XRV pathology classifier).</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-index">3</div>
-            <div>
-              <strong>Training</strong>
-              <p>BCEWithLogitsLoss with class weights; AdamW optimizer; cosine learning rate schedule; early stopping on macro AUC-ROC.</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-index">4</div>
-            <div>
-              <strong>Evaluation & calibration</strong>
-              <p>Per-label AUC-ROC and AUC-PR, threshold tuning via Youden’s J, and post-hoc temperature scaling for probability calibration.</p>
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-index">5</div>
-            <div>
-              <strong>Error analysis & visualization</strong>
-              <p>Grad-CAM overlays, slice-wise analysis by device, view, and sex; qualitative review of true/false positives and negatives.</p>
-            </div>
-          </div>
-        </div>
-      </article>
-      <article class="card reveal">
-        <h3>Training configuration</h3>
-        <div class="stats-row">
-          <span class="stat-pill">Batch size: 32</span>
-          <span class="stat-pill">Optimizer: AdamW</span>
-          <span class="stat-pill">LR schedule: cosine decay</span>
-          <span class="stat-pill">Loss: BCEWithLogits + weights</span>
-          <span class="stat-pill">Augment: flip, crop, CLAHE</span>
-          <span class="stat-pill">Calibration: temperature scaling</span>
-        </div>
-        <div class="spacer"></div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-            <tr>
-              <th>Model</th>
-              <th>Backbone</th>
-              <th>Init</th>
-              <th>Params</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>Model A</td>
-              <td>DenseNet-121</td>
-              <td>XRV pathology classifier</td>
-              <td>8.0M</td>
-            </tr>
-            <tr>
-              <td>Model B</td>
-              <td>ResNet-50</td>
-              <td>ImageNet + X-ray finetune</td>
-              <td>25.6M</td>
-            </tr>
-            <tr>
-              <td>Model C</td>
-              <td>EfficientNet-B0</td>
-              <td>ImageNet</td>
-              <td>5.3M</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <p style="margin-top:.75rem;font-size:.84rem;color:var(--muted);">Hyperparameters are tuned per-backbone; evaluation focuses on both threshold-free (AUC-ROC/AUC-PR) and thresholded classification metrics.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section id="results">
-  <div class="container">
-    <div class="section-header reveal">
-      <div>
-        <div class="section-title">Results</div>
-        <p class="section-sub">We report macro-averaged performance across 14 labels and highlight per-label AUC to understand where the model is most reliable.</p>
-      </div>
-      <div class="section-tag"><span class="dot"></span>Metrics & calibration</div>
-    </div>
-    <div class="grid grid-2">
-      <article class="card reveal">
-        <h3>Summary (Validation)</h3>
-        <div class="table-wrap" style="margin-top:.7rem;">
-          <table aria-label="validation summary">
-            <thead>
-            <tr>
-              <th>Model</th>
-              <th>Macro AUC-ROC</th>
-              <th>Macro AUC-PR</th>
-              <th>Params</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>DenseNet-121</td>
-              <td>0.86</td>
-              <td>0.41</td>
-              <td>8.0M</td>
-            </tr>
-            <tr>
-              <td>ResNet-50</td>
-              <td>0.84</td>
-              <td>0.38</td>
-              <td>25.6M</td>
-            </tr>
-            <tr>
-              <td>EfficientNet-B0</td>
-              <td>0.83</td>
-              <td>0.36</td>
-              <td>5.3M</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="note" style="margin-top:.75rem;">Replace placeholder values with your final experiment numbers. Reporting both ROC and PR is important under strong class imbalance.</p>
-      </article>
-      <article class="card reveal">
-        <h3>Per-label AUC-ROC (sample)</h3>
-        <div class="table-wrap" style="margin-top:.7rem;">
-          <table aria-label="per label auc">
-            <thead>
-            <tr>
-              <th>Label</th>
-              <th>AUC-ROC</th>
-              <th>Support</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>Cardiomegaly</td>
-              <td>0.92</td>
-              <td>8,753</td>
-            </tr>
-            <tr>
-              <td>Pleural Effusion</td>
-              <td>0.90</td>
-              <td>13,842</td>
-            </tr>
-            <tr>
-              <td>Edema</td>
-              <td>0.88</td>
-              <td>6,410</td>
-            </tr>
-            <tr>
-              <td>Consolidation</td>
-              <td>0.81</td>
-              <td>5,102</td>
-            </tr>
-            <tr>
-              <td>No Finding</td>
-              <td>0.78</td>
-              <td>—</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="note" style="margin-top:.75rem;">These numbers illustrate typical per-label behaviour; plug in your CSV exports to reflect the actual model performance.</p>
-      </article>
     </div>
 
-    <div class="spacer"></div>
-
-    <article class="card reveal">
-      <h3>Confusion Matrix / ROC Gallery</h3>
-      <p class="note" style="margin:.3rem 0 0.85rem;">Click any thumbnail to open a full-screen lightbox with zoom animation.</p>
-      <div class="gallery-grid">
-        <div class="gallery-item tilt" data-tilt data-lightbox="assets/roc_dense.png" data-caption="ROC curves for DenseNet-121 across selected pathologies.">
-          <div class="gallery-thumb">
-            <img src="assets/roc_dense.png" alt="ROC curves for DenseNet-121" />
-            <div class="gallery-label">
-              <span>roc_dense.png</span>
-              <span style="font-size:.78rem;opacity:.75;">ROC · DenseNet-121</span>
-            </div>
-          </div>
-          <div class="gallery-caption">DenseNet-121 generally achieves the highest macro AUC-ROC with strong calibration after temperature scaling.</div>
-        </div>
-        <div class="gallery-item tilt" data-tilt data-lightbox="assets/roc_resnet.png" data-caption="ROC curves for ResNet-50 model.">
-          <div class="gallery-thumb">
-            <img src="assets/roc_resnet.png" alt="ROC curves for ResNet-50" />
-            <div class="gallery-label">
-              <span>roc_resnet.png</span>
-              <span style="font-size:.78rem;opacity:.75;">ROC · ResNet-50</span>
-            </div>
-          </div>
-          <div class="gallery-caption">ResNet-50 offers a useful comparison backbone with different capacity and inductive bias.</div>
-        </div>
-        <div class="gallery-item tilt" data-tilt data-lightbox="assets/cm_cardio.png" data-caption="Confusion matrix for Cardiomegaly predictions.">
-          <div class="gallery-thumb">
-            <img src="assets/cm_cardio.png" alt="Confusion matrix for Cardiomegaly" />
-            <div class="gallery-label">
-              <span>cm_cardio.png</span>
-              <span style="font-size:.78rem;opacity:.75;">Confusion · Cardiomegaly</span>
-            </div>
-          </div>
-          <div class="gallery-caption">Cardiomegaly confusion matrix highlights trade-offs between sensitivity and specificity under chosen thresholds.</div>
-        </div>
-      </div>
-    </article>
-  </div>
-</section>
-
-<section id="gallery">
-  <div class="container">
-    <div class="section-header reveal">
-      <div>
-        <div class="section-title">Qualitative Examples</div>
-        <p class="section-sub">Grad-CAM heatmaps reveal whether the model attends to clinically plausible regions for each prediction.</p>
-      </div>
-      <div class="section-tag"><span class="dot"></span>Grad-CAM · Predictions</div>
-    </div>
-    <div class="gallery-grid">
-      <article class="gallery-item tilt reveal" data-tilt data-lightbox="assets/gradcam_tp.png" data-caption="Grad-CAM true positive example.">
-        <div class="gallery-thumb">
-          <img src="assets/gradcam_tp.png" alt="Grad-CAM true positive example" />
-          <div class="gallery-label">
+    <div class="gallery-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;">
+      <article class="g-item tilt reveal"
+               data-lb="assets/gradcam_tp.png"
+               data-cap="True positive · Cardiomegaly correctly detected with attention over the cardiac silhouette.">
+        <div style="position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(120,150,255,0.55);box-shadow:var(--shadow);">
+          <img src="assets/gradcam_tp.png" alt="Grad-CAM true positive example"
+               style="width:100%;height:auto;display:block;transform:scale(1.03);">
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:.5rem .85rem;font-size:.8rem;
+                      background:linear-gradient(to top,rgba(0,0,0,.85),transparent);display:flex;justify-content:space-between;align-items:center;">
             <span>True positive</span>
-            <span style="font-size:.78rem;opacity:.75;">gradcam_tp.png</span>
+            <span style="opacity:.75;">gradcam_tp.png</span>
           </div>
         </div>
-        <div class="gallery-caption">Cardiomegaly correctly detected; activation concentrates over the enlarged cardiac silhouette.</div>
+        <p style="margin-top:.6rem;font-size:.85rem;color:var(--muted);">
+          Cardiomegaly correctly detected; activations concentrate around the enlarged cardiac silhouette.
+        </p>
       </article>
-      <article class="gallery-item tilt reveal" data-tilt data-lightbox="assets/gradcam_fp.png" data-caption="Grad-CAM false positive example.">
-        <div class="gallery-thumb">
-          <img src="assets/gradcam_fp.png" alt="Grad-CAM false positive example" />
-          <div class="gallery-label">
+
+      <article class="g-item tilt reveal"
+               data-lb="assets/gradcam_fp.png"
+               data-cap="False positive · Spurious focus on tubes/devices; highlights shortcut patterns.">
+        <div style="position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(120,150,255,0.55);box-shadow:var(--shadow);">
+          <img src="assets/gradcam_fp.png" alt="Grad-CAM false positive example"
+               style="width:100%;height:auto;display:block;transform:scale(1.03);">
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:.5rem .85rem;font-size:.8rem;
+                      background:linear-gradient(to top,rgba(0,0,0,.85),transparent);display:flex;justify-content:space-between;align-items:center;">
             <span>False positive</span>
-            <span style="font-size:.78rem;opacity:.75;">gradcam_fp.png</span>
+            <span style="opacity:.75;">gradcam_fp.png</span>
           </div>
         </div>
-        <div class="gallery-caption">Spurious focus on devices and markers; data augmentation and better view filtering help reduce shortcuts.</div>
+        <p style="margin-top:.6rem;font-size:.85rem;color:var(--muted);">
+          Spurious attention on lines and hardware; motivates better augmentations and view filtering.
+        </p>
       </article>
-      <article class="gallery-item tilt reveal" data-tilt data-lightbox="assets/gradcam_fn.png" data-caption="Grad-CAM false negative example.">
-        <div class="gallery-thumb">
-          <img src="assets/gradcam_fn.png" alt="Grad-CAM false negative example" />
-          <div class="gallery-label">
+
+      <article class="g-item tilt reveal"
+               data-lb="assets/gradcam_fn.png"
+               data-cap="False negative · Small effusion missed; shows sensitivity limits on subtle findings.">
+        <div style="position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid rgba(120,150,255,0.55);box-shadow:var(--shadow);">
+          <img src="assets/gradcam_fn.png" alt="Grad-CAM false negative example"
+               style="width:100%;height:auto;display:block;transform:scale(1.03);">
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:.5rem .85rem;font-size:.8rem;
+                      background:linear-gradient(to top,rgba(0,0,0,.85),transparent);display:flex;justify-content:space-between;align-items:center;">
             <span>False negative</span>
-            <span style="font-size:.78rem;opacity:.75;">gradcam_fn.png</span>
+            <span style="opacity:.75;">gradcam_fn.png</span>
           </div>
         </div>
-        <div class="gallery-caption">Small effusion missed; threshold tuning and label smoothing slightly improve recall on subtle findings.</div>
+        <p style="margin-top:.6rem;font-size:.85rem;color:var(--muted);">
+          Small effusion missed; threshold tuning and label smoothing slightly improve recall on subtle cases.
+        </p>
       </article>
     </div>
   </div>
 </section>
 
-<section id="team">
+<section id="team" style="padding:5rem 0;">
   <div class="container">
-    <div class="section-header reveal">
-      <div>
-        <div class="section-title">Team</div>
-        <p class="section-sub">Team 11 · STA 160 · UC Davis — combining modeling, data curation, training operations, visualization, and reporting.</p>
-      </div>
-      <div class="section-tag"><span class="dot"></span>STA 160 · UC Davis</div>
+    <div class="reveal" style="margin-bottom:2.6rem;">
+      <h2 style="font-size:1.8rem;letter-spacing:.08em;text-transform:uppercase;">Team 11</h2>
+      <p style="max-width:32rem;color:var(--muted);font-size:1rem;">
+        STA 160 · UC Davis — combining modeling, data curation, training operations, visualization, and reporting.
+      </p>
     </div>
-    <div class="team-grid">
-      <div class="team-card tilt reveal" data-tilt>
+
+    <div class="team-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:1.2rem;">
+      <article class="team-card tilt reveal">
         <div class="avatar">ML</div>
         <div class="team-name">Muhammad Laiq</div>
         <div class="team-role-main">Lead · Modeling & Docs</div>
-        <div class="team-role-detail">Model design, training strategy, hyperparameters, primary report writing.</div>
-      </div>
-      <div class="team-card tilt reveal" data-tilt>
+        <div class="team-role-detail">
+          Model design, training strategy, hyperparameters, and main write-up of the technical report.
+        </div>
+      </article>
+
+      <article class="team-card tilt reveal">
         <div class="avatar">KS</div>
         <div class="team-name">Kayla Sham</div>
         <div class="team-role-main">Data & EDA</div>
-        <div class="team-role-detail">Data cleaning, exploratory analysis, cohort statistics, label distributions.</div>
-      </div>
-      <div class="team-card tilt reveal" data-tilt>
+        <div class="team-role-detail">
+          Data cleaning, exploratory analysis, cohort statistics, and label distribution summaries.
+        </div>
+      </article>
+
+      <article class="team-card tilt reveal">
         <div class="avatar">TY</div>
         <div class="team-name">Tina Yu</div>
         <div class="team-role-main">Training Ops & Visualization</div>
-        <div class="team-role-detail">Experiments, training pipelines, hyperparameter sweeps, Grad-CAM and metric visualization.</div>
-      </div>
-      <div class="team-card tilt reveal" data-tilt>
+        <div class="team-role-detail">
+          Runs experiments, manages training pipelines, tunes hyperparameters, and produces ROC/Grad-CAM visualizations.
+        </div>
+      </article>
+
+      <article class="team-card tilt reveal">
         <div class="avatar">LL</div>
         <div class="team-name">Lauren Le</div>
         <div class="team-role-main">Reporting & Evaluation</div>
-        <div class="team-role-detail">Result synthesis, error analysis write-up, final STA 160 report and slides.</div>
-      </div>
-      <div class="team-card tilt reveal" data-tilt>
+        <div class="team-role-detail">
+          Synthesizes results, leads error analysis write-up, and polishes the final STA 160 report and slides.
+        </div>
+      </article>
+
+      <article class="team-card tilt reveal">
         <div class="avatar">FS</div>
         <div class="team-name">Fang Shang</div>
         <div class="team-role-main">Training Ops & Website</div>
-        <div class="team-role-detail">Result organization, website design, interactive visualization, shared evaluation review.</div>
-      </div>
+        <div class="team-role-detail">
+          Organizes experiment outputs, co-leads evaluation review, and designs this interactive project website.
+        </div>
+      </article>
     </div>
   </div>
 </section>
 
-<footer>
-  <div class="container footer-grid">
+<footer style="padding:2.8rem 0 2.4rem;border-top:1px solid rgba(140,170,255,0.6);
+               background:linear-gradient(180deg,rgba(3,6,24,.96),#020617);">
+  <div class="container" style="display:grid;grid-template-columns:1.7fr 1fr 1fr;gap:1.6rem;font-size:.86rem;color:var(--muted);">
     <div>
-      <div class="footer-logo">
-        <div class="nav-logo">XR</div>
+      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem;">
+        <div style="width:34px;height:34px;border-radius:12px;
+                    background:conic-gradient(from 220deg,#7af2ff,#77a5ff,#95ffd9,#7af2ff);
+                    display:grid;place-items:center;color:#020617;font-weight:800;font-size:15px;
+                    box-shadow:0 0 0 1px rgba(255,255,255,.6),0 14px 40px rgba(0,0,0,.85);">
+          XR
+        </div>
         <div>
-          <div class="footer-logo-title">Chest X-ray Project</div>
+          <div style="font-weight:600;color:#e5ecff;">Chest X-ray Project · Team 11</div>
           <div>STA 160 · Fall 2025 · UC Davis</div>
         </div>
       </div>
-      <div>Multi-label thoracic pathology detection on NIH ChestX-ray14 and CheXpert using deep CNNs and transfer learning.</div>
+      <p style="max-width:26rem;margin:0;">
+        Multi-label thoracic pathology detection on NIH ChestX-ray14 and CheXpert using deep CNNs, transfer learning, and calibrated probability outputs.
+      </p>
     </div>
-    <div class="footer-col">
-      <strong>Links</strong>
-      <ul class="footer-links">
+
+    <div>
+      <strong style="color:#e5ecff;font-size:.9rem;">Sections</strong>
+      <ul style="list-style:none;padding:0;margin:.7rem 0 0;display:grid;gap:.35rem;">
+        <li><a href="#hero">Abstract · Hero</a></li>
         <li><a href="#datasets">Datasets</a></li>
         <li><a href="#method">Method</a></li>
         <li><a href="#results">Results</a></li>
-        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#gallery">Qualitative</a></li>
       </ul>
     </div>
-    <div class="footer-col">
-      <strong>Contact</strong>
-      <ul class="footer-links">
+
+    <div>
+      <strong style="color:#e5ecff;font-size:.9rem;">Links</strong>
+      <ul style="list-style:none;padding:0;margin:.7rem 0 0;display:grid;gap:.35rem;">
         <li><a href="mailto:you@example.edu">you@example.edu</a></li>
         <li><a href="#">GitHub repo</a></li>
         <li><a href="#">Report / Paper</a></li>
@@ -1579,27 +787,49 @@
   </div>
 </footer>
 
-<button class="back-top" id="backTop" aria-label="Back to top">↑</button>
+<button id="backTop"
+        style="position:fixed;right:1.4rem;bottom:1.4rem;width:42px;height:42px;border-radius:999px;
+               border:1px solid rgba(148,163,255,.8);
+               background:radial-gradient(circle at 30% 0,rgba(148,255,225,.9),transparent 60%),rgba(15,23,42,.96);
+               display:grid;place-items:center;cursor:pointer;
+               box-shadow:0 18px 45px rgba(0,0,0,.95);opacity:0;pointer-events:none;
+               transform:translateY(8px);transition:opacity .18s ease,transform .18s ease;z-index:40;">
+  ↑
+</button>
 
-<div class="lightbox" id="lightbox">
-  <div class="lightbox-inner">
-    <div class="lightbox-img-wrap">
-      <img src="" alt="" id="lightboxImg" />
+<div id="lightbox"
+     style="position:fixed;inset:0;background:radial-gradient(circle at 10% 0,rgba(148,255,225,.3),transparent 55%),rgba(3,6,24,.96);
+            display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;
+            transition:opacity .2s ease;z-index:60;">
+  <div id="lightboxInner"
+       style="max-width:90vw;max-height:88vh;border-radius:22px;overflow:hidden;
+              border:1px solid rgba(148,163,255,.8);box-shadow:0 24px 70px rgba(0,0,0,.95);
+              background:rgba(15,23,42,.98);backdrop-filter:blur(26px);
+              transform:scale(.9);opacity:0;transition:transform .2s ease,opacity .2s ease;">
+    <div style="background:black;display:flex;align-items:center;justify-content:center;">
+      <img id="lightboxImg" src="" alt=""
+           style="max-width:100%;max-height:72vh;display:block;">
     </div>
-    <div class="lightbox-caption">
-      <span id="lightboxCaption"></span>
-      <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+    <div style="padding:.7rem .9rem .9rem;display:flex;justify-content:space-between;align-items:center;font-size:.84rem;color:var(--muted);gap:.8rem;">
+      <span id="lightboxCap"></span>
+      <button id="lightboxClose"
+              style="width:28px;height:28px;border-radius:999px;border:1px solid rgba(148,163,255,.9);
+                     background:rgba(15,23,42,.98);display:grid;place-items:center;cursor:pointer;
+                     color:#e5ecff;font-size:.9rem;">
+        ✕
+      </button>
     </div>
   </div>
 </div>
 
 <script>
-  const navToggle = document.getElementById('navToggle');
+  const navToggle = document.querySelector('[data-nav-toggle]') || document.getElementById('navToggle');
   const navShell = document.querySelector('.nav-shell');
-  const navInner = document.querySelector('.nav-inner');
-  navToggle.addEventListener('click', () => {
-    navShell.classList.toggle('nav-mobile-open');
-  });
+  if (navToggle && navShell) {
+    navToggle.addEventListener('click', () => {
+      navShell.classList.toggle('nav-mobile-open');
+    });
+  }
 
   document.querySelectorAll('[data-scroll]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1608,171 +838,183 @@
     });
   });
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('in-view');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.18 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  const revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in-view');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.18 });
+    revealEls.forEach(el => io.observe(el));
+  }
 
   const backTop = document.getElementById('backTop');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 260) {
-      backTop.classList.add('visible');
-    } else {
-      backTop.classList.remove('visible');
-    }
-  });
-  backTop.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  const counters = document.querySelectorAll('[data-count]');
-  const counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      const el = e.target;
-      const target = Number(el.getAttribute('data-target'));
-      const suffix = el.getAttribute('data-suffix') || '';
-      const numSpan = el.querySelector('.num');
-      let current = 0;
-      const duration = 1100;
-      const startTime = performance.now();
-      function tick(now) {
-        const progress = Math.min((now - startTime) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        const value = Math.floor(eased * target);
-        numSpan.textContent = value;
-        el.querySelector('.suffix').textContent = suffix;
-        if (progress < 1) requestAnimationFrame(tick);
-        else numSpan.textContent = target;
+  if (backTop) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 260) {
+        backTop.style.opacity = '1';
+        backTop.style.pointerEvents = 'auto';
+        backTop.style.transform = 'translateY(0)';
+      } else {
+        backTop.style.opacity = '0';
+        backTop.style.pointerEvents = 'none';
+        backTop.style.transform = 'translateY(8px)';
       }
-      requestAnimationFrame(tick);
-      counterObserver.unobserve(el);
     });
-  }, { threshold: 0.4 });
-  counters.forEach(el => counterObserver.observe(el));
-
-  function setupTilt() {
-    document.querySelectorAll('[data-tilt]').forEach(card => {
-      let rect;
-      function handleMove(e) {
-        if (!rect) rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-        const dx = (x - cx) / cx;
-        const dy = (y - cy) / cy;
-        const maxTilt = 10;
-        const rx = (-dy * maxTilt).toFixed(2);
-        const ry = (dx * maxTilt).toFixed(2);
-        card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
-      }
-      function reset() {
-        rect = null;
-        card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0)';
-      }
-      card.addEventListener('mousemove', handleMove);
-      card.addEventListener('mouseleave', reset);
+    backTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
-  setupTilt();
 
-  const hero = document.querySelector('.hero');
-  const heroBg = document.querySelector('.hero::before');
-  document.addEventListener('mousemove', (e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 2;
-    const y = (e.clientY / window.innerHeight - 0.5) * 2;
-    const panels = document.querySelectorAll('.hero-panel, .hero-metrics .metric-chip');
-    panels.forEach(p => {
-      p.style.transform = `translate3d(${x * -6}px, ${y * -4}px, 0)`;
-    });
-  });
-
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightboxImg');
-  const lightboxCaption = document.getElementById('lightboxCaption');
-  const lightboxClose = document.getElementById('lightboxClose');
-
-  function openLightbox(src, caption) {
-    lightboxImg.src = src;
-    lightboxCaption.textContent = caption || '';
-    lightbox.classList.add('open');
-  }
-  function closeLightbox() {
-    lightbox.classList.remove('open');
-    setTimeout(() => {
-      lightboxImg.src = '';
-      lightboxCaption.textContent = '';
-    }, 200);
-  }
-  document.querySelectorAll('[data-lightbox]').forEach(item => {
-    item.addEventListener('click', () => {
-      const src = item.getAttribute('data-lightbox');
-      const caption = item.getAttribute('data-caption') || '';
-      openLightbox(src, caption);
-    });
-  });
-  lightboxClose.addEventListener('click', (e) => {
-    e.stopPropagation();
-    closeLightbox();
-  });
-  lightbox.addEventListener('click', (e) => {
-    if (e.target === lightbox) closeLightbox();
-  });
-
-  const canvas = document.getElementById('particle-canvas');
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-  let width, height;
-  function resizeCanvas() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  }
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  function createParticles() {
-    particles = [];
-    const count = Math.floor((width + height) / 18);
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        r: Math.random() * 1.6 + 0.5,
-        alpha: Math.random() * 0.7 + 0.1
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const numSpan = el.querySelector('.num');
+    const target = Number(el.getAttribute('data-target') || numSpan?.textContent || 0);
+    const suffix = el.getAttribute('data-suffix') || '';
+    if (!numSpan || !target) return;
+    let started = false;
+    const o = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting || started) return;
+        started = true;
+        const startTime = performance.now();
+        const duration = 1100;
+        function tick(now) {
+          const t = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          const val = Math.floor(eased * target);
+          numSpan.textContent = val;
+          const suf = el.querySelector('.suffix');
+          if (suf) suf.textContent = suffix;
+          if (t < 1) requestAnimationFrame(tick);
+          else numSpan.textContent = target;
+        }
+        requestAnimationFrame(tick);
+        o.unobserve(el);
       });
-    }
-  }
-  createParticles();
-  window.addEventListener('resize', createParticles);
+    }, { threshold: 0.4 });
+    o.observe(el);
+  });
 
-  function renderParticles() {
-    ctx.clearRect(0, 0, width, height);
-    for (const p of particles) {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < -50) p.x = width + 50;
-      if (p.x > width + 50) p.x = -50;
-      if (p.y < -50) p.y = height + 50;
-      if (p.y > height + 50) p.y = -50;
-      const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-      gradient.addColorStop(0, `rgba(148, 255, 225, ${p.alpha})`);
-      gradient.addColorStop(1, 'rgba(15, 23, 42, 0)');
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
-      ctx.fill();
+  document.querySelectorAll('[data-tilt]').forEach(card => {
+    let rect = null;
+    function move(e) {
+      if (!rect) rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const dx = x / rect.width - 0.5;
+      const dy = y / rect.height - 0.5;
+      const max = 10;
+      const rx = (-dy * max).toFixed(2);
+      const ry = (dx * max).toFixed(2);
+      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
     }
-    requestAnimationFrame(renderParticles);
+    function reset() {
+      rect = null;
+      card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0)';
+    }
+    card.addEventListener('mousemove', move);
+    card.addEventListener('mouseleave', reset);
+  });
+
+  const lb = document.getElementById('lightbox');
+  const lbInner = document.getElementById('lightboxInner');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCap');
+  const lbClose = document.getElementById('lightboxClose');
+
+  function openLB(src, cap) {
+    if (!lb || !lbImg || !lbInner) return;
+    lbImg.src = src;
+    lbCap.textContent = cap || '';
+    lb.style.opacity = '1';
+    lb.style.pointerEvents = 'auto';
+    requestAnimationFrame(() => {
+      lbInner.style.opacity = '1';
+      lbInner.style.transform = 'scale(1)';
+    });
   }
-  renderParticles();
+  function closeLB() {
+    if (!lb || !lbImg || !lbInner) return;
+    lbInner.style.opacity = '0';
+    lbInner.style.transform = 'scale(.9)';
+    setTimeout(() => {
+      lb.style.opacity = '0';
+      lb.style.pointerEvents = 'none';
+      lbImg.src = '';
+      lbCap.textContent = '';
+    }, 180);
+  }
+
+  document.querySelectorAll('[data-lb]').forEach(el => {
+    el.style.cursor = 'zoom-in';
+    el.addEventListener('click', () => {
+      const src = el.getAttribute('data-lb');
+      const cap = el.getAttribute('data-cap') || '';
+      if (src) openLB(src, cap);
+    });
+  });
+  if (lb) {
+    lb.addEventListener('click', e => {
+      if (e.target === lb) closeLB();
+    });
+  }
+  if (lbClose) {
+    lbClose.addEventListener('click', e => {
+      e.stopPropagation();
+      closeLB();
+    });
+  }
+
+  const canvas = document.getElementById('particle-canvas') || document.getElementById('bg-canvas');
+  if (canvas && canvas.getContext) {
+    const ctx = canvas.getContext('2d');
+    let w, h, particles = [];
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    function initParticles() {
+      particles = [];
+      const count = Math.floor((w + h) / 18);
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
+          r: Math.random() * 1.6 + 0.5,
+          a: Math.random() * 0.7 + 0.1
+        });
+      }
+    }
+    initParticles();
+    window.addEventListener('resize', initParticles);
+    function render() {
+      ctx.clearRect(0, 0, w, h);
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -50) p.x = w + 50;
+        if (p.x > w + 50) p.x = -50;
+        if (p.y < -50) p.y = h + 50;
+        if (p.y > h + 50) p.y = -50;
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+        g.addColorStop(0, `rgba(148,255,225,${p.a})`);
+        g.addColorStop(1, 'rgba(15,23,42,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(render);
+    }
+    render();
+  }
 </script>
 </body>
 </html>
