@@ -1248,19 +1248,21 @@ footer {
           </div>
         </div>
 
-        <aside class="hero-panel reveal" aria-label="Preview card">
+        <aside class="hero-panel tilt reveal" data-tilt aria-label="Model preview card">
           <div class="hero-panel-header">
-            <div class="hero-panel-title">Confusion Matrix / ROC preview</div>
-            <div class="hero-panel-chip">Drop-in image ready</div>
+            <div class="hero-panel-title">Upload X-Ray Image</div>
+            <div class="hero-panel-tag">Preview only</div>
           </div>
-          <div class="hero-preview" data-modal-src="assets/roc_overview.png" data-modal-caption="Overall ROC curves and confusion matrix">
-            <small>Swap this box with an &lt;img&gt; element for your favorite ROC curves or confusion matrix.</small>
+          <div class="hero-preview" style = "text-align:center; padding: 15px;">
+            <img id="previewImage" 
+              src = ""
+              alt = "Image preview"
+              class = "hero-preview-img">
+            <input type="file" id="fileInput" accept="image/*" class="hero-input" />
+            <button onclick="uploadImage()" class="hero-button">Submit Image (!!! Backend no
+            <p id="result" class="hero-result"></p>
           </div>
-          <div class="hero-panel-footer">
-            Replace the preview with
-            <code>&lt;img src="assets/roc_overview.png" alt="ROC curves for pathologies"&gt;</code>
-            or any figure from your experiment logs.
-          </div>
+          <p class="hero-panel-tip">Tip: upload won't work until backend is ready!</p>
         </aside>
       </div>
     </section>
@@ -1675,6 +1677,40 @@ function closeModal(){if(!modal)return;modal.style.display="none";modal.setAttri
 document.querySelectorAll("[data-gallery] img, .hero-preview[data-modal-src], .qual-img[data-modal-src]").forEach(function(el){el.addEventListener("click",function(){var src=el.getAttribute("data-modal-src")||el.getAttribute("src");var cap=el.getAttribute("data-caption")||el.getAttribute("alt")||el.getAttribute("data-modal-caption")||"";openModal(src,cap)})});
 if(modal){modal.addEventListener("click",function(e){if(e.target===modal){closeModal()}})}
 if(modalClose){modalClose.addEventListener("click",function(){closeModal()})}
+
+// Below is the file selection and preview handling:
+// 1. checks if file is selected
+// 2. displays selected image in the preview <img>
+// 3. shows a message (rn says that backend is not ready)
+// Currently does NOT upload file yet
+// === File upload and preview (safe to add at the end) ===
+const fileInput = document.getElementById("fileInput");
+const previewImage = document.getElementById("previewImage");
+const result = document.getElementById("result");
+  
+if (fileInput) {
+  fileInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+          previewImage.src = URL.createObjectURL(file);
+          previewImage.style.display = "block";
+      }
+  });
+}
+    
+function uploadImage() {
+    if (!fileInput) return;
+    
+    const file = fileInput.files[0];
+    if (!file) {
+        result.innerText = "Please select a file first.";
+        return;
+    }
+  
+    previewImage.src = URL.createObjectURL(file);
+    previewImage.style.display = "block";
+    result.innerText = "Backend not ready yet. Preview shown above.";
+}  
 </script>
 </body>
 </html>
