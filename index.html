@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>STA 160 · Chest X-ray AI Project</title>
+<title>Chest X-ray Classification for Multi-Label Pathologies</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="Chest X-ray classification for multi-label thoracic pathologies (NIH ChestX-ray14 + CheXpert)." />
+<meta name="description" content="Chest X-ray classification for multi-label thoracic pathologies using CNNs on NIH ChestX-ray14 and CheXpert." />
 <style>
 :root {
   --bg: #020617;
@@ -27,9 +27,9 @@
   --danger: #fb7185;
   --radius-lg: 22px;
   --radius-md: 16px;
-  --radius-sm: 999px;
-  --shadow-soft: 0 18px 60px rgba(15, 23, 42, 0.9);
-  --shadow-strong: 0 26px 90px rgba(15, 23, 42, 1);
+  --radius-pill: 999px;
+  --shadow-soft: 0 18px 60px rgba(15,23,42,0.9);
+  --shadow-strong: 0 26px 90px rgba(15,23,42,1);
   --max-width: 1180px;
   --nav-height: 68px;
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
@@ -54,8 +54,8 @@
   --accent-2: #22c55e;
   --accent-3: #6366f1;
   --accent-4: #0ea5e9;
-  --shadow-soft: 0 18px 50px rgba(15, 23, 42, 0.16);
-  --shadow-strong: 0 26px 70px rgba(15, 23, 42, 0.24);
+  --shadow-soft: 0 18px 50px rgba(15,23,42,0.16);
+  --shadow-strong: 0 26px 70px rgba(15,23,42,0.24);
 }
 *,
 *::before,
@@ -72,8 +72,8 @@ html, body {
 body {
   font-family: var(--font-sans);
   background:
-    radial-gradient(1200px 800px at 10% 0%, rgba(118, 166, 255, 0.40), transparent 60%),
-    radial-gradient(1200px 800px at 90% 100%, rgba(34, 197, 94, 0.30), transparent 60%),
+    radial-gradient(1200px 800px at 10% 0%, rgba(118,166,255,0.40), transparent 60%),
+    radial-gradient(1200px 800px at 90% 100%, rgba(34,197,94,0.30), transparent 60%),
     linear-gradient(180deg, var(--bg-alt) 0%, var(--bg) 45%, #000 100%);
   color: var(--text-main);
   line-height: 1.7;
@@ -101,6 +101,8 @@ button {
   position: relative;
   z-index: 1;
 }
+
+/* NAV */
 header {
   position: fixed;
   inset-inline: 0;
@@ -108,10 +110,10 @@ header {
   z-index: 60;
   backdrop-filter: blur(18px) saturate(190%);
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.35), transparent 55%),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.96), rgba(6, 10, 28, 0.98));
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 55%),
+    linear-gradient(90deg, rgba(15,23,42,0.96), rgba(6,10,28,0.98));
   border-bottom: 1px solid var(--border-soft);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.85);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.85);
 }
 .nav-inner {
   width: min(100% - 3rem, var(--max-width));
@@ -124,7 +126,7 @@ header {
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: .75rem;
 }
 .nav-logo {
   width: 40px;
@@ -137,32 +139,32 @@ header {
   font-weight: 800;
   font-size: 18px;
   box-shadow:
-    0 0 0 2px rgba(248, 250, 252, 0.98),
-    0 14px 34px rgba(15, 23, 42, 0.98);
+    0 0 0 2px rgba(248,250,252,0.98),
+    0 14px 34px rgba(15,23,42,0.98);
 }
 .nav-title-main {
-  font-size: 0.96rem;
+  font-size: .96rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: .03em;
 }
 .nav-title-sub {
-  font-size: 0.78rem;
+  font-size: .78rem;
   color: var(--text-soft);
 }
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: .25rem;
 }
 .nav-link {
-  padding: 0.45rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
+  padding: .45rem .8rem;
+  border-radius: var(--radius-pill);
+  font-size: .9rem;
   color: #e5edff;
-  opacity: 0.92;
+  opacity: .92;
   display: inline-flex;
   align-items: center;
-  gap: 0.28rem;
+  gap: .28rem;
   transition:
     background var(--transition-fast),
     color var(--transition-fast),
@@ -171,13 +173,13 @@ header {
     opacity var(--transition-fast);
 }
 .nav-link span.icon {
-  font-size: 0.8rem;
+  font-size: .8rem;
 }
 .nav-link:hover {
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.35), transparent 60%),
-    rgba(15, 23, 42, 0.98);
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.9);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 60%),
+    rgba(15,23,42,0.98);
+  box-shadow: 0 10px 26px rgba(15,23,42,0.9);
   transform: translateY(-1px);
   opacity: 1;
 }
@@ -187,9 +189,11 @@ header {
   color: #020617;
   font-weight: 600;
   padding-inline: 1rem;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.95);
+  box-shadow: 0 16px 45px rgba(0,0,0,0.95);
   animation: navGradient 12s ease-in-out infinite;
 }
+
+/* nav toggles */
 .nav-toggle {
   display: none;
   width: 32px;
@@ -197,13 +201,13 @@ header {
   border-radius: 999px;
   border: 1px solid var(--border-subtle);
   background:
-    radial-gradient(circle at 20% 0, rgba(148, 255, 225, 0.55), transparent 60%),
-    rgba(6, 10, 28, 0.96);
+    radial-gradient(circle at 20% 0, rgba(148,255,225,0.55), transparent 60%),
+    rgba(6,10,28,0.96);
   display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.9);
 }
 .nav-toggle-bar {
   width: 16px;
@@ -221,12 +225,9 @@ header {
   border-radius: 999px;
   background: inherit;
 }
-.nav-toggle-bar::before {
-  top: -5px;
-}
-.nav-toggle-bar::after {
-  top: 5px;
-}
+.nav-toggle-bar::before { top: -5px; }
+.nav-toggle-bar::after { top: 5px; }
+
 .nav-shell.nav-open .nav-toggle-bar {
   background: transparent;
 }
@@ -244,30 +245,32 @@ header {
   inset-inline: 0;
   top: var(--nav-height);
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.4), transparent 60%),
-    rgba(6, 10, 28, 0.98);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.4), transparent 60%),
+    rgba(6,10,28,0.98);
   border-bottom: 1px solid var(--border-soft);
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.95);
+  box-shadow: 0 16px 50px rgba(0,0,0,0.95);
   z-index: 55;
 }
 .nav-mobile-inner {
   width: min(100% - 3rem, var(--max-width));
   margin-inline: auto;
-  padding: 0.85rem 0 1rem;
+  padding: .85rem 0 1rem;
   display: grid;
-  gap: 0.3rem;
+  gap: .3rem;
 }
 .nav-shell.nav-open .nav-mobile {
   display: block;
 }
+
+/* theme toggle */
 .theme-toggle {
   width: 34px;
   height: 18px;
   border-radius: 999px;
-  border: 1px solid rgba(148, 163, 255, 0.65);
+  border: 1px solid rgba(148,163,255,0.65);
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.7), transparent 55%),
-    rgba(6, 10, 28, 0.98);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.7), transparent 55%),
+    rgba(6,10,28,0.98);
   display: flex;
   align-items: center;
   padding-inline: 2px;
@@ -279,13 +282,15 @@ header {
   height: 14px;
   border-radius: 999px;
   background: #e5edff;
-  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.95);
+  box-shadow: 0 0 0 2px rgba(15,23,42,0.95);
   transform: translateX(0);
   transition: transform var(--transition-med);
 }
 [data-theme="light"] .theme-thumb {
   transform: translateX(12px);
 }
+
+/* hero */
 .hero {
   position: relative;
   min-height: calc(100vh - var(--nav-height));
@@ -299,9 +304,9 @@ header {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(1600px 900px at 0 0, rgba(118, 166, 255, 0.55), transparent 65%),
-    radial-gradient(1400px 900px at 100% 100%, rgba(34, 197, 94, 0.55), transparent 65%);
-  opacity: 0.6;
+    radial-gradient(1600px 900px at 0 0, rgba(118,166,255,0.55), transparent 65%),
+    radial-gradient(1400px 900px at 100% 100%, rgba(34,197,94,0.55), transparent 65%);
+  opacity: .6;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 0;
@@ -310,22 +315,22 @@ header {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr);
   gap: 2.6rem;
   align-items: center;
 }
 .hero-kicker {
-  font-size: 0.86rem;
-  letter-spacing: 0.16em;
+  font-size: .86rem;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--accent-2);
   font-weight: 600;
 }
 .hero-title {
-  margin: 0.6rem 0 0.8rem;
+  margin: .6rem 0 .8rem;
   font-size: clamp(2.4rem, 4.6vw, 3.4rem);
   line-height: 1.06;
-  letter-spacing: 0.04em;
+  letter-spacing: .04em;
 }
 .hero-title span {
   background: linear-gradient(120deg, #ffffff, #dbeafe, #bbf7d0);
@@ -333,30 +338,30 @@ header {
   color: transparent;
 }
 .hero-subtitle {
-  font-size: 0.99rem;
+  font-size: .99rem;
   color: var(--text-muted);
   max-width: 44rem;
 }
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem;
+  gap: .8rem;
   margin-top: 1.7rem;
 }
 .btn {
   border: none;
-  border-radius: var(--radius-sm);
-  padding: 0.9rem 1.45rem;
-  font-size: 0.95rem;
+  border-radius: var(--radius-pill);
+  padding: .9rem 1.45rem;
+  font-size: .95rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(15, 23, 42, 0.95);
+  gap: .5rem;
+  background: rgba(15,23,42,0.95);
   color: #e5edff;
-  border: 1px solid rgba(148, 163, 255, 0.35);
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(148,163,255,0.35);
+  box-shadow: 0 16px 45px rgba(0,0,0,0.9);
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -365,9 +370,7 @@ header {
     border-color var(--transition-fast),
     filter var(--transition-fast);
 }
-.btn span.icon {
-  font-size: 0.95rem;
-}
+.btn span.icon { font-size: .95rem; }
 .btn-primary {
   background-image: linear-gradient(120deg, var(--accent-1), var(--accent-3), var(--accent-4));
   background-size: 220% 220%;
@@ -377,38 +380,40 @@ header {
 }
 .btn-secondary {
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.4), transparent 60%),
-    rgba(15, 23, 42, 0.98);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.4), transparent 60%),
+    rgba(15,23,42,0.98);
   color: var(--text-main);
 }
 .btn-ghost {
   background: transparent;
-  border-color: rgba(148, 163, 255, 0.3);
+  border-color: rgba(148,163,255,0.3);
   color: var(--text-soft);
 }
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 1);
+  box-shadow: 0 20px 60px rgba(0,0,0,1);
   filter: brightness(1.05);
 }
+
+/* hero metrics */
 .hero-metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.9rem;
+  gap: .9rem;
   margin-top: 1.9rem;
 }
 .metric-card {
   flex: 1 1 150px;
   min-width: 150px;
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.35), transparent 60%),
-    rgba(15, 23, 42, 0.98);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 60%),
+    rgba(15,23,42,0.98);
   border-radius: 18px;
   border: 1px solid var(--border-soft);
   padding: 1rem 1.1rem 1rem;
   box-shadow: var(--shadow-soft);
   transform-style: preserve-3d;
-  transform: translate3d(0, 0, 0);
+  transform: translate3d(0,0,0);
   transition:
     transform var(--transition-med),
     box-shadow var(--transition-med),
@@ -421,8 +426,8 @@ header {
   border-color: var(--border-subtle);
 }
 .metric-label {
-  font-size: 0.76rem;
-  letter-spacing: 0.14em;
+  font-size: .76rem;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: #c7d2fe;
 }
@@ -431,74 +436,79 @@ header {
   font-weight: 800;
   display: flex;
   align-items: baseline;
-  gap: 0.18rem;
-  margin-top: 0.25rem;
+  gap: .18rem;
+  margin-top: .25rem;
 }
 .metric-value span.suffix {
-  font-size: 0.9rem;
+  font-size: .9rem;
   color: var(--text-soft);
 }
 .metric-caption {
-  font-size: 0.82rem;
+  font-size: .82rem;
   color: var(--text-soft);
-  margin-top: 0.25rem;
+  margin-top: .25rem;
 }
+
+/* hero panel */
 .hero-panel {
   position: relative;
   border-radius: 26px;
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.45), transparent 60%),
-    radial-gradient(circle at 100% 0, rgba(59, 130, 246, 0.45), transparent 60%),
-    rgba(15, 23, 42, 0.98);
-  border: 1px solid rgba(148, 163, 255, 0.5);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.45), transparent 60%),
+    radial-gradient(circle at 100% 0, rgba(59,130,246,0.45), transparent 60%),
+    rgba(15,23,42,0.98);
+  border: 1px solid rgba(148,163,255,0.5);
   padding: 1.2rem 1.2rem 1rem;
   box-shadow: var(--shadow-strong);
   transform-style: preserve-3d;
-  transform: translate3d(0, 0, 0);
+  transform: translate3d(0,0,0);
   overflow: hidden;
 }
 .hero-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.75rem;
+  margin-bottom: .75rem;
 }
 .hero-panel-title {
-  font-size: 0.96rem;
+  font-size: .96rem;
   font-weight: 600;
 }
 .hero-panel-chip {
-  padding: 0.16rem 0.7rem;
+  padding: .16rem .7rem;
   border-radius: 999px;
-  border: 1px solid rgba(148, 163, 255, 0.7);
-  font-size: 0.78rem;
+  border: 1px solid rgba(148,163,255,0.7);
+  font-size: .78rem;
   color: #e5edff;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(15,23,42,0.9);
 }
 .hero-panel-main {
   display: grid;
-  gap: 0.6rem;
+  gap: .6rem;
 }
 .hero-preview {
   border-radius: 18px;
   background:
-    radial-gradient(1200px 450px at 0% 0%, rgba(148, 163, 255, 0.55), transparent 65%),
-    linear-gradient(180deg, rgba(15, 23, 42, 0.97), rgba(15, 23, 42, 0.9));
-  border: 1px dashed rgba(148, 163, 255, 0.7);
+    radial-gradient(1200px 450px at 0% 0%, rgba(148,163,255,0.55), transparent 65%),
+    linear-gradient(180deg, rgba(15,23,42,0.97), rgba(15,23,42,0.9));
+  border: 1px dashed rgba(148,163,255,0.7);
   display: grid;
   place-items: center;
   color: var(--text-soft);
   height: 240px;
+  cursor: zoom-in;
 }
 .hero-preview small {
-  font-size: 0.86rem;
+  font-size: .86rem;
   text-align: center;
   max-width: 80%;
 }
 .hero-panel-footer {
-  font-size: 0.78rem;
+  font-size: .78rem;
   color: var(--text-soft);
 }
+
+/* sections */
 main section {
   position: relative;
   padding: 4rem 0;
@@ -507,11 +517,11 @@ main section::before {
   content: "";
   position: absolute;
   inset: 0;
-  opacity: 0.3;
+  opacity: .3;
   pointer-events: none;
   background:
-    radial-gradient(700px 380px at 5% 0, rgba(59, 130, 246, 0.35), transparent 60%),
-    radial-gradient(650px 380px at 100% 100%, rgba(56, 189, 248, 0.28), transparent 60%);
+    radial-gradient(700px 380px at 5% 0, rgba(59,130,246,0.35), transparent 60%),
+    radial-gradient(650px 380px at 100% 100%, rgba(56,189,248,0.28), transparent 60%);
   mix-blend-mode: soft-light;
   z-index: -1;
 }
@@ -526,48 +536,50 @@ section[id] {
   margin-bottom: 1.8rem;
 }
 .section-title-block h2 {
-  margin: 0 0 0.35rem;
+  margin: 0 0 .35rem;
   font-size: 1.6rem;
-  letter-spacing: 0.16em;
+  letter-spacing: .16em;
   text-transform: uppercase;
 }
 .section-title-block p {
   margin: 0;
-  font-size: 0.93rem;
+  font-size: .93rem;
   color: var(--text-muted);
   max-width: 32rem;
 }
 .section-tag {
-  padding: 0.18rem 0.8rem;
+  padding: .18rem .8rem;
   border-radius: 999px;
   border: 1px solid var(--border-soft);
-  font-size: 0.8rem;
+  font-size: .8rem;
   color: #c7d2fe;
-  background: rgba(15, 23, 42, 0.97);
+  background: rgba(15,23,42,0.97);
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: .3rem;
 }
 .section-tag span.dot {
   width: 7px;
   height: 7px;
   border-radius: 999px;
   background: var(--accent-4);
-  box-shadow: 0 0 12px rgba(34, 197, 94, 1);
+  box-shadow: 0 0 12px rgba(34,197,94,1);
 }
+
+/* cards & grids */
 .grid {
   display: grid;
   gap: 1.1rem;
 }
 .grid-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0,1fr));
 }
 .grid-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0,1fr));
 }
 .card {
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.3), transparent 60%),
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.3), transparent 60%),
     var(--surface-soft);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-soft);
@@ -585,12 +597,12 @@ section[id] {
     filter var(--transition-med);
 }
 .card h3 {
-  margin: 0 0 0.35rem;
+  margin: 0 0 .35rem;
   font-size: 1.02rem;
 }
 .card p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: .9rem;
   color: var(--text-muted);
 }
 .card::before {
@@ -598,8 +610,8 @@ section[id] {
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.45), transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.45), transparent 60%);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.45), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(59,130,246,0.45), transparent 60%);
   opacity: 0;
   mix-blend-mode: soft-light;
   pointer-events: none;
@@ -616,17 +628,19 @@ section[id] {
 .card-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-top: 0.75rem;
+  gap: .4rem;
+  margin-top: .75rem;
 }
 .chip {
-  padding: 0.16rem 0.65rem;
+  padding: .16rem .65rem;
   border-radius: 999px;
   border: 1px solid var(--border-soft);
-  background: rgba(15, 23, 42, 0.96);
-  font-size: 0.78rem;
+  background: rgba(15,23,42,0.96);
+  font-size: .78rem;
   color: #c7d2fe;
 }
+
+/* method timeline */
 .timeline {
   display: grid;
   gap: 1rem;
@@ -634,7 +648,7 @@ section[id] {
 .step {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: 0.9rem;
+  gap: .9rem;
   align-items: flex-start;
 }
 .step-bullet {
@@ -642,68 +656,69 @@ section[id] {
   height: 16px;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 25% 0, rgba(148, 255, 225, 0.9), transparent 60%),
+    radial-gradient(circle at 25% 0, rgba(148,255,225,0.9), transparent 60%),
     #1d283a;
-  border: 1px solid rgba(148, 163, 255, 0.95);
-  box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.5);
-  margin-top: 0.1rem;
+  border: 1px solid rgba(148,163,255,0.95);
+  box-shadow: 0 0 0 5px rgba(59,130,246,0.5);
+  margin-top: .1rem;
 }
-.step strong {
-  font-size: 0.97rem;
-}
+.step strong { font-size: .97rem; }
 .step p {
-  margin: 0.2rem 0 0;
-  font-size: 0.9rem;
+  margin: .2rem 0 0;
+  font-size: .9rem;
   color: var(--text-muted);
 }
+
+/* tables */
 .table-wrap {
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid var(--border-soft);
-  background: rgba(15, 23, 42, 0.98);
+  background: rgba(15,23,42,0.98);
 }
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.86rem;
+  font-size: .86rem;
 }
 thead {
   background:
-    radial-gradient(circle at 0 0, rgba(96, 165, 250, 0.35), transparent 70%),
-    rgba(15, 23, 42, 0.96);
+    radial-gradient(circle at 0 0, rgba(96,165,250,0.35), transparent 70%),
+    rgba(15,23,42,0.96);
 }
-th,
-td {
-  padding: 0.75rem 0.9rem;
+th, td {
+  padding: .75rem .9rem;
   text-align: left;
-  border-bottom: 1px solid rgba(148, 163, 255, 0.18);
+  border-bottom: 1px solid rgba(148,163,255,0.18);
 }
 th {
-  font-size: 0.79rem;
-  letter-spacing: 0.16em;
+  font-size: .79rem;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: #c7d2fe;
 }
 tbody tr:nth-child(even) {
-  background: rgba(15, 23, 42, 0.96);
+  background: rgba(15,23,42,0.96);
 }
 tbody tr:hover {
   background:
-    radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.3), transparent 60%),
-    rgba(15, 23, 42, 0.98);
+    radial-gradient(circle at 0 0, rgba(56,189,248,0.3), transparent 60%),
+    rgba(15,23,42,0.98);
 }
 .results-note {
-  font-size: 0.82rem;
+  font-size: .82rem;
   color: var(--text-soft);
-  margin-top: 0.6rem;
+  margin-top: .6rem;
 }
+
+/* gallery */
 .dynamic-gallery {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  gap: .7rem;
 }
 .dynamic-gallery img {
-  width: calc(33.333% - 0.7rem);
+  width: calc(33.333% - .7rem);
   border-radius: 14px;
   border: 1px solid var(--border-soft);
   background: #020617;
@@ -722,9 +737,11 @@ tbody tr:hover {
   border-color: var(--border-subtle);
   filter: brightness(1.04);
 }
+
+/* compare slider */
 .compare-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0,1fr);
   gap: 1rem;
 }
 .compare {
@@ -734,12 +751,6 @@ tbody tr:hover {
   border: 1px solid var(--border-soft);
   background: #020617;
   box-shadow: var(--shadow-soft);
-}
-.compare-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 .compare-inner {
   position: relative;
@@ -751,25 +762,45 @@ tbody tr:hover {
   position: absolute;
   inset: 0;
 }
+.compare-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .compare-after {
   clip-path: inset(0 0 0 50%);
+}
+.compare-labels {
+  position: absolute;
+  inset: .8rem .8rem auto;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.compare-label {
+  padding: .16rem .6rem;
+  border-radius: 999px;
+  background: rgba(15,23,42,0.9);
+  font-size: .78rem;
+  border: 1px solid rgba(148,163,255,0.7);
 }
 .compare-slider {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  padding: 0.5rem 0.9rem 0.7rem;
-  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.7));
+  padding: .5rem .9rem .7rem;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.7));
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: .4rem;
 }
 .compare-slider input[type="range"] {
   flex: 1;
   appearance: none;
   height: 4px;
   border-radius: 999px;
-  background: rgba(148, 163, 255, 0.5);
+  background: rgba(148,163,255,0.5);
   outline: none;
 }
 .compare-slider input[type="range"]::-webkit-slider-thumb {
@@ -778,32 +809,20 @@ tbody tr:hover {
   height: 14px;
   border-radius: 999px;
   background: #e5edff;
-  border: 2px solid rgba(15, 23, 42, 0.95);
-  box-shadow: 0 0 0 4px rgba(148, 163, 255, 0.5);
+  border: 2px solid rgba(15,23,42,0.95);
+  box-shadow: 0 0 0 4px rgba(148,163,255,0.5);
 }
-.compare-labels {
-  position: absolute;
-  inset: 0.8rem 0.8rem auto;
-  display: flex;
-  justify-content: space-between;
-  pointer-events: none;
-}
-.compare-label {
-  padding: 0.16rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.9);
-  font-size: 0.78rem;
-  border: 1px solid rgba(148, 163, 255, 0.7);
-}
+
+/* qualitative */
 .qual-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0,1fr));
   gap: 1rem;
 }
 .qual-card {
   border-radius: 18px;
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.3), transparent 60%),
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.3), transparent 60%),
     var(--surface-soft);
   border: 1px solid var(--border-soft);
   padding: 1.1rem 1.1rem 1.2rem;
@@ -821,24 +840,27 @@ tbody tr:hover {
   border-color: var(--border-subtle);
 }
 .qual-title {
-  margin: 0 0 0.4rem;
-  font-size: 0.98rem;
+  margin: 0 0 .4rem;
+  font-size: .98rem;
 }
 .qual-img {
   border-radius: 14px;
-  border: 1px dashed rgba(148, 163, 255, 0.7);
+  border: 1px dashed rgba(148,163,255,0.7);
   background: #020617;
   display: grid;
   place-items: center;
-  font-size: 0.86rem;
+  font-size: .86rem;
   color: var(--text-soft);
   aspect-ratio: 4/3;
-  margin-bottom: 0.5rem;
+  margin-bottom: .5rem;
+  cursor: zoom-in;
 }
 .qual-text {
-  font-size: 0.84rem;
+  font-size: .84rem;
   color: var(--text-soft);
 }
+
+/* team */
 .team-section {
   position: relative;
   overflow: hidden;
@@ -848,9 +870,9 @@ tbody tr:hover {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(1200px 550px at 10% 0, rgba(59, 130, 246, 0.55), transparent 60%),
-    radial-gradient(1000px 500px at 90% 100%, rgba(34, 197, 94, 0.45), transparent 60%);
-  opacity: 0.7;
+    radial-gradient(1200px 550px at 10% 0, rgba(59,130,246,0.55), transparent 60%),
+    radial-gradient(1000px 500px at 90% 100%, rgba(34,197,94,0.45), transparent 60%);
+  opacity: .7;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: -2;
@@ -860,12 +882,12 @@ tbody tr:hover {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(2px 2px at 20% 30%, rgba(248, 250, 252, 0.95), transparent),
-    radial-gradient(2px 2px at 80% 70%, rgba(248, 250, 252, 0.9), transparent),
-    radial-gradient(2px 2px at 60% 20%, rgba(248, 250, 252, 0.9), transparent),
-    radial-gradient(1.5px 1.5px at 40% 80%, rgba(148, 163, 255, 1), transparent),
-    radial-gradient(1.5px 1.5px at 15% 75%, rgba(52, 211, 153, 1), transparent);
-  opacity: 0.38;
+    radial-gradient(2px 2px at 20% 30%, rgba(248,250,252,0.95), transparent),
+    radial-gradient(2px 2px at 80% 70%, rgba(248,250,252,0.9), transparent),
+    radial-gradient(2px 2px at 60% 20%, rgba(248,250,252,0.9), transparent),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(148,163,255,1), transparent),
+    radial-gradient(1.5px 1.5px at 15% 75%, rgba(52,211,153,1), transparent);
+  opacity: .38;
   pointer-events: none;
   z-index: -1;
 }
@@ -879,45 +901,45 @@ tbody tr:hover {
 .team-title-block h2 {
   margin: 0;
   font-size: 1.6rem;
-  letter-spacing: 0.16em;
+  letter-spacing: .16em;
   text-transform: uppercase;
 }
 .team-title-block p {
-  margin: 0.5rem 0 0;
-  font-size: 0.92rem;
+  margin: .5rem 0 0;
+  font-size: .92rem;
   color: var(--text-muted);
   max-width: 40rem;
 }
 .team-pill {
-  padding: 0.2rem 0.9rem;
+  padding: .2rem .9rem;
   border-radius: 999px;
   border: 1px solid var(--border-subtle);
-  background: rgba(15, 23, 42, 0.96);
-  font-size: 0.8rem;
+  background: rgba(15,23,42,0.96);
+  font-size: .8rem;
   color: #c7d2fe;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: .3rem;
 }
 .team-pill span.dot {
   width: 7px;
   height: 7px;
   border-radius: 999px;
   background: var(--accent-4);
-  box-shadow: 0 0 12px rgba(34, 197, 94, 1);
+  box-shadow: 0 0 12px rgba(34,197,94,1);
 }
 .team-row {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0,1fr));
   gap: 1rem;
   margin-top: 1rem;
 }
 .team-card {
   border-radius: 22px;
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.5), transparent 60%),
-    radial-gradient(circle at 100% 0, rgba(59, 130, 246, 0.5), transparent 60%),
-    rgba(15, 23, 42, 0.96);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.5), transparent 60%),
+    radial-gradient(circle at 100% 0, rgba(59,130,246,0.5), transparent 60%),
+    rgba(15,23,42,0.96);
   border: 1px solid var(--border-soft);
   padding: 1.35rem 1.1rem 1.45rem;
   text-align: center;
@@ -938,8 +960,8 @@ tbody tr:hover {
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(circle at 0 0, rgba(148, 255, 225, 0.6), transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.8), transparent 60%);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.6), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(59,130,246,0.8), transparent 60%);
   mix-blend-mode: soft-light;
   opacity: 0;
   pointer-events: none;
@@ -966,28 +988,30 @@ tbody tr:hover {
   color: #020617;
   font-size: 20px;
   box-shadow:
-    0 0 0 2px rgba(248, 250, 252, 0.95),
-    0 18px 40px rgba(15, 23, 42, 0.98);
+    0 0 0 2px rgba(248,250,252,0.95),
+    0 18px 40px rgba(15,23,42,0.98);
 }
 .team-name {
-  margin: 0.7rem 0 0.1rem;
+  margin: .7rem 0 .1rem;
   font-weight: 600;
-  font-size: 0.98rem;
+  font-size: .98rem;
 }
 .team-role-main {
-  font-size: 0.9rem;
+  font-size: .9rem;
   color: #e5edff;
 }
 .team-role-detail {
-  margin-top: 0.35rem;
-  font-size: 0.82rem;
+  margin-top: .35rem;
+  font-size: .82rem;
   color: var(--text-soft);
 }
+
+/* footer */
 footer {
   margin-top: 2rem;
   padding: 2.6rem 0 2.2rem;
   background:
-    linear-gradient(180deg, rgba(6, 10, 28, 0.96), #020617);
+    linear-gradient(180deg, rgba(6,10,28,0.96), #020617);
   border-top: 1px solid var(--border-soft);
 }
 .footer-grid {
@@ -996,33 +1020,29 @@ footer {
   display: grid;
   grid-template-columns: 1.7fr 1fr 1fr;
   gap: 1.4rem;
-  font-size: 0.86rem;
+  font-size: .86rem;
   color: var(--text-soft);
 }
 .footer-brand {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
-  margin-bottom: 0.4rem;
+  gap: .7rem;
+  margin-bottom: .4rem;
 }
-.footer-brand-title {
-  font-weight: 600;
-}
+.footer-brand-title { font-weight: 600; }
 .footer-col strong {
-  font-size: 0.92rem;
+  font-size: .92rem;
   color: var(--text-main);
 }
 .footer-links {
   list-style: none;
   padding: 0;
-  margin: 0.55rem 0 0;
+  margin: .55rem 0 0;
 }
-.footer-links li + li {
-  margin-top: 0.2rem;
-}
+.footer-links li + li { margin-top: .2rem; }
 .footer-links a {
   color: var(--text-main);
-  opacity: 0.88;
+  opacity: .88;
   transition:
     opacity var(--transition-fast),
     transform var(--transition-fast);
@@ -1031,6 +1051,8 @@ footer {
   opacity: 1;
   transform: translateX(2px);
 }
+
+/* back to top */
 .back-top {
   position: fixed;
   bottom: 1.6rem;
@@ -1040,13 +1062,13 @@ footer {
   border-radius: 999px;
   border: 1px solid var(--border-subtle);
   background:
-    radial-gradient(circle at 20% 0, rgba(148, 255, 225, 0.7), transparent 60%),
-    rgba(6, 10, 28, 0.98);
+    radial-gradient(circle at 20% 0, rgba(148,255,225,0.7), transparent 60%),
+    rgba(6,10,28,0.98);
   color: #e5edff;
   display: grid;
   place-items: center;
   cursor: pointer;
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.98);
+  box-shadow: 0 16px 45px rgba(0,0,0,0.98);
   opacity: 0;
   pointer-events: none;
   transform: translateY(8px);
@@ -1063,12 +1085,14 @@ footer {
   transform: translateY(0);
 }
 .back-top:hover {
-  box-shadow: 0 20px 52px rgba(0, 0, 0, 1);
+  box-shadow: 0 20px 52px rgba(0,0,0,1);
 }
+
+/* modal */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0,0,0,0.85);
   display: none;
   align-items: center;
   justify-content: center;
@@ -1082,11 +1106,11 @@ footer {
   max-width: 100%;
   max-height: 80vh;
   border-radius: 22px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.98);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.98);
 }
 .modal-caption {
-  margin-top: 0.6rem;
-  font-size: 0.86rem;
+  margin-top: .6rem;
+  font-size: .86rem;
   color: #e5edff;
   text-align: center;
 }
@@ -1097,14 +1121,16 @@ footer {
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  border: 1px solid rgba(148, 163, 255, 0.7);
-  background: rgba(15, 23, 42, 0.96);
+  border: 1px solid rgba(148,163,255,0.7);
+  background: rgba(15,23,42,0.96);
   display: grid;
   place-items: center;
   cursor: pointer;
   color: #e5edff;
   font-size: 1rem;
 }
+
+/* reveal */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -1116,9 +1142,11 @@ footer {
   opacity: 1;
   transform: translateY(0);
 }
-.tilt {
-  will-change: transform;
-}
+
+/* tilt */
+.tilt { will-change: transform; }
+
+/* animations */
 @keyframes navGradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -1131,24 +1159,16 @@ footer {
 }
 @keyframes teamGlow {
   0% { transform: translate3d(0,0,0); }
-  100% { transform: translate3d(-60px, -40px, 0); }
+  100% { transform: translate3d(-60px,-40px,0); }
 }
+
+/* responsive */
 @media (max-width: 1020px) {
-  .hero-inner {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .hero-panel {
-    order: -1;
-  }
-  .grid-3 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .team-row {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-  .footer-grid {
-    grid-template-columns: 1.4fr 1fr;
-  }
+  .hero-inner { grid-template-columns: minmax(0,1fr); }
+  .hero-panel { order: -1; }
+  .grid-3 { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .team-row { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .footer-grid { grid-template-columns: 1.4fr 1fr; }
 }
 @media (max-width: 820px) {
   .container,
@@ -1156,35 +1176,16 @@ footer {
   .footer-grid {
     width: min(100% - 2.1rem, var(--max-width));
   }
-  .nav-links {
-    display: none;
-  }
-  .nav-toggle {
-    display: inline-flex;
-  }
-  .hero {
-    padding-top: 3.5rem;
-  }
-  .hero-actions {
-    flex-direction: column;
-  }
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
+  .nav-links { display: none; }
+  .nav-toggle { display: inline-flex; }
+  .hero { padding-top: 3.5rem; }
+  .hero-actions { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
   .grid-2,
-  .grid-3 {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .qual-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .dynamic-gallery img {
-    width: calc(50% - 0.7rem);
-  }
-  .team-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .grid-3 { grid-template-columns: minmax(0,1fr); }
+  .qual-grid { grid-template-columns: minmax(0,1fr); }
+  .dynamic-gallery img { width: calc(50% - .7rem); }
+  .team-row { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .section-header,
   .team-header-row {
     align-items: flex-start;
@@ -1192,27 +1193,19 @@ footer {
   }
 }
 @media (max-width: 540px) {
-  .dynamic-gallery img {
-    width: 100%;
-  }
-  .hero-metrics {
-    gap: 0.75rem;
-  }
-  .team-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .footer-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  .dynamic-gallery img { width: 100%; }
+  .hero-metrics { gap: .75rem; }
+  .team-row { grid-template-columns: minmax(0,1fr); }
+  .footer-grid { grid-template-columns: minmax(0,1fr); }
 }
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
+    animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: .01ms !important;
   }
 }
 </style>
@@ -1278,9 +1271,9 @@ footer {
             <span>Multi-Label Pathologies</span>
           </h1>
           <p class="hero-subtitle">
-            We benchmark pre-trained CNNs to detect common thoracic findings from frontal chest X-rays.
-            The pipeline covers dataset curation, preprocessing, training, calibration, and error analysis
-            with clear, reproducible steps and interactive visualizations.
+            We investigate deep learning approaches for automated thoracic disease detection.
+            Using pre-trained CNNs on NIH ChestX-ray14 and CheXpert, we build a reproducible pipeline
+            for curation, preprocessing, training, calibration, and error analysis.
           </p>
           <div class="hero-actions">
             <button type="button" class="btn btn-primary" data-scroll="#results">
@@ -1336,8 +1329,8 @@ footer {
             <div class="hero-panel-chip">Drop-in image ready</div>
           </div>
           <div class="hero-panel-main">
-            <div class="hero-preview" data-modal-src="assets/roc_overview.png" data-modal-caption="Overall ROC / confusion matrix preview">
-              <small>Swap this box with an image element<br>for your favorite ROC or confusion matrix.</small>
+            <div class="hero-preview" data-modal-src="assets/roc_overview.png" data-modal-caption="Overall ROC and confusion matrix preview">
+              <small>Swap this box with an &lt;img&gt; element for your favorite ROC curves or confusion matrix.</small>
             </div>
             <div class="hero-panel-footer">
               Hint: replace the preview with
@@ -1355,8 +1348,8 @@ footer {
           <div class="section-title-block">
             <h2>DATASETS</h2>
             <p>
-              NIH ChestX-ray14 and CheXpert cohorts, curated with patient-wise splits, uncertainty handling,
-              and ethics-aware evaluation splits.
+              NIH ChestX-ray14 and CheXpert cohorts with patient-wise splits, uncertainty handling,
+              and ethics-aware test design following your report.
             </p>
           </div>
           <div class="section-tag">
@@ -1367,25 +1360,25 @@ footer {
         <div class="grid grid-3">
           <article class="card reveal tilt" data-tilt>
             <h3>NIH ChestX-ray14</h3>
-            <p>112,120 frontal CXRs with 14 pathology labels. Long-tailed, multi-label distribution.</p>
+            <p>112,120 frontal CXRs annotated for 14 pathologies with highly imbalanced, long-tailed labels.</p>
             <div class="card-chips">
               <span class="chip">Patient-wise split</span>
               <span class="chip">224×224 crop</span>
-              <span class="chip">Flip / crop / jitter</span>
+              <span class="chip">Standardized grayscale</span>
             </div>
           </article>
           <article class="card reveal tilt" data-tilt>
             <h3>CheXpert</h3>
-            <p>224,316 images with 5 labels (No Finding, Edema, Cardiomegaly, Consolidation, Pleural Effusion).</p>
+            <p>224,316 images with 5 competition labels (including Edema and Cardiomegaly), plus explicit uncertainty labels.</p>
             <div class="card-chips">
               <span class="chip">U-ignore / U-zero</span>
               <span class="chip">CLAHE preprocessing</span>
-              <span class="chip">Center-crop</span>
+              <span class="chip">Center crop</span>
             </div>
           </article>
           <article class="card reveal tilt" data-tilt>
             <h3>Test set & Ethics</h3>
-            <p>Balanced label prevalence, PHI-free, shortcut learning checks across devices, views, and demographics.</p>
+            <p>Held-out test sets balanced by label prevalence, PHI-free, with shortcut learning checks across device and view.</p>
             <div class="card-chips">
               <span class="chip">Stratified sampling</span>
               <span class="chip">AUC-PR focus</span>
@@ -1402,8 +1395,8 @@ footer {
           <div class="section-title-block">
             <h2>METHOD</h2>
             <p>
-              A reproducible pipeline for preprocessing, training, evaluation, and error analysis,
-              designed to be dropped into any PyTorch training loop.
+              A reproducible pipeline mirroring your report: preprocessing, model selection, training,
+              evaluation, and structured error analysis.
             </p>
           </div>
           <div class="section-tag">
@@ -1417,35 +1410,35 @@ footer {
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Preprocessing</strong>
-                <p>DICOM / PNG read → resize to 224×224 → grayscale normalization → optional CLAHE → train/valid/test patient-wise split.</p>
+                <p>DICOM/PNG load → resize to 224×224 → grayscale normalization → optional CLAHE → patient-wise train/validation/test split.</p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Models</strong>
-                <p>Transfer learning with ResNet-50, DenseNet-121, EfficientNet-B0. Final linear head with sigmoid for multi-label BCE.</p>
+                <p>DenseNet-121, EfficientNet-B4, and ResNet-50, initialized from ImageNet and adapted with a multi-label sigmoid head.</p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Training</strong>
-                <p>BCEWithLogitsLoss with class weights; AdamW; cosine LR schedule; early stopping on macro AUC-ROC.</p>
+                <p>BCEWithLogitsLoss with class weights, AdamW optimizer, cosine learning rate schedule, early stopping on validation macro AUC-ROC.</p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Evaluation</strong>
-                <p>Per-label AUC-ROC / AUC-PR, threshold tuning with Youden’s J, macro and micro metrics, temperature-scaled calibration.</p>
+                <p>Macro and micro AUC-ROC / AUC-PR, per-label metrics, Youden’s J for threshold selection, and temperature scaling for calibration.</p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Error Analysis</strong>
-                <p>Confusions by view, device, and sex, Grad-CAM sanity checks, slice-wise breakdown for long-tail classes, shortcut learning inspection.</p>
+                <p>Breakdown by pathology, view, and device, plus Grad-CAM sanity checks that highlight shortcut learning and missed findings.</p>
               </div>
             </div>
           </div>
@@ -1459,8 +1452,7 @@ footer {
           <div class="section-title-block">
             <h2>RESULTS</h2>
             <p>
-              Macro and per-label metrics summarizing validation performance across architectures,
-              with slots to drop in your own tables and CSV exports.
+              Summary metrics exactly following your report: model comparison table and ResNet-50 validation/test performance.
             </p>
           </div>
           <div class="section-tag">
@@ -1468,87 +1460,74 @@ footer {
             <span>Metrics</span>
           </div>
         </div>
+
         <div class="grid grid-2">
           <article class="card reveal">
-            <h3>Summary (Validation)</h3>
+            <h3>Model Comparison (Validation)</h3>
             <div class="table-wrap">
-              <table aria-label="Summary results">
+              <table aria-label="Model comparison">
                 <thead>
                   <tr>
                     <th>Model</th>
                     <th>Macro AUC-ROC</th>
-                    <th>Macro AUC-PR</th>
-                    <th>Params</th>
+                    <th>Macro F1</th>
+                    <th>Notes</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>DenseNet-121</td>
-                    <td>0.86</td>
-                    <td>0.41</td>
-                    <td>8.0M</td>
+                    <td>0.7407</td>
+                    <td>0.216</td>
+                    <td>Baseline configuration.</td>
+                  </tr>
+                  <tr>
+                    <td>EfficientNet-B4</td>
+                    <td>0.7503</td>
+                    <td>0.233</td>
+                    <td>Higher capacity but moderate gains.</td>
                   </tr>
                   <tr>
                     <td>ResNet-50</td>
-                    <td>0.84</td>
-                    <td>0.38</td>
-                    <td>25.6M</td>
-                  </tr>
-                  <tr>
-                    <td>EfficientNet-B0</td>
-                    <td>0.83</td>
-                    <td>0.36</td>
-                    <td>5.3M</td>
+                    <td>0.7966</td>
+                    <td>0.292</td>
+                    <td>Best overall performance.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p class="results-note">
-              Replace with your own metrics. Keeping both ROC and PR is important under heavy class imbalance.
+              Values taken directly from your report’s model comparison table; ResNet-50 clearly dominates both macro AUC-ROC and macro F1.
             </p>
           </article>
+
           <article class="card reveal">
-            <h3>Per-Label AUC-ROC (sample)</h3>
+            <h3>ResNet-50 Summary</h3>
             <div class="table-wrap">
-              <table aria-label="Per label AUC">
+              <table aria-label="ResNet50 summary">
                 <thead>
                   <tr>
-                    <th>Label</th>
-                    <th>AUC</th>
-                    <th>Support</th>
+                    <th></th>
+                    <th>Macro AUC-ROC</th>
+                    <th>Macro F1</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Cardiomegaly</td>
-                    <td>0.92</td>
-                    <td>8,753</td>
+                    <td>Validation</td>
+                    <td>0.795</td>
+                    <td>0.284</td>
                   </tr>
                   <tr>
-                    <td>Pleural Effusion</td>
-                    <td>0.90</td>
-                    <td>13,842</td>
-                  </tr>
-                  <tr>
-                    <td>Edema</td>
-                    <td>0.88</td>
-                    <td>6,410</td>
-                  </tr>
-                  <tr>
-                    <td>Consolidation</td>
-                    <td>0.81</td>
-                    <td>5,102</td>
-                  </tr>
-                  <tr>
-                    <td>No Finding</td>
-                    <td>0.78</td>
-                    <td>—</td>
+                    <td>Test</td>
+                    <td>0.757</td>
+                    <td>0.295</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p class="results-note">
-              Swap the example values for direct exports from your experiment logs or CSV files.
+              On the held-out test set, ResNet-50 maintains strong macro F1 while dropping slightly in macro AUC-ROC, consistent with your report.
             </p>
           </article>
         </div>
@@ -1559,17 +1538,17 @@ footer {
           <article class="card reveal">
             <h3>Confusion / ROC Gallery</h3>
             <div class="dynamic-gallery" data-gallery>
-              <img src="assets/roc_dense.png" alt="DenseNet ROC" data-caption="DenseNet-121 ROC curve">
-              <img src="assets/roc_resnet.png" alt="ResNet ROC" data-caption="ResNet-50 ROC curve">
-              <img src="assets/cm_cardio.png" alt="Cardiomegaly confusion matrix" data-caption="Cardiomegaly confusion matrix">
+              <img src="assets/roc_dense.png" alt="DenseNet ROC" data-caption="DenseNet-121 ROC curve on validation set">
+              <img src="assets/roc_resnet.png" alt="ResNet ROC" data-caption="ResNet-50 ROC curve on validation set">
+              <img src="assets/cm_cardio.png" alt="Cardiomegaly confusion matrix" data-caption="Cardiomegaly confusion matrix under ResNet-50">
             </div>
             <p class="results-note">
-              Add or remove <code>&lt;img&gt;</code> tags inside this gallery; the layout automatically adapts to any number of plots.
+              Add or remove <code>&lt;img&gt;</code> elements here; the gallery automatically reflows to support any number of plots.
             </p>
           </article>
 
           <article class="card reveal">
-            <h3>Grad-CAM comparison</h3>
+            <h3>Grad-CAM Comparison</h3>
             <div class="compare-grid">
               <div class="compare" data-compare>
                 <div class="compare-inner">
@@ -1587,7 +1566,7 @@ footer {
               </div>
             </div>
             <p class="results-note">
-              Replace <code>grad_before.png</code> and <code>grad_after.png</code> with any two images to create an interactive before/after comparison.
+              Swap <code>grad_before.png</code> and <code>grad_after.png</code> for any two images (e.g., baseline vs Grad-CAM); the slider controls the overlay ratio.
             </p>
           </article>
         </div>
@@ -1601,7 +1580,7 @@ footer {
             <h2>QUALITATIVE EXAMPLES</h2>
             <p>
               Qualitative predictions and Grad-CAM overlays illustrating true positives, false positives,
-              and false negatives under class imbalance.
+              and false negatives discussed in your error analysis.
             </p>
           </div>
           <div class="section-tag">
@@ -1616,7 +1595,8 @@ footer {
               gradcam_tp.png
             </div>
             <p class="qual-text">
-              Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette and ignores confounding devices.
+              Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette while ignoring confounding devices,
+              matching the qualitative analysis in your report.
             </p>
           </article>
           <article class="qual-card reveal tilt" data-tilt>
@@ -1625,7 +1605,7 @@ footer {
               gradcam_fp.png
             </div>
             <p class="qual-text">
-              Model spuriously attends to monitoring equipment; mitigated with device-aware augmentations and curated training subsets.
+              Model spuriously attends to monitoring equipment; you mitigate this with device-aware augmentations and improved sampling.
             </p>
           </article>
           <article class="qual-card reveal tilt" data-tilt>
@@ -1634,7 +1614,7 @@ footer {
               gradcam_fn.png
             </div>
             <p class="qual-text">
-              Small effusion missed at default threshold; recovered after label-specific threshold tuning and calibration.
+              Small effusion missed at default thresholds, but recovered after label-specific threshold tuning and calibration.
             </p>
           </article>
         </div>
@@ -1648,8 +1628,7 @@ footer {
           <div class="team-title-block">
             <h2>TEAM</h2>
             <p>
-              Team 11 · STA 160 · UC Davis — combining modeling, data curation,
-              training operations, visualization, and reporting.
+              Team 11 · STA 160 · UC Davis — roles and responsibilities exactly as in your report.
             </p>
           </div>
           <div class="team-pill">
@@ -1657,7 +1636,9 @@ footer {
             <span>STA 160 · UC Davis</span>
           </div>
         </div>
+
         <div class="team-row">
+          <!-- order strictly: Tina, Muhammad, Kayla, Lauren, Fang -->
           <article class="team-card tilt reveal" data-tilt>
             <div class="team-avatar" aria-hidden="true">ML</div>
             <div class="team-name">Muhammad Laiq</div>
@@ -1666,6 +1647,16 @@ footer {
               Model design, training strategy, hyperparameters, and primary report writing.
             </div>
           </article>
+
+          <article class="team-card tilt reveal" data-tilt>
+            <div class="team-avatar" aria-hidden="true">TY</div>
+            <div class="team-name">Tina Yu</div>
+            <div class="team-role-main">Training Ops & Visualization</div>
+            <div class="team-role-detail">
+              Experiments, training pipelines, hyperparameter sweeps, Grad-CAM and metric visualization.
+            </div>
+          </article>
+          
           <article class="team-card tilt reveal" data-tilt>
             <div class="team-avatar" aria-hidden="true">KS</div>
             <div class="team-name">Kayla Sham</div>
@@ -1674,14 +1665,7 @@ footer {
               Data cleaning, exploratory analysis, cohort statistics, and label distribution studies.
             </div>
           </article>
-          <article class="team-card tilt reveal" data-tilt>
-            <div class="team-avatar" aria-hidden="true">TY</div>
-            <div class="team-name">Tina Yu</div>
-            <div class="team-role-main">Training Ops & Visualization</div>
-            <div class="team-role-detail">
-              Experiment pipelines, hyperparameter sweeps, Grad-CAM and metric visualization.
-            </div>
-          </article>
+
           <article class="team-card tilt reveal" data-tilt>
             <div class="team-avatar" aria-hidden="true">LL</div>
             <div class="team-name">Lauren Le</div>
@@ -1690,6 +1674,7 @@ footer {
               Result synthesis, error analysis write-up, final STA 160 report and slide deck.
             </div>
           </article>
+
           <article class="team-card tilt reveal" data-tilt>
             <div class="team-avatar" aria-hidden="true">FS</div>
             <div class="team-name">Fang Shang</div>
@@ -1714,8 +1699,8 @@ footer {
           </div>
         </div>
         <p>
-          Multi-label thoracic pathology detection using NIH ChestX-ray14 and CheXpert.
-          Designed for transparent, reproducible evaluation and interactive storytelling.
+          Chest X-ray classification for multi-label thoracic pathologies using NIH ChestX-ray14
+          and CheXpert. This website mirrors the core findings of the Team 11 project report.
         </p>
       </div>
       <div class="footer-col">
@@ -1732,7 +1717,7 @@ footer {
         <ul class="footer-links">
           <li><a href="mailto:you@example.edu">you@example.edu</a></li>
           <li><a href="#">GitHub repo</a></li>
-          <li><a href="#">Paper / Report</a></li>
+          <li><a href="#">Paper / Report (PDF)</a></li>
         </ul>
       </div>
     </div>
@@ -1763,7 +1748,7 @@ if(backTop){backTop.addEventListener("click",function(){window.scrollTo({top:0,b
 var revealEls=document.querySelectorAll(".reveal");
 if("IntersectionObserver" in window){var revealObserver=new IntersectionObserver(function(entries,observer){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target)}})},{threshold:0.2});revealEls.forEach(function(el){revealObserver.observe(el)})}else{revealEls.forEach(function(el){el.classList.add("visible")})}
 var tiltEls=document.querySelectorAll("[data-tilt]");
-tiltEls.forEach(function(card){card.addEventListener("pointermove",function(e){var rect=card.getBoundingClientRect();var x=e.clientX-rect.left;var y=e.clientY-rect.top;var centerX=rect.width/2;var centerY=rect.height/2;var rotateX=((y-centerY)/centerY)*-6;var rotateY=((x-centerX)/centerX)*6;card.style.transform="perspective(1000px) rotateX("+rotateX+"deg) rotateY("+rotateY+"deg) translateY(-3px)"});card.addEventListener("pointerleave",function(){card.style.transform="translate3d(0,0,0)"})});
+tiltEls.forEach(function(card){card.addEventListener("pointermove",function(e){var rect=card.getBoundingClientRect();var x=e.clientX-rect.left;var y=e.clientY-rect.top;var cx=rect.width/2;var cy=rect.height/2;var rx=((y-cy)/cy)*-6;var ry=((x-cx)/cx)*6;card.style.transform="perspective(1000px) rotateX("+rx+"deg) rotateY("+ry+"deg) translateY(-3px)"});card.addEventListener("pointerleave",function(){card.style.transform="translate3d(0,0,0)"})});
 var metricChips=document.querySelectorAll("[data-count]");
 if("IntersectionObserver" in window){var metricObserver=new IntersectionObserver(function(entries,observer){entries.forEach(function(entry){if(entry.isIntersecting){var el=entry.target;var target=parseFloat(el.getAttribute("data-target")||"0");var suffix=el.getAttribute("data-suffix")||"";var numSpan=el.querySelector(".num");if(!numSpan)return;var start=null;function step(ts){if(!start)start=ts;var progress=Math.min((ts-start)/900,1);var val=Math.floor(target*progress);numSpan.textContent=val.toString();if(progress<1){window.requestAnimationFrame(step)}else{numSpan.textContent=target.toString()}}window.requestAnimationFrame(step);var suffixSpan=el.querySelector(".suffix");if(suffixSpan&&suffix){suffixSpan.textContent=suffix}observer.unobserve(el)}})},{threshold:0.6});metricChips.forEach(function(chip){metricObserver.observe(chip)})}
 document.querySelectorAll("[data-compare]").forEach(function(compare){var range=compare.querySelector('input[type="range"]');var after=compare.querySelector(".compare-after");if(!range||!after)return;range.addEventListener("input",function(){var value=parseInt(range.value,10);after.style.clipPath="inset(0 0 0 "+value+"%)"})});
