@@ -4,58 +4,34 @@
 <meta charset="utf-8" />
 <title>Chest X-ray Classification for Multi-Label Pathologies</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="Chest X-ray classification for multi-label thoracic pathologies using CNNs on NIH ChestX-ray14 and CheXpert." />
+<meta name="description" content="Chest X-ray classification for multi-label thoracic pathologies using CNNs on NIH ChestX-ray14." />
 <style>
 :root {
-  --bg: #020617;
-  --bg-alt: #020617;
-  --bg-elevated: #050b16;
-  --bg-soft: #070d1c;
-  --bg-softer: #0b1020;
-  --surface: #0f172a;
-  --surface-alt: #111827;
-  --surface-soft: #151b2f;
-  --border-subtle: rgba(148, 163, 255, 0.40);
-  --border-soft: rgba(148, 163, 255, 0.18);
+  --bg-0: #030712;
+  --bg-1: #020617;
+  --bg-2: #020617;
+  --bg-3: #050816;
+  --card-bg: rgba(12,21,40,0.96);
+  --card-border: rgba(148,163,255,0.5);
+  --card-border-soft: rgba(148,163,255,0.22);
   --text-main: #e5edff;
-  --text-muted: #a2b3d6;
+  --text-muted: #a3b4d6;
   --text-soft: #7f8fb0;
   --accent-1: #7aa2ff;
-  --accent-2: #9effcf;
+  --accent-2: #8ef2d4;
   --accent-3: #60a5fa;
   --accent-4: #22c55e;
   --danger: #fb7185;
-  --radius-lg: 22px;
-  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-md: 18px;
   --radius-pill: 999px;
-  --shadow-soft: 0 18px 60px rgba(15,23,42,0.9);
-  --shadow-strong: 0 26px 90px rgba(15,23,42,1);
+  --shadow-soft: 0 18px 55px rgba(15,23,42,0.92);
+  --shadow-strong: 0 26px 85px rgba(15,23,42,1);
   --max-width: 1180px;
-  --nav-height: 68px;
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", sans-serif;
+  --nav-height: 70px;
+  --font-sans: system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",sans-serif;
   --transition-fast: 160ms ease-out;
   --transition-med: 260ms ease-out;
-}
-[data-theme="light"] {
-  --bg: #f5f7ff;
-  --bg-alt: #eef2ff;
-  --bg-elevated: #e5ebff;
-  --bg-soft: #e0e7ff;
-  --bg-softer: #dbe3ff;
-  --surface: #ffffff;
-  --surface-alt: #f3f4ff;
-  --surface-soft: #edf0ff;
-  --border-subtle: rgba(79, 70, 229, 0.45);
-  --border-soft: rgba(129, 140, 248, 0.26);
-  --text-main: #020617;
-  --text-muted: #374151;
-  --text-soft: #6b7280;
-  --accent-1: #4f46e5;
-  --accent-2: #22c55e;
-  --accent-3: #6366f1;
-  --accent-4: #0ea5e9;
-  --shadow-soft: 0 18px 50px rgba(15,23,42,0.16);
-  --shadow-strong: 0 26px 70px rgba(15,23,42,0.24);
 }
 *,
 *::before,
@@ -63,7 +39,7 @@
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
-html, body {
+html,body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -72,9 +48,9 @@ html, body {
 body {
   font-family: var(--font-sans);
   background:
-    radial-gradient(1200px 800px at 10% 0%, rgba(118,166,255,0.40), transparent 60%),
-    radial-gradient(1200px 800px at 90% 100%, rgba(34,197,94,0.30), transparent 60%),
-    linear-gradient(180deg, var(--bg-alt) 0%, var(--bg) 45%, #000 100%);
+    radial-gradient(circle at 0 0, rgba(129,140,248,0.30), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(14,165,233,0.35), transparent 60%),
+    linear-gradient(180deg, #020617 0%, #020617 40%, #020617 100%);
   color: var(--text-main);
   line-height: 1.7;
   overflow-x: hidden;
@@ -102,18 +78,18 @@ button {
   z-index: 1;
 }
 
-/* NAV */
+/* nav */
 header {
   position: fixed;
   inset-inline: 0;
   top: 0;
-  z-index: 60;
-  backdrop-filter: blur(18px) saturate(190%);
+  z-index: 50;
+  backdrop-filter: blur(22px) saturate(180%);
   background:
     radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 55%),
-    linear-gradient(90deg, rgba(15,23,42,0.96), rgba(6,10,28,0.98));
-  border-bottom: 1px solid var(--border-soft);
-  box-shadow: 0 18px 50px rgba(0,0,0,0.85);
+    linear-gradient(90deg, rgba(3,7,18,0.97), rgba(15,23,42,0.99));
+  border-bottom: 1px solid rgba(148,163,255,0.38);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.95);
 }
 .nav-inner {
   width: min(100% - 3rem, var(--max-width));
@@ -126,26 +102,27 @@ header {
 .nav-left {
   display: flex;
   align-items: center;
-  gap: .75rem;
+  gap: .8rem;
 }
 .nav-logo {
   width: 40px;
   height: 40px;
   border-radius: 16px;
-  background: conic-gradient(from 220deg, #7af2ff, #4f46e5, #22c55e, #7af2ff);
+  background: conic-gradient(from 220deg,#8ef2d4,#4f46e5,#7aa2ff,#8ef2d4);
   display: grid;
   place-items: center;
   color: #020617;
   font-weight: 800;
   font-size: 18px;
   box-shadow:
-    0 0 0 2px rgba(248,250,252,0.98),
-    0 14px 34px rgba(15,23,42,0.98);
+    0 0 0 2px rgba(248,250,252,0.96),
+    0 16px 40px rgba(15,23,42,1);
 }
 .nav-title-main {
-  font-size: .96rem;
+  font-size: .98rem;
   font-weight: 600;
-  letter-spacing: .03em;
+  letter-spacing: .07em;
+  text-transform: uppercase;
 }
 .nav-title-sub {
   font-size: .78rem;
@@ -157,14 +134,14 @@ header {
   gap: .25rem;
 }
 .nav-link {
-  padding: .45rem .8rem;
+  padding: .48rem .9rem;
   border-radius: var(--radius-pill);
   font-size: .9rem;
   color: #e5edff;
-  opacity: .92;
+  opacity: .94;
   display: inline-flex;
   align-items: center;
-  gap: .28rem;
+  gap: .26rem;
   transition:
     background var(--transition-fast),
     color var(--transition-fast),
@@ -172,42 +149,40 @@ header {
     box-shadow var(--transition-fast),
     opacity var(--transition-fast);
 }
-.nav-link span.icon {
-  font-size: .8rem;
-}
+.nav-link span.icon { font-size: .8rem; }
 .nav-link:hover {
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 60%),
-    rgba(15,23,42,0.98);
-  box-shadow: 0 10px 26px rgba(15,23,42,0.9);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.4), transparent 60%),
+    rgba(15,23,42,0.96);
+  box-shadow: 0 12px 30px rgba(15,23,42,0.98);
   transform: translateY(-1px);
   opacity: 1;
 }
 .nav-link-primary {
-  background-image: linear-gradient(120deg, var(--accent-1), var(--accent-3), var(--accent-4));
+  background-image: linear-gradient(120deg,var(--accent-1),var(--accent-3),var(--accent-4));
   background-size: 220% 220%;
   color: #020617;
   font-weight: 600;
-  padding-inline: 1rem;
-  box-shadow: 0 16px 45px rgba(0,0,0,0.95);
+  padding-inline: 1.15rem;
+  box-shadow: 0 16px 45px rgba(0,0,0,0.96);
   animation: navGradient 12s ease-in-out infinite;
 }
 
-/* nav toggles */
+/* mobile nav */
 .nav-toggle {
   display: none;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(148,163,255,0.6);
   background:
-    radial-gradient(circle at 20% 0, rgba(148,255,225,0.55), transparent 60%),
-    rgba(6,10,28,0.96);
+    radial-gradient(circle at 20% 0, rgba(148,255,225,0.6), transparent 60%),
+    rgba(3,7,18,0.98);
   display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 12px 32px rgba(0,0,0,0.9);
+  box-shadow: 0 14px 35px rgba(0,0,0,0.96);
 }
 .nav-toggle-bar {
   width: 16px;
@@ -246,48 +221,20 @@ header {
   top: var(--nav-height);
   background:
     radial-gradient(circle at 0 0, rgba(148,255,225,0.4), transparent 60%),
-    rgba(6,10,28,0.98);
-  border-bottom: 1px solid var(--border-soft);
-  box-shadow: 0 16px 50px rgba(0,0,0,0.95);
-  z-index: 55;
+    rgba(3,7,18,0.98);
+  border-bottom: 1px solid rgba(148,163,255,0.35);
+  box-shadow: 0 18px 55px rgba(0,0,0,0.96);
+  z-index: 48;
 }
 .nav-mobile-inner {
   width: min(100% - 3rem, var(--max-width));
   margin-inline: auto;
-  padding: .85rem 0 1rem;
+  padding: .8rem 0 1rem;
   display: grid;
-  gap: .3rem;
+  gap: .32rem;
 }
 .nav-shell.nav-open .nav-mobile {
   display: block;
-}
-
-/* theme toggle */
-.theme-toggle {
-  width: 34px;
-  height: 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(148,163,255,0.65);
-  background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.7), transparent 55%),
-    rgba(6,10,28,0.98);
-  display: flex;
-  align-items: center;
-  padding-inline: 2px;
-  cursor: pointer;
-  position: relative;
-}
-.theme-thumb {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background: #e5edff;
-  box-shadow: 0 0 0 2px rgba(15,23,42,0.95);
-  transform: translateX(0);
-  transition: transform var(--transition-med);
-}
-[data-theme="light"] .theme-thumb {
-  transform: translateX(12px);
 }
 
 /* hero */
@@ -296,7 +243,7 @@ header {
   min-height: calc(100vh - var(--nav-height));
   display: flex;
   align-items: center;
-  padding: 4.6rem 0 4rem;
+  padding: 4.8rem 0 4rem;
   isolation: isolate;
 }
 .hero::before {
@@ -304,9 +251,9 @@ header {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(1600px 900px at 0 0, rgba(118,166,255,0.55), transparent 65%),
-    radial-gradient(1400px 900px at 100% 100%, rgba(34,197,94,0.55), transparent 65%);
-  opacity: .6;
+    radial-gradient(1200px 900px at 0 0, rgba(129,140,248,0.45), transparent 65%),
+    radial-gradient(1200px 900px at 100% 100%, rgba(56,189,248,0.4), transparent 65%);
+  opacity: .8;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: 0;
@@ -316,52 +263,52 @@ header {
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr);
-  gap: 2.6rem;
+  gap: 2.7rem;
   align-items: center;
 }
 .hero-kicker {
   font-size: .86rem;
-  letter-spacing: .16em;
+  letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--accent-2);
   font-weight: 600;
 }
 .hero-title {
-  margin: .6rem 0 .8rem;
+  margin: .55rem 0 .8rem;
   font-size: clamp(2.4rem, 4.6vw, 3.4rem);
   line-height: 1.06;
   letter-spacing: .04em;
 }
 .hero-title span {
-  background: linear-gradient(120deg, #ffffff, #dbeafe, #bbf7d0);
+  background: linear-gradient(120deg,#ffffff,#dbeafe,#bbf7d0);
   -webkit-background-clip: text;
   color: transparent;
 }
 .hero-subtitle {
   font-size: .99rem;
   color: var(--text-muted);
-  max-width: 44rem;
+  max-width: 42rem;
 }
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: .8rem;
-  margin-top: 1.7rem;
+  gap: .85rem;
+  margin-top: 1.8rem;
 }
 .btn {
   border: none;
   border-radius: var(--radius-pill);
-  padding: .9rem 1.45rem;
+  padding: .9rem 1.5rem;
   font-size: .95rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: .5rem;
-  background: rgba(15,23,42,0.95);
+  background: rgba(15,23,42,0.96);
   color: #e5edff;
-  border: 1px solid rgba(148,163,255,0.35);
-  box-shadow: 0 16px 45px rgba(0,0,0,0.9);
+  border: 1px solid rgba(148,163,255,0.4);
+  box-shadow: 0 16px 45px rgba(0,0,0,0.95);
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -372,7 +319,7 @@ header {
 }
 .btn span.icon { font-size: .95rem; }
 .btn-primary {
-  background-image: linear-gradient(120deg, var(--accent-1), var(--accent-3), var(--accent-4));
+  background-image: linear-gradient(120deg,var(--accent-1),var(--accent-3),var(--accent-4));
   background-size: 220% 220%;
   color: #020617;
   border-color: transparent;
@@ -382,11 +329,10 @@ header {
   background:
     radial-gradient(circle at 0 0, rgba(148,255,225,0.4), transparent 60%),
     rgba(15,23,42,0.98);
-  color: var(--text-main);
 }
 .btn-ghost {
   background: transparent;
-  border-color: rgba(148,163,255,0.3);
+  border-color: rgba(148,163,255,0.4);
   color: var(--text-soft);
 }
 .btn:hover {
@@ -400,17 +346,17 @@ header {
   display: flex;
   flex-wrap: wrap;
   gap: .9rem;
-  margin-top: 1.9rem;
+  margin-top: 2rem;
 }
 .metric-card {
   flex: 1 1 150px;
   min-width: 150px;
   background:
     radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 60%),
-    rgba(15,23,42,0.98);
-  border-radius: 18px;
-  border: 1px solid var(--border-soft);
-  padding: 1rem 1.1rem 1rem;
+    rgba(6,12,28,0.98);
+  border-radius: 20px;
+  border: 1px solid var(--card-border-soft);
+  padding: 1.05rem 1.1rem 1.1rem;
   box-shadow: var(--shadow-soft);
   transform-style: preserve-3d;
   transform: translate3d(0,0,0);
@@ -423,16 +369,16 @@ header {
 .metric-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-strong);
-  border-color: var(--border-subtle);
+  border-color: var(--card-border);
 }
 .metric-label {
   font-size: .76rem;
-  letter-spacing: .14em;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: #c7d2fe;
 }
 .metric-value {
-  font-size: 1.5rem;
+  font-size: 1.52rem;
   font-weight: 800;
   display: flex;
   align-items: baseline;
@@ -446,19 +392,19 @@ header {
 .metric-caption {
   font-size: .82rem;
   color: var(--text-soft);
-  margin-top: .25rem;
+  margin-top: .22rem;
 }
 
 /* hero panel */
 .hero-panel {
   position: relative;
-  border-radius: 26px;
+  border-radius: 28px;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.45), transparent 60%),
-    radial-gradient(circle at 100% 0, rgba(59,130,246,0.45), transparent 60%),
-    rgba(15,23,42,0.98);
-  border: 1px solid rgba(148,163,255,0.5);
-  padding: 1.2rem 1.2rem 1rem;
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.5), transparent 60%),
+    radial-gradient(circle at 100% 0, rgba(59,130,246,0.5), transparent 60%),
+    rgba(6,12,28,0.98);
+  border: 1px solid rgba(148,163,255,0.6);
+  padding: 1.15rem 1.2rem 1.1rem;
   box-shadow: var(--shadow-strong);
   transform-style: preserve-3d;
   transform: translate3d(0,0,0);
@@ -468,30 +414,26 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: .75rem;
+  margin-bottom: .8rem;
 }
 .hero-panel-title {
   font-size: .96rem;
   font-weight: 600;
 }
 .hero-panel-chip {
-  padding: .16rem .7rem;
+  padding: .18rem .74rem;
   border-radius: 999px;
-  border: 1px solid rgba(148,163,255,0.7);
-  font-size: .78rem;
+  border: 1px solid rgba(191,219,254,0.9);
+  font-size: .8rem;
   color: #e5edff;
-  background: rgba(15,23,42,0.9);
-}
-.hero-panel-main {
-  display: grid;
-  gap: .6rem;
+  background: rgba(15,23,42,0.95);
 }
 .hero-preview {
-  border-radius: 18px;
+  border-radius: 20px;
   background:
-    radial-gradient(1200px 450px at 0% 0%, rgba(148,163,255,0.55), transparent 65%),
-    linear-gradient(180deg, rgba(15,23,42,0.97), rgba(15,23,42,0.9));
-  border: 1px dashed rgba(148,163,255,0.7);
+    radial-gradient(1200px 420px at 0% 0%, rgba(129,140,248,0.5), transparent 65%),
+    linear-gradient(180deg, rgba(15,23,42,0.97), rgba(15,23,42,0.92));
+  border: 1px dashed rgba(191,219,254,0.9);
   display: grid;
   place-items: center;
   color: var(--text-soft);
@@ -504,24 +446,25 @@ header {
   max-width: 80%;
 }
 .hero-panel-footer {
-  font-size: .78rem;
+  font-size: .8rem;
   color: var(--text-soft);
+  margin-top: .7rem;
 }
 
 /* sections */
 main section {
   position: relative;
-  padding: 4rem 0;
+  padding: 4.2rem 0;
 }
 main section::before {
   content: "";
   position: absolute;
   inset: 0;
-  opacity: .3;
+  opacity: .28;
   pointer-events: none;
   background:
-    radial-gradient(700px 380px at 5% 0, rgba(59,130,246,0.35), transparent 60%),
-    radial-gradient(650px 380px at 100% 100%, rgba(56,189,248,0.28), transparent 60%);
+    radial-gradient(680px 360px at 5% 0, rgba(59,130,246,0.35), transparent 60%),
+    radial-gradient(650px 360px at 100% 100%, rgba(56,189,248,0.28), transparent 60%);
   mix-blend-mode: soft-light;
   z-index: -1;
 }
@@ -532,8 +475,8 @@ section[id] {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 1.2rem;
-  margin-bottom: 1.8rem;
+  gap: 1.3rem;
+  margin-bottom: 1.9rem;
 }
 .section-title-block h2 {
   margin: 0 0 .35rem;
@@ -548,12 +491,12 @@ section[id] {
   max-width: 32rem;
 }
 .section-tag {
-  padding: .18rem .8rem;
+  padding: .2rem .86rem;
   border-radius: 999px;
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--card-border-soft);
   font-size: .8rem;
   color: #c7d2fe;
-  background: rgba(15,23,42,0.97);
+  background: rgba(6,12,28,0.96);
   display: inline-flex;
   align-items: center;
   gap: .3rem;
@@ -566,24 +509,21 @@ section[id] {
   box-shadow: 0 0 12px rgba(34,197,94,1);
 }
 
-/* cards & grids */
+/* grids & cards */
 .grid {
   display: grid;
-  gap: 1.1rem;
+  gap: 1.15rem;
 }
-.grid-2 {
-  grid-template-columns: repeat(2, minmax(0,1fr));
-}
-.grid-3 {
-  grid-template-columns: repeat(3, minmax(0,1fr));
-}
+.grid-2 { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.grid-3 { grid-template-columns: repeat(3,minmax(0,1fr)); }
+
 .card {
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.3), transparent 60%),
-    var(--surface-soft);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 60%),
+    var(--card-bg);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-soft);
-  padding: 1.25rem 1.2rem 1.35rem;
+  border: 1px solid var(--card-border-soft);
+  padding: 1.25rem 1.2rem 1.4rem;
   box-shadow: var(--shadow-soft);
   position: relative;
   overflow: hidden;
@@ -596,22 +536,13 @@ section[id] {
     background var(--transition-med),
     filter var(--transition-med);
 }
-.card h3 {
-  margin: 0 0 .35rem;
-  font-size: 1.02rem;
-}
-.card p {
-  margin: 0;
-  font-size: .9rem;
-  color: var(--text-muted);
-}
 .card::before {
   content: "";
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.45), transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(59,130,246,0.45), transparent 60%);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.5), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(59,130,246,0.6), transparent 60%);
   opacity: 0;
   mix-blend-mode: soft-light;
   pointer-events: none;
@@ -619,23 +550,31 @@ section[id] {
 }
 .card:hover {
   transform: translateY(-4px);
-  border-color: var(--border-subtle);
+  border-color: var(--card-border);
   box-shadow: var(--shadow-strong);
+  filter: brightness(1.03);
 }
-.card:hover::before {
-  opacity: 1;
+.card:hover::before { opacity: 1; }
+.card h3 {
+  margin: 0 0 .4rem;
+  font-size: 1.04rem;
+}
+.card p {
+  margin: 0;
+  font-size: .9rem;
+  color: var(--text-muted);
 }
 .card-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: .4rem;
-  margin-top: .75rem;
+  gap: .45rem;
+  margin-top: .8rem;
 }
 .chip {
-  padding: .16rem .65rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-soft);
-  background: rgba(15,23,42,0.96);
+  padding: .18rem .7rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--card-border-soft);
+  background: rgba(6,12,28,0.96);
   font-size: .78rem;
   color: #c7d2fe;
 }
@@ -643,22 +582,22 @@ section[id] {
 /* method timeline */
 .timeline {
   display: grid;
-  gap: 1rem;
+  gap: 1.1rem;
 }
 .step {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: .9rem;
+  gap: .95rem;
   align-items: flex-start;
 }
 .step-bullet {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 25% 0, rgba(148,255,225,0.9), transparent 60%),
-    #1d283a;
-  border: 1px solid rgba(148,163,255,0.95);
+    radial-gradient(circle at 25% 0, rgba(148,255,225,0.95), transparent 65%),
+    #111827;
+  border: 1px solid rgba(191,219,254,0.95);
   box-shadow: 0 0 0 5px rgba(59,130,246,0.5);
   margin-top: .1rem;
 }
@@ -673,8 +612,8 @@ section[id] {
 .table-wrap {
   border-radius: 18px;
   overflow: hidden;
-  border: 1px solid var(--border-soft);
-  background: rgba(15,23,42,0.98);
+  border: 1px solid var(--card-border-soft);
+  background: rgba(6,12,28,0.98);
 }
 table {
   width: 100%;
@@ -686,8 +625,8 @@ thead {
     radial-gradient(circle at 0 0, rgba(96,165,250,0.35), transparent 70%),
     rgba(15,23,42,0.96);
 }
-th, td {
-  padding: .75rem .9rem;
+th,td {
+  padding: .78rem .9rem;
   text-align: left;
   border-bottom: 1px solid rgba(148,163,255,0.18);
 }
@@ -698,12 +637,12 @@ th {
   color: #c7d2fe;
 }
 tbody tr:nth-child(even) {
-  background: rgba(15,23,42,0.96);
+  background: rgba(6,12,28,0.98);
 }
 tbody tr:hover {
   background:
-    radial-gradient(circle at 0 0, rgba(56,189,248,0.3), transparent 60%),
-    rgba(15,23,42,0.98);
+    radial-gradient(circle at 0 0, rgba(56,189,248,0.26), transparent 60%),
+    rgba(6,12,28,0.98);
 }
 .results-note {
   font-size: .82rem;
@@ -719,8 +658,8 @@ tbody tr:hover {
 }
 .dynamic-gallery img {
   width: calc(33.333% - .7rem);
-  border-radius: 14px;
-  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  border: 1px solid var(--card-border-soft);
   background: #020617;
   object-fit: cover;
   aspect-ratio: 4/3;
@@ -734,8 +673,8 @@ tbody tr:hover {
 .dynamic-gallery img:hover {
   transform: translateY(-3px) scale(1.03);
   box-shadow: var(--shadow-soft);
-  border-color: var(--border-subtle);
-  filter: brightness(1.04);
+  border-color: var(--card-border);
+  filter: brightness(1.05);
 }
 
 /* compare slider */
@@ -746,9 +685,9 @@ tbody tr:hover {
 }
 .compare {
   position: relative;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--card-border-soft);
   background: #020617;
   box-shadow: var(--shadow-soft);
 }
@@ -781,16 +720,16 @@ tbody tr:hover {
 .compare-label {
   padding: .16rem .6rem;
   border-radius: 999px;
-  background: rgba(15,23,42,0.9);
+  background: rgba(12,21,40,0.96);
   font-size: .78rem;
-  border: 1px solid rgba(148,163,255,0.7);
+  border: 1px solid rgba(191,219,254,0.95);
 }
 .compare-slider {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
   padding: .5rem .9rem .7rem;
-  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.7));
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.8));
   display: flex;
   align-items: center;
   gap: .4rem;
@@ -800,7 +739,7 @@ tbody tr:hover {
   appearance: none;
   height: 4px;
   border-radius: 999px;
-  background: rgba(148,163,255,0.5);
+  background: rgba(148,163,255,0.7);
   outline: none;
 }
 .compare-slider input[type="range"]::-webkit-slider-thumb {
@@ -816,16 +755,16 @@ tbody tr:hover {
 /* qualitative */
 .qual-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 1.05rem;
 }
 .qual-card {
-  border-radius: 18px;
+  border-radius: 20px;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.3), transparent 60%),
-    var(--surface-soft);
-  border: 1px solid var(--border-soft);
-  padding: 1.1rem 1.1rem 1.2rem;
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.32), transparent 60%),
+    rgba(12,21,40,0.96);
+  border: 1px solid var(--card-border-soft);
+  padding: 1.15rem 1.1rem 1.25rem;
   box-shadow: var(--shadow-soft);
   transform-style: preserve-3d;
   transform: translate3d(0,0,0);
@@ -837,7 +776,7 @@ tbody tr:hover {
 .qual-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-strong);
-  border-color: var(--border-subtle);
+  border-color: var(--card-border);
 }
 .qual-title {
   margin: 0 0 .4rem;
@@ -845,14 +784,14 @@ tbody tr:hover {
 }
 .qual-img {
   border-radius: 14px;
-  border: 1px dashed rgba(148,163,255,0.7);
+  border: 1px dashed rgba(191,219,254,0.9);
   background: #020617;
   display: grid;
   place-items: center;
   font-size: .86rem;
   color: var(--text-soft);
   aspect-ratio: 4/3;
-  margin-bottom: .5rem;
+  margin-bottom: .55rem;
   cursor: zoom-in;
 }
 .qual-text {
@@ -872,7 +811,7 @@ tbody tr:hover {
   background:
     radial-gradient(1200px 550px at 10% 0, rgba(59,130,246,0.55), transparent 60%),
     radial-gradient(1000px 500px at 90% 100%, rgba(34,197,94,0.45), transparent 60%);
-  opacity: .7;
+  opacity: .9;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: -2;
@@ -887,7 +826,7 @@ tbody tr:hover {
     radial-gradient(2px 2px at 60% 20%, rgba(248,250,252,0.9), transparent),
     radial-gradient(1.5px 1.5px at 40% 80%, rgba(148,163,255,1), transparent),
     radial-gradient(1.5px 1.5px at 15% 75%, rgba(52,211,153,1), transparent);
-  opacity: .38;
+  opacity: .35;
   pointer-events: none;
   z-index: -1;
 }
@@ -895,8 +834,8 @@ tbody tr:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.2rem;
-  margin-bottom: 1.5rem;
+  gap: 1.3rem;
+  margin-bottom: 1.7rem;
 }
 .team-title-block h2 {
   margin: 0;
@@ -911,10 +850,10 @@ tbody tr:hover {
   max-width: 40rem;
 }
 .team-pill {
-  padding: .2rem .9rem;
-  border-radius: 999px;
-  border: 1px solid var(--border-subtle);
-  background: rgba(15,23,42,0.96);
+  padding: .22rem .95rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--card-border);
+  background: rgba(6,12,28,0.96);
   font-size: .8rem;
   color: #c7d2fe;
   display: inline-flex;
@@ -930,17 +869,17 @@ tbody tr:hover {
 }
 .team-row {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0,1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  gap: 1.05rem;
   margin-top: 1rem;
 }
 .team-card {
   border-radius: 22px;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.5), transparent 60%),
-    radial-gradient(circle at 100% 0, rgba(59,130,246,0.5), transparent 60%),
-    rgba(15,23,42,0.96);
-  border: 1px solid var(--border-soft);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.52), transparent 60%),
+    radial-gradient(circle at 100% 0, rgba(59,130,246,0.55), transparent 60%),
+    rgba(6,12,28,0.96);
+  border: 1px solid var(--card-border-soft);
   padding: 1.35rem 1.1rem 1.45rem;
   text-align: center;
   position: relative;
@@ -960,7 +899,7 @@ tbody tr:hover {
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.6), transparent 60%),
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.65), transparent 60%),
     radial-gradient(circle at 100% 100%, rgba(59,130,246,0.8), transparent 60%);
   mix-blend-mode: soft-light;
   opacity: 0;
@@ -970,49 +909,46 @@ tbody tr:hover {
 .team-card:hover {
   transform: translateY(-5px);
   box-shadow: var(--shadow-strong);
-  border-color: var(--border-subtle);
+  border-color: var(--card-border);
   filter: brightness(1.03);
 }
-.team-card:hover::before {
-  opacity: 1;
-}
+.team-card:hover::before { opacity: 1; }
 .team-avatar {
-  width: 76px;
-  height: 76px;
+  width: 78px;
+  height: 78px;
   border-radius: 999px;
   margin-inline: auto;
-  background: conic-gradient(from 220deg, #7af2ff, #4f46e5, #a5ffe1, #7af2ff);
+  background: conic-gradient(from 220deg,#8ef2d4,#4f46e5,#7aa2ff,#8ef2d4);
   display: grid;
   place-items: center;
   font-weight: 800;
   color: #020617;
   font-size: 20px;
   box-shadow:
-    0 0 0 2px rgba(248,250,252,0.95),
-    0 18px 40px rgba(15,23,42,0.98);
+    0 0 0 2px rgba(248,250,252,0.96),
+    0 18px 42px rgba(15,23,42,1);
 }
 .team-name {
   margin: .7rem 0 .1rem;
   font-weight: 600;
-  font-size: .98rem;
+  font-size: .99rem;
 }
 .team-role-main {
   font-size: .9rem;
   color: #e5edff;
 }
 .team-role-detail {
-  margin-top: .35rem;
+  margin-top: .4rem;
   font-size: .82rem;
   color: var(--text-soft);
 }
 
 /* footer */
 footer {
-  margin-top: 2rem;
-  padding: 2.6rem 0 2.2rem;
-  background:
-    linear-gradient(180deg, rgba(6,10,28,0.96), #020617);
-  border-top: 1px solid var(--border-soft);
+  margin-top: 2.3rem;
+  padding: 2.8rem 0 2.4rem;
+  background: linear-gradient(180deg,#020617,#020617);
+  border-top: 1px solid rgba(148,163,255,0.35);
 }
 .footer-grid {
   width: min(100% - 3rem, var(--max-width));
@@ -1026,7 +962,7 @@ footer {
 .footer-brand {
   display: flex;
   align-items: center;
-  gap: .7rem;
+  gap: .8rem;
   margin-bottom: .4rem;
 }
 .footer-brand-title { font-weight: 600; }
@@ -1055,15 +991,15 @@ footer {
 /* back to top */
 .back-top {
   position: fixed;
-  bottom: 1.6rem;
-  right: 1.6rem;
+  bottom: 1.7rem;
+  right: 1.7rem;
   width: 42px;
   height: 42px;
   border-radius: 999px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(148,163,255,0.7);
   background:
     radial-gradient(circle at 20% 0, rgba(148,255,225,0.7), transparent 60%),
-    rgba(6,10,28,0.98);
+    rgba(3,7,18,0.98);
   color: #e5edff;
   display: grid;
   place-items: center;
@@ -1077,7 +1013,7 @@ footer {
     transform var(--transition-med),
     box-shadow var(--transition-fast),
     background var(--transition-fast);
-  z-index: 70;
+  z-index: 60;
 }
 .back-top.visible {
   opacity: 1;
@@ -1085,18 +1021,18 @@ footer {
   transform: translateY(0);
 }
 .back-top:hover {
-  box-shadow: 0 20px 52px rgba(0,0,0,1);
+  box-shadow: 0 20px 54px rgba(0,0,0,1);
 }
 
 /* modal */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.86);
   display: none;
   align-items: center;
   justify-content: center;
-  z-index: 80;
+  z-index: 70;
 }
 .modal-inner {
   max-width: 90vw;
@@ -1116,12 +1052,12 @@ footer {
 }
 .modal-close {
   position: absolute;
-  top: 1.6rem;
-  right: 1.6rem;
+  top: 1.7rem;
+  right: 1.7rem;
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  border: 1px solid rgba(148,163,255,0.7);
+  border: 1px solid rgba(191,219,254,0.9);
   background: rgba(15,23,42,0.96);
   display: grid;
   place-items: center;
@@ -1142,9 +1078,6 @@ footer {
   opacity: 1;
   transform: translateY(0);
 }
-
-/* tilt */
-.tilt { will-change: transform; }
 
 /* animations */
 @keyframes navGradient {
@@ -1178,7 +1111,7 @@ footer {
   }
   .nav-links { display: none; }
   .nav-toggle { display: inline-flex; }
-  .hero { padding-top: 3.5rem; }
+  .hero { padding-top: 3.6rem; }
   .hero-actions { flex-direction: column; }
   .btn { width: 100%; justify-content: center; }
   .grid-2,
@@ -1232,18 +1165,10 @@ footer {
             View results
             <span class="icon">↗</span>
           </a>
-          <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-            <div class="theme-thumb"></div>
-          </button>
         </nav>
-        <div class="nav-right">
-          <button type="button" class="theme-toggle" id="themeToggleMobile" aria-label="Toggle theme">
-            <div class="theme-thumb"></div>
-          </button>
-          <button type="button" class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-            <span class="nav-toggle-bar"></span>
-          </button>
-        </div>
+        <button type="button" class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+          <span class="nav-toggle-bar"></span>
+        </button>
       </div>
       <div class="nav-mobile" id="navMobile">
         <div class="nav-mobile-inner">
@@ -1265,15 +1190,15 @@ footer {
     <section class="hero" id="overview">
       <div class="container hero-inner">
         <div class="reveal">
-          <div class="hero-kicker">NIH ChestX-ray14 · CheXpert · CNNs · Transfer Learning</div>
+          <div class="hero-kicker">NIH ChestX-ray14 · CNNs · Transfer Learning</div>
           <h1 class="hero-title">
             Chest X-ray Classification for
             <span>Multi-Label Pathologies</span>
           </h1>
           <p class="hero-subtitle">
             We investigate deep learning approaches for automated thoracic disease detection.
-            Using pre-trained CNNs on NIH ChestX-ray14 and CheXpert, we build a reproducible pipeline
-            for curation, preprocessing, training, calibration, and error analysis.
+            Using pre-trained CNNs on the NIH ChestX-ray14 dataset, we build a reproducible pipeline for
+            curation, preprocessing, training, calibration, and error analysis.
           </p>
           <div class="hero-actions">
             <button type="button" class="btn btn-primary" data-scroll="#results">
@@ -1281,7 +1206,7 @@ footer {
               <span class="icon">⟶</span>
             </button>
             <button type="button" class="btn btn-secondary" data-scroll="#method">
-              See pipeline
+              See the method
               <span class="icon">▾</span>
             </button>
             <button type="button" class="btn btn-ghost" data-scroll="#gallery">
@@ -1290,53 +1215,51 @@ footer {
             </button>
           </div>
           <div class="hero-metrics">
-            <div class="metric-card tilt reveal" data-tilt data-count data-target="112" data-suffix="k+">
-              <div class="metric-label">NIH images</div>
+            <div class="metric-card reveal" data-count data-target="112" data-suffix="k+">
+              <div class="metric-label">NIH IMAGES</div>
               <div class="metric-value">
                 <span class="num">112</span>
                 <span class="suffix">k+</span>
               </div>
-              <div class="metric-caption">Frontal CXRs from ChestX-ray14.</div>
+              <div class="metric-caption">Frontal chest X-rays from ChestX-ray14.</div>
             </div>
-            <div class="metric-card tilt reveal" data-tilt data-count data-target="224" data-suffix="k+">
-              <div class="metric-label">CheXpert images</div>
-              <div class="metric-value">
-                <span class="num">224</span>
-                <span class="suffix">k+</span>
-              </div>
-              <div class="metric-caption">Competition subset with 5 labels.</div>
-            </div>
-            <div class="metric-card tilt reveal" data-tilt data-count data-target="14">
-              <div class="metric-label">NIH labels</div>
+            <div class="metric-card reveal" data-count data-target="14">
+              <div class="metric-label">PATHOLOGY LABELS</div>
               <div class="metric-value">
                 <span class="num">14</span>
               </div>
-              <div class="metric-caption">Multi-label pathology targets.</div>
+              <div class="metric-caption">Multi-label thoracic findings per image.</div>
             </div>
-            <div class="metric-card tilt reveal" data-tilt data-count data-target="5">
-              <div class="metric-label">CheXpert labels</div>
+            <div class="metric-card reveal" data-count data-target="3">
+              <div class="metric-label">CNN BACKBONES</div>
               <div class="metric-value">
-                <span class="num">5</span>
+                <span class="num">3</span>
               </div>
-              <div class="metric-caption">Edema, Cardiomegaly, and more.</div>
+              <div class="metric-caption">DenseNet-121, EfficientNet-B4, and ResNet-50.</div>
+            </div>
+            <div class="metric-card reveal" data-count data-target="70" data-suffix="%">
+              <div class="metric-label">TRAINING SPLIT</div>
+              <div class="metric-value">
+                <span class="num">70</span>
+                <span class="suffix">%</span>
+              </div>
+              <div class="metric-caption">Patient-wise train / validation / test partitioning.</div>
             </div>
           </div>
         </div>
 
-        <aside class="hero-panel tilt reveal" data-tilt aria-label="Preview card">
+        <aside class="hero-panel reveal" aria-label="Preview card">
           <div class="hero-panel-header">
             <div class="hero-panel-title">Confusion Matrix / ROC preview</div>
             <div class="hero-panel-chip">Drop-in image ready</div>
           </div>
-          <div class="hero-panel-main">
-            <div class="hero-preview" data-modal-src="assets/roc_overview.png" data-modal-caption="Overall ROC and confusion matrix preview">
-              <small>Swap this box with an &lt;img&gt; element for your favorite ROC curves or confusion matrix.</small>
-            </div>
-            <div class="hero-panel-footer">
-              Hint: replace the preview with
-              <code>&lt;img src="assets/roc_overview.png" alt="ROC curves for pathologies"&gt;</code>
-              or any figure from your experiments.
-            </div>
+          <div class="hero-preview" data-modal-src="assets/roc_overview.png" data-modal-caption="Overall ROC curves and confusion matrix">
+            <small>Swap this box with an &lt;img&gt; element for your favorite ROC curves or confusion matrix.</small>
+          </div>
+          <div class="hero-panel-footer">
+            Replace the preview with
+            <code>&lt;img src="assets/roc_overview.png" alt="ROC curves for pathologies"&gt;</code>
+            or any figure from your experiment logs.
           </div>
         </aside>
       </div>
@@ -1348,8 +1271,8 @@ footer {
           <div class="section-title-block">
             <h2>DATASETS</h2>
             <p>
-              NIH ChestX-ray14 and CheXpert cohorts with patient-wise splits, uncertainty handling,
-              and ethics-aware test design following your report.
+              NIH ChestX-ray14 processed using patient-wise splits, calibrated evaluation,
+              and ethics-conscious test design.
             </p>
           </div>
           <div class="section-tag">
@@ -1358,31 +1281,31 @@ footer {
           </div>
         </div>
         <div class="grid grid-3">
-          <article class="card reveal tilt" data-tilt>
+          <article class="card reveal">
             <h3>NIH ChestX-ray14</h3>
-            <p>112,120 frontal CXRs annotated for 14 pathologies with highly imbalanced, long-tailed labels.</p>
+            <p>112,120 frontal chest X-rays annotated for 14 thoracic pathologies with long-tailed label distributions.</p>
             <div class="card-chips">
-              <span class="chip">Patient-wise split</span>
-              <span class="chip">224×224 crop</span>
-              <span class="chip">Standardized grayscale</span>
+              <span class="chip">Multi-label targets</span>
+              <span class="chip">Frontal view</span>
+              <span class="chip">Public benchmark</span>
             </div>
           </article>
-          <article class="card reveal tilt" data-tilt>
-            <h3>CheXpert</h3>
-            <p>224,316 images with 5 competition labels (including Edema and Cardiomegaly), plus explicit uncertainty labels.</p>
+          <article class="card reveal">
+            <h3>Preprocessing & Splits</h3>
+            <p>Images are resized to 224×224, normalized to single-channel grayscale, and split at the patient level into training, validation, and test sets.</p>
             <div class="card-chips">
-              <span class="chip">U-ignore / U-zero</span>
-              <span class="chip">CLAHE preprocessing</span>
-              <span class="chip">Center crop</span>
+              <span class="chip">224×224 resize</span>
+              <span class="chip">Grayscale normalization</span>
+              <span class="chip">Patient-wise splits</span>
             </div>
           </article>
-          <article class="card reveal tilt" data-tilt>
-            <h3>Test set & Ethics</h3>
-            <p>Held-out test sets balanced by label prevalence, PHI-free, with shortcut learning checks across device and view.</p>
+          <article class="card reveal">
+            <h3>Ethics & Evaluation</h3>
+            <p>Held-out evaluation prioritizes label prevalence, calibration, and sensitivity to potential shortcut features such as devices and view position.</p>
             <div class="card-chips">
-              <span class="chip">Stratified sampling</span>
-              <span class="chip">AUC-PR focus</span>
-              <span class="chip">Bias audits</span>
+              <span class="chip">Stratified test set</span>
+              <span class="chip">Calibration checks</span>
+              <span class="chip">Shortcut analysis</span>
             </div>
           </article>
         </div>
@@ -1395,8 +1318,7 @@ footer {
           <div class="section-title-block">
             <h2>METHOD</h2>
             <p>
-              A reproducible pipeline mirroring your report: preprocessing, model selection, training,
-              evaluation, and structured error analysis.
+              A stepwise pipeline from raw DICOM/PNG files to calibrated, interpretable multi-label predictions.
             </p>
           </div>
           <div class="section-tag">
@@ -1410,35 +1332,35 @@ footer {
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Preprocessing</strong>
-                <p>DICOM/PNG load → resize to 224×224 → grayscale normalization → optional CLAHE → patient-wise train/validation/test split.</p>
+                <p>DICOM/PNG load → resize to 224×224 → grayscale normalization → optional contrast enhancement → patient-wise train/validation/test split.</p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
-                <strong>Models</strong>
-                <p>DenseNet-121, EfficientNet-B4, and ResNet-50, initialized from ImageNet and adapted with a multi-label sigmoid head.</p>
+                <strong>Model architectures</strong>
+                <p>DenseNet-121, EfficientNet-B4, and ResNet-50 initialized from ImageNet, with a final sigmoid layer for multi-label classification.</p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
-                <strong>Training</strong>
-                <p>BCEWithLogitsLoss with class weights, AdamW optimizer, cosine learning rate schedule, early stopping on validation macro AUC-ROC.</p>
+                <strong>Training strategy</strong>
+                <p>BCEWithLogitsLoss with class weights, AdamW optimizer, cosine learning rate schedule, and early stopping based on validation macro AUC-ROC.</p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Evaluation</strong>
-                <p>Macro and micro AUC-ROC / AUC-PR, per-label metrics, Youden’s J for threshold selection, and temperature scaling for calibration.</p>
+                <p>Macro and micro AUC-ROC / AUC-PR, per-label metrics, and label-specific threshold selection using Youden’s J to balance sensitivity and specificity.</p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
-                <strong>Error Analysis</strong>
-                <p>Breakdown by pathology, view, and device, plus Grad-CAM sanity checks that highlight shortcut learning and missed findings.</p>
+                <strong>Error analysis</strong>
+                <p>Grad-CAM explanations, breakdown by device and view, and inspection of representative true positives, false positives, and false negatives.</p>
               </div>
             </div>
           </div>
@@ -1452,7 +1374,7 @@ footer {
           <div class="section-title-block">
             <h2>RESULTS</h2>
             <p>
-              Summary metrics exactly following your report: model comparison table and ResNet-50 validation/test performance.
+              Model comparison and ResNet-50 performance on validation and held-out test sets.
             </p>
           </div>
           <div class="section-tag">
@@ -1463,7 +1385,7 @@ footer {
 
         <div class="grid grid-2">
           <article class="card reveal">
-            <h3>Model Comparison (Validation)</h3>
+            <h3>Model comparison (validation)</h3>
             <div class="table-wrap">
               <table aria-label="Model comparison">
                 <thead>
@@ -1485,24 +1407,24 @@ footer {
                     <td>EfficientNet-B4</td>
                     <td>0.7503</td>
                     <td>0.233</td>
-                    <td>Higher capacity but moderate gains.</td>
+                    <td>Higher capacity, moderate gains.</td>
                   </tr>
                   <tr>
                     <td>ResNet-50</td>
                     <td>0.7966</td>
                     <td>0.292</td>
-                    <td>Best overall performance.</td>
+                    <td>Best overall validation performance.</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p class="results-note">
-              Values taken directly from your report’s model comparison table; ResNet-50 clearly dominates both macro AUC-ROC and macro F1.
+              Metrics highlight a clear improvement when moving from DenseNet-121 to ResNet-50, both in macro AUC-ROC and macro F1.
             </p>
           </article>
 
           <article class="card reveal">
-            <h3>ResNet-50 Summary</h3>
+            <h3>ResNet-50 summary</h3>
             <div class="table-wrap">
               <table aria-label="ResNet50 summary">
                 <thead>
@@ -1527,32 +1449,32 @@ footer {
               </table>
             </div>
             <p class="results-note">
-              On the held-out test set, ResNet-50 maintains strong macro F1 while dropping slightly in macro AUC-ROC, consistent with your report.
+              On the held-out test set, ResNet-50 maintains macro F1 while showing a slight drop in macro AUC-ROC, consistent with a realistic generalization gap.
             </p>
           </article>
         </div>
 
-        <div style="height:1.5rem"></div>
+        <div style="height:1.6rem"></div>
 
         <div class="grid grid-2">
           <article class="card reveal">
-            <h3>Confusion / ROC Gallery</h3>
+            <h3>ROC and confusion matrix gallery</h3>
             <div class="dynamic-gallery" data-gallery>
-              <img src="assets/roc_dense.png" alt="DenseNet ROC" data-caption="DenseNet-121 ROC curve on validation set">
-              <img src="assets/roc_resnet.png" alt="ResNet ROC" data-caption="ResNet-50 ROC curve on validation set">
-              <img src="assets/cm_cardio.png" alt="Cardiomegaly confusion matrix" data-caption="Cardiomegaly confusion matrix under ResNet-50">
+              <img src="assets/roc_dense.png" alt="DenseNet-121 ROC curve" data-caption="DenseNet-121 ROC curve on the validation set">
+              <img src="assets/roc_resnet.png" alt="ResNet-50 ROC curve" data-caption="ResNet-50 ROC curve on the validation set">
+              <img src="assets/cm_resnet.png" alt="ResNet-50 confusion matrix" data-caption="ResNet-50 confusion matrix for selected labels">
             </div>
             <p class="results-note">
-              Add or remove <code>&lt;img&gt;</code> elements here; the gallery automatically reflows to support any number of plots.
+              Add or remove <code>&lt;img&gt;</code> elements in this gallery; the layout automatically adapts to any number of ROC and confusion matrix plots.
             </p>
           </article>
 
           <article class="card reveal">
-            <h3>Grad-CAM Comparison</h3>
+            <h3>Grad-CAM overlay</h3>
             <div class="compare-grid">
               <div class="compare" data-compare>
                 <div class="compare-inner">
-                  <img src="assets/grad_before.png" alt="Original CXR" class="compare-img compare-before">
+                  <img src="assets/grad_before.png" alt="Original chest X-ray" class="compare-img compare-before">
                   <img src="assets/grad_after.png" alt="Grad-CAM overlay" class="compare-img compare-after">
                   <div class="compare-labels">
                     <div class="compare-label">Original</div>
@@ -1566,7 +1488,7 @@ footer {
               </div>
             </div>
             <p class="results-note">
-              Swap <code>grad_before.png</code> and <code>grad_after.png</code> for any two images (e.g., baseline vs Grad-CAM); the slider controls the overlay ratio.
+              Replace <code>grad_before.png</code> and <code>grad_after.png</code> with any pair of images (for example, baseline vs Grad-CAM); the slider controls the overlay percentage in real time.
             </p>
           </article>
         </div>
@@ -1579,8 +1501,7 @@ footer {
           <div class="section-title-block">
             <h2>QUALITATIVE EXAMPLES</h2>
             <p>
-              Qualitative predictions and Grad-CAM overlays illustrating true positives, false positives,
-              and false negatives discussed in your error analysis.
+              Representative cases illustrating how the model behaves on true positives, false positives, and false negatives.
             </p>
           </div>
           <div class="section-tag">
@@ -1589,32 +1510,31 @@ footer {
           </div>
         </div>
         <div class="qual-grid">
-          <article class="qual-card reveal tilt" data-tilt>
-            <h3 class="qual-title">True Positive</h3>
+          <article class="qual-card reveal">
+            <h3 class="qual-title">True positive</h3>
             <div class="qual-img" data-modal-src="assets/grad_tp.png" data-modal-caption="True positive Grad-CAM example">
               gradcam_tp.png
             </div>
             <p class="qual-text">
-              Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette while ignoring confounding devices,
-              matching the qualitative analysis in your report.
+              Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette rather than external devices, reinforcing that the model attends to clinically relevant regions.
             </p>
           </article>
-          <article class="qual-card reveal tilt" data-tilt>
-            <h3 class="qual-title">False Positive</h3>
+          <article class="qual-card reveal">
+            <h3 class="qual-title">False positive</h3>
             <div class="qual-img" data-modal-src="assets/grad_fp.png" data-modal-caption="False positive Grad-CAM example">
               gradcam_fp.png
             </div>
             <p class="qual-text">
-              Model spuriously attends to monitoring equipment; you mitigate this with device-aware augmentations and improved sampling.
+              The prediction is driven by attention on monitoring equipment, illustrating shortcut learning that motivates device-aware augmentations and stricter validation.
             </p>
           </article>
-          <article class="qual-card reveal tilt" data-tilt>
-            <h3 class="qual-title">False Negative</h3>
+          <article class="qual-card reveal">
+            <h3 class="qual-title">False negative</h3>
             <div class="qual-img" data-modal-src="assets/grad_fn.png" data-modal-caption="False negative Grad-CAM example">
               gradcam_fn.png
             </div>
             <p class="qual-text">
-              Small effusion missed at default thresholds, but recovered after label-specific threshold tuning and calibration.
+              A subtle effusion is missed at default thresholds but becomes detectable after label-specific threshold tuning and calibration, highlighting the sensitivity trade-offs.
             </p>
           </article>
         </div>
@@ -1628,7 +1548,7 @@ footer {
           <div class="team-title-block">
             <h2>TEAM</h2>
             <p>
-              Team 11 · STA 160 · UC Davis — roles and responsibilities exactly as in your report.
+              Team 11 · STA 160 · UC Davis — combining modeling, data curation, training operations, visualization, and reporting.
             </p>
           </div>
           <div class="team-pill">
@@ -1638,17 +1558,16 @@ footer {
         </div>
 
         <div class="team-row">
-          <!-- order strictly: Tina, Muhammad, Kayla, Lauren, Fang -->
-          <article class="team-card tilt reveal" data-tilt>
+          <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">ML</div>
             <div class="team-name">Muhammad Laiq</div>
             <div class="team-role-main">Lead · Modeling & Docs</div>
             <div class="team-role-detail">
-              Model design, training strategy, hyperparameters, and primary report writing.
+              Model design, training strategy, hyperparameter selection, and primary report writing.
             </div>
           </article>
 
-          <article class="team-card tilt reveal" data-tilt>
+          <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">TY</div>
             <div class="team-name">Tina Yu</div>
             <div class="team-role-main">Training Ops & Visualization</div>
@@ -1656,8 +1575,8 @@ footer {
               Experiments, training pipelines, hyperparameter sweeps, Grad-CAM and metric visualization.
             </div>
           </article>
-          
-          <article class="team-card tilt reveal" data-tilt>
+
+          <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">KS</div>
             <div class="team-name">Kayla Sham</div>
             <div class="team-role-main">Data & EDA</div>
@@ -1666,16 +1585,16 @@ footer {
             </div>
           </article>
 
-          <article class="team-card tilt reveal" data-tilt>
+          <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">LL</div>
             <div class="team-name">Lauren Le</div>
             <div class="team-role-main">Reporting & Evaluation</div>
             <div class="team-role-detail">
-              Result synthesis, error analysis write-up, final STA 160 report and slide deck.
+              Result synthesis, error analysis, and preparation of the final STA 160 report and slides.
             </div>
           </article>
 
-          <article class="team-card tilt reveal" data-tilt>
+          <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">FS</div>
             <div class="team-name">Fang Shang</div>
             <div class="team-role-main">Training Ops & Website</div>
@@ -1699,8 +1618,8 @@ footer {
           </div>
         </div>
         <p>
-          Chest X-ray classification for multi-label thoracic pathologies using NIH ChestX-ray14
-          and CheXpert. This website mirrors the core findings of the Team 11 project report.
+          Chest X-ray classification for multi-label thoracic pathologies using the NIH ChestX-ray14 dataset.
+          This site presents the core ideas, pipeline, and results from Team 11.
         </p>
       </div>
       <div class="footer-col">
@@ -1741,29 +1660,21 @@ var navMobile=document.getElementById("navMobile");
 var backTop=document.getElementById("backTop");
 if(navToggle){navToggle.addEventListener("click",function(){navShell.classList.toggle("nav-open")})}
 if(navMobile){navMobile.addEventListener("click",function(e){var link=e.target.closest("a.nav-link");if(link){navShell.classList.remove("nav-open")}})}
-document.querySelectorAll("[data-scroll]").forEach(function(btn){btn.addEventListener("click",function(){var selector=btn.getAttribute("data-scroll");if(!selector)return;var target=document.querySelector(selector);if(target){target.scrollIntoView({behavior:"smooth",block:"start"})}})});
-document.querySelectorAll("a[href^='#']").forEach(function(link){link.addEventListener("click",function(e){var id=link.getAttribute("href");if(!id||id==="#")return;var target=document.querySelector(id);if(target){e.preventDefault();navShell.classList.remove("nav-open");target.scrollIntoView({behavior:"smooth",block:"start"})}})});
+document.querySelectorAll("[data-scroll]").forEach(function(btn){btn.addEventListener("click",function(){var sel=btn.getAttribute("data-scroll");if(!sel)return;var t=document.querySelector(sel);if(t){t.scrollIntoView({behavior:"smooth",block:"start"})}})});
+document.querySelectorAll("a[href^='#']").forEach(function(link){link.addEventListener("click",function(e){var id=link.getAttribute("href");if(!id||id==="#")return;var t=document.querySelector(id);if(t){e.preventDefault();navShell.classList.remove("nav-open");t.scrollIntoView({behavior:"smooth",block:"start"})}})});
 window.addEventListener("scroll",function(){var y=window.scrollY||window.pageYOffset;if(!backTop)return;if(y>260){backTop.classList.add("visible")}else{backTop.classList.remove("visible")}});
 if(backTop){backTop.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"})})}
 var revealEls=document.querySelectorAll(".reveal");
-if("IntersectionObserver" in window){var revealObserver=new IntersectionObserver(function(entries,observer){entries.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add("visible");observer.unobserve(entry.target)}})},{threshold:0.2});revealEls.forEach(function(el){revealObserver.observe(el)})}else{revealEls.forEach(function(el){el.classList.add("visible")})}
-var tiltEls=document.querySelectorAll("[data-tilt]");
-tiltEls.forEach(function(card){card.addEventListener("pointermove",function(e){var rect=card.getBoundingClientRect();var x=e.clientX-rect.left;var y=e.clientY-rect.top;var cx=rect.width/2;var cy=rect.height/2;var rx=((y-cy)/cy)*-6;var ry=((x-cx)/cx)*6;card.style.transform="perspective(1000px) rotateX("+rx+"deg) rotateY("+ry+"deg) translateY(-3px)"});card.addEventListener("pointerleave",function(){card.style.transform="translate3d(0,0,0)"})});
-var metricChips=document.querySelectorAll("[data-count]");
-if("IntersectionObserver" in window){var metricObserver=new IntersectionObserver(function(entries,observer){entries.forEach(function(entry){if(entry.isIntersecting){var el=entry.target;var target=parseFloat(el.getAttribute("data-target")||"0");var suffix=el.getAttribute("data-suffix")||"";var numSpan=el.querySelector(".num");if(!numSpan)return;var start=null;function step(ts){if(!start)start=ts;var progress=Math.min((ts-start)/900,1);var val=Math.floor(target*progress);numSpan.textContent=val.toString();if(progress<1){window.requestAnimationFrame(step)}else{numSpan.textContent=target.toString()}}window.requestAnimationFrame(step);var suffixSpan=el.querySelector(".suffix");if(suffixSpan&&suffix){suffixSpan.textContent=suffix}observer.unobserve(el)}})},{threshold:0.6});metricChips.forEach(function(chip){metricObserver.observe(chip)})}
-document.querySelectorAll("[data-compare]").forEach(function(compare){var range=compare.querySelector('input[type="range"]');var after=compare.querySelector(".compare-after");if(!range||!after)return;range.addEventListener("input",function(){var value=parseInt(range.value,10);after.style.clipPath="inset(0 0 0 "+value+"%)"})});
+if("IntersectionObserver" in window){var ro=new IntersectionObserver(function(es,o){es.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add("visible");o.unobserve(entry.target)}})},{threshold:0.2});revealEls.forEach(function(el){ro.observe(el)})}else{revealEls.forEach(function(el){el.classList.add("visible")})}
+var metricCards=document.querySelectorAll("[data-count]");
+if("IntersectionObserver" in window){var mo=new IntersectionObserver(function(es,o){es.forEach(function(entry){if(entry.isIntersecting){var el=entry.target;var target=parseFloat(el.getAttribute("data-target")||"0");var suffix=el.getAttribute("data-suffix")||"";var numSpan=el.querySelector(".num");if(!numSpan){o.unobserve(el);return}var start=null;function step(ts){if(!start)start=ts;var p=Math.min((ts-start)/900,1);var val=Math.floor(target*p);numSpan.textContent=val.toString();if(p<1){window.requestAnimationFrame(step)}else{numSpan.textContent=target.toString()}}window.requestAnimationFrame(step);var suf=el.querySelector(".suffix");if(suf&&suffix){suf.textContent=suffix}o.unobserve(el)}})},{threshold:0.6});metricCards.forEach(function(el){mo.observe(el)})}
+document.querySelectorAll("[data-compare]").forEach(function(c){var range=c.querySelector('input[type="range"]');var after=c.querySelector(".compare-after");if(!range||!after)return;range.addEventListener("input",function(){var v=parseInt(range.value,10);after.style.clipPath="inset(0 0 0 "+v+"%)"})});
 var modal=document.getElementById("imageModal");var modalImg=document.getElementById("modalImg");var modalCaption=document.getElementById("modalCaption");var modalClose=document.getElementById("modalClose");
-function openModal(src,caption){if(!modal||!modalImg)return;modalImg.src=src||"";modalCaption.textContent=caption||"";modal.style.display="flex";modal.setAttribute("aria-hidden","false")}
+function openModal(src,cap){if(!modal||!modalImg)return;modalImg.src=src||"";modalCaption.textContent=cap||"";modal.style.display="flex";modal.setAttribute("aria-hidden","false")}
 function closeModal(){if(!modal)return;modal.style.display="none";modal.setAttribute("aria-hidden","true")}
-document.querySelectorAll("[data-gallery] img, .hero-preview[data-modal-src], .qual-img[data-modal-src]").forEach(function(el){el.addEventListener("click",function(){var src=el.getAttribute("data-modal-src")||el.getAttribute("src");var caption=el.getAttribute("data-caption")||el.getAttribute("alt")||el.getAttribute("data-modal-caption")||"";openModal(src,caption)})});
+document.querySelectorAll("[data-gallery] img, .hero-preview[data-modal-src], .qual-img[data-modal-src]").forEach(function(el){el.addEventListener("click",function(){var src=el.getAttribute("data-modal-src")||el.getAttribute("src");var cap=el.getAttribute("data-caption")||el.getAttribute("alt")||el.getAttribute("data-modal-caption")||"";openModal(src,cap)})});
 if(modal){modal.addEventListener("click",function(e){if(e.target===modal){closeModal()}})}
 if(modalClose){modalClose.addEventListener("click",function(){closeModal()})}
-var themeToggle=document.getElementById("themeToggle");var themeToggleMobile=document.getElementById("themeToggleMobile");var root=document.documentElement;
-function setTheme(mode){root.setAttribute("data-theme",mode);try{localStorage.setItem("xr-theme",mode)}catch(e){}}
-function toggleTheme(){var current=root.getAttribute("data-theme")||"dark";setTheme(current==="light"?"dark":"light")}
-if(themeToggle){themeToggle.addEventListener("click",toggleTheme)}
-if(themeToggleMobile){themeToggleMobile.addEventListener("click",toggleTheme)}
-try{var savedTheme=localStorage.getItem("xr-theme");if(savedTheme){setTheme(savedTheme)}}catch(e){}
 </script>
 </body>
 </html>
