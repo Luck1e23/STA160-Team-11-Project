@@ -104,6 +104,11 @@ th {
   border-radius: 12px;
 }
 
+.hero-input {
+  display: none; 
+}
+
+
 .plot-container {
   text-align: center;
   margin-top: 20px;
