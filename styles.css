@@ -70,6 +70,40 @@ th {
   color: white;
 }
 
+.upload-box {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  height: 250px;
+  margin: 20px auto;
+  border: 2px dashed #3498db;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #f0f0f0;
+  position: relative;
+  text-align: center;
+  line-height: 250px;
+  color: #666;
+  font-weight: bold;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.upload-box:hover {
+  background: #e0eaff;
+  border-color: #2980b9;
+}
+
+.upload-box img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  border-radius: 12px;
+}
+
 .plot-container {
   text-align: center;
   margin-top: 20px;
