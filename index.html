@@ -512,15 +512,18 @@ header {
   background: rgba(15,23,42,0.97);
   color: var(--text-main);
 }
-.hero-input::-webkit-file-upload-button {
-  border: none;
-  border-radius: 999px;
-  padding: .4rem .85rem;
-  margin-right: .5rem;
-  background-image: linear-gradient(120deg,var(--accent-1),var(--accent-3));
-  color: #020617;
-  font-weight: 600;
+.fake-file-input {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 260px;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fake-file-input span {
+  font-size: .86rem;
 }
 .hero-upload-btn {
   padding-inline: 1.15rem;
@@ -1361,7 +1364,10 @@ footer {
             </div>
           </div>
           <div class="hero-panel-footer">
-            <input type="file" id="fileInput" accept="image/*" class="hero-input">
+            <label class="hero-input fake-file-input" for="fileInput">
+              <span id="fileName">Choose image…</span>
+            </label>
+            <input type="file" id="fileInput" accept="image/*" hidden>
             <button type="button" class="btn btn-secondary hero-upload-btn" id="uploadBtn">
               Preview image
             </button>
@@ -1982,27 +1988,32 @@ if(megaItem&&megaPanel){
   });
 }
 
-/* upload preview only */
+/* upload preview only with custom label */
 var fileInput=document.getElementById("fileInput");
 var previewImage=document.getElementById("previewImage");
 var previewPlaceholder=document.getElementById("previewPlaceholder");
 var uploadBtn=document.getElementById("uploadBtn");
 var result=document.getElementById("result");
+var fileNameSpan=document.getElementById("fileName");
 
 function handleFileSelection(){
   if(!fileInput||!previewImage)return;
   var file=fileInput.files&&fileInput.files[0];
-  if(!file){
+  if(file){
+    if(fileNameSpan){fileNameSpan.textContent=file.name;}
+    var url=URL.createObjectURL(file);
+    previewImage.src=url;
+    previewImage.style.display="block";
+    if(previewPlaceholder){previewPlaceholder.style.display="none";}
+    if(result){
+      result.textContent="Preview ready above. This demo shows your image in the layout; model predictions are not computed here.";
+    }
+  }else{
+    if(fileNameSpan){fileNameSpan.textContent="Choose image…";}
     previewImage.style.display="none";
     if(previewPlaceholder){previewPlaceholder.style.display="block";}
-    if(result){result.textContent="Please select an image file to preview.";}
-    return;
+    if(result){result.textContent="Please choose an image file first, then preview it here.";}
   }
-  var url=URL.createObjectURL(file);
-  previewImage.src=url;
-  previewImage.style.display="block";
-  if(previewPlaceholder){previewPlaceholder.style.display="none";}
-  if(result){result.textContent="Preview ready above. This demo shows your image in the layout; model predictions are not computed here.";}
 }
 
 if(fileInput){
@@ -2010,10 +2021,11 @@ if(fileInput){
 }
 if(uploadBtn){
   uploadBtn.addEventListener("click",function(){
-    handleFileSelection();
     if(!fileInput||!fileInput.files||!fileInput.files[0]){
       if(result){result.textContent="Please choose an image file first, then preview it here.";}
+      return;
     }
+    handleFileSelection();
   });
 }
 
