@@ -190,8 +190,6 @@
         <div class="actions">
           <a class="btn primary" href="#results">View Results</a>
           <a class="btn" href="#method">See the Method</a>
-          <label for="image-upload" class="btn">Upload Image</label>
-          <input type="file" id="image-upload" class="sr-only" accept="image/*">
         </div>
 
         <div class="stats" aria-label="Project stats">
@@ -206,6 +204,12 @@
         <div class="preview">
           <small>Drop a sample confusion matrix / ROC image here<br>(replace this box with an &lt;img&gt;)</small>
         </div>
+
+        <label for="image-upload" class="btn" style="margin-top: .8rem; width: 100%; justify-content: center;">
+          Upload Image
+        </label>
+        <input type="file" id="image-upload" class="sr-only" accept="image/*">
+        
         <p class="note" style="margin-top:.8rem">Tip: swap the placeholder with <code>&lt;img src="assets/roc.png" alt="ROC curves for pathologies" /&gt;</code></p>
       </aside>
     </div>
