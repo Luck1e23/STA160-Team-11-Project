@@ -181,13 +181,19 @@
   <section class="hero">
     <div class="container hero-grid">
       <div>
-        <div class="kicker">NIH + CheXpert • CNNs • Transfer Learning</div>
+        <div class="kicker">NIH • CNNs • Transfer Learning</div>
         <h1 class="title">Chest X‑ray Classification for Multi‑Label Pathologies</h1>
-        <p class="subtitle">We benchmark pre‑trained CNNs to detect common thoracic findings from frontal chest X‑rays. Our pipeline covers curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.</p>
+        <p class="subtitle">
+          We benchmark pre‑trained CNNs to detect common thoracic findings from frontal chest X‑rays. Our pipeline covers curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.
+        </p>
+        
         <div class="actions">
           <a class="btn primary" href="#results">View Results</a>
           <a class="btn" href="#method">See the Method</a>
+          <label for="image-upload" class="btn">Upload Image</label>
+          <input type="file" id="image-upload" class="sr-only" accept="image/*">
         </div>
+
         <div class="stats" aria-label="Project stats">
           <div class="stat"><div class="num">112k+</div><div class="label">Images (NIH14)</div></div>
           <div class="stat"><div class="num">224k+</div><div class="label">Images (CheXpert)</div></div>
@@ -204,6 +210,23 @@
       </aside>
     </div>
   </section>
+
+    <!-- ====== Image Upload Script ====== -->
+  <script>
+    const uploadInput = document.getElementById('image-upload');
+    const previewDiv = document.getElementById('upload-preview');
+
+    uploadInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        previewDiv.innerHTML = `<img src="${reader.result}" alt="Uploaded Image" style="width:100%; height:auto; border-radius:12px;" />`;
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
 
   <!-- ====== Datasets ====== -->
   <section id="datasets">
