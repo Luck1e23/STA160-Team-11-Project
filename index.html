@@ -8,11 +8,9 @@
 <style>
 :root {
   --bg-0: #020617;
-  --bg-1: #020617;
-  --bg-2: #020617;
-  --card-bg: rgba(12,21,40,0.96);
-  --card-border: rgba(148,163,255,0.5);
-  --card-border-soft: rgba(148,163,255,0.22);
+  --card-bg: rgba(10,18,35,0.96);
+  --card-border: rgba(148,163,255,0.55);
+  --card-border-soft: rgba(148,163,255,0.24);
   --text-main: #e5edff;
   --text-muted: #a3b4d6;
   --text-soft: #7f8fb0;
@@ -20,17 +18,16 @@
   --accent-2: #8ef2d4;
   --accent-3: #60a5fa;
   --accent-4: #22c55e;
-  --danger: #fb7185;
   --radius-lg: 24px;
   --radius-md: 18px;
   --radius-pill: 999px;
-  --shadow-soft: 0 18px 55px rgba(15,23,42,0.92);
-  --shadow-strong: 0 26px 85px rgba(15,23,42,1);
+  --shadow-soft: 0 14px 40px rgba(15,23,42,0.9);
+  --shadow-strong: 0 18px 60px rgba(0,0,0,0.95);
   --max-width: 1180px;
-  --nav-height: 72px;
+  --nav-height: 70px;
   --font-sans: system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",sans-serif;
-  --transition-fast: 160ms ease-out;
-  --transition-med: 260ms ease-out;
+  --transition-fast: 150ms ease-out;
+  --transition-med: 230ms ease-out;
 }
 *,
 *::before,
@@ -47,12 +44,11 @@ html,body {
 body {
   font-family: var(--font-sans);
   background:
-    radial-gradient(circle at 0 0, rgba(129,140,248,0.42), transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(56,189,248,0.32), transparent 55%),
-    radial-gradient(circle at 100% 0, rgba(96,165,250,0.16), transparent 60%),
-    linear-gradient(180deg,#020617 0%,#020617 42%,#020617 100%);
+    radial-gradient(circle at 0 0, rgba(129,140,248,0.35), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(56,189,248,0.28), transparent 60%),
+    linear-gradient(180deg,#020617 0%,#020617 100%);
   color: var(--text-main);
-  line-height: 1.7;
+  line-height: 1.65;
   overflow-x: hidden;
 }
 img {
@@ -78,18 +74,16 @@ button {
   z-index: 1;
 }
 
-/* header + mega nav */
+/* header + mega nav (lighter, smoother) */
 header {
   position: fixed;
   inset-inline: 0;
   top: 0;
   z-index: 60;
-  backdrop-filter: blur(22px) saturate(190%);
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.30), transparent 55%),
-    linear-gradient(90deg, rgba(3,7,18,0.98), rgba(15,23,42,0.99));
-  border-bottom: 1px solid rgba(148,163,255,0.45);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.96);
+    linear-gradient(180deg, rgba(15,23,42,0.96), rgba(15,23,42,0.92));
+  border-bottom: 1px solid rgba(148,163,255,0.4);
+  box-shadow: 0 10px 30px rgba(15,23,42,0.9);
 }
 .nav-inner {
   width: min(100% - 3rem, var(--max-width));
@@ -105,9 +99,9 @@ header {
   gap: .85rem;
 }
 .nav-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 14px;
   background: conic-gradient(from 220deg,#8ef2d4,#4f46e5,#7aa2ff,#8ef2d4);
   display: grid;
   place-items: center;
@@ -115,17 +109,17 @@ header {
   font-weight: 800;
   font-size: 18px;
   box-shadow:
-    0 0 0 2px rgba(248,250,252,0.96),
-    0 16px 40px rgba(15,23,42,1);
+    0 0 0 1px rgba(248,250,252,0.96),
+    0 10px 26px rgba(15,23,42,0.95);
 }
 .nav-title-main {
-  font-size: .98rem;
+  font-size: .96rem;
   font-weight: 600;
-  letter-spacing: .07em;
+  letter-spacing: .08em;
   text-transform: uppercase;
 }
 .nav-title-sub {
-  font-size: .78rem;
+  font-size: .76rem;
   color: var(--text-soft);
 }
 .nav-links {
@@ -134,14 +128,14 @@ header {
   gap: .25rem;
 }
 .nav-link {
-  padding: .46rem .9rem;
+  padding: .44rem .9rem;
   border-radius: var(--radius-pill);
   font-size: .9rem;
   color: #e5edff;
-  opacity: .94;
+  opacity: .96;
   display: inline-flex;
   align-items: center;
-  gap: .28rem;
+  gap: .26rem;
   transition:
     background var(--transition-fast),
     color var(--transition-fast),
@@ -151,21 +145,18 @@ header {
 }
 .nav-link span.icon { font-size: .8rem; }
 .nav-link:hover {
-  background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.45), transparent 60%),
-    rgba(15,23,42,0.96);
-  box-shadow: 0 12px 30px rgba(15,23,42,0.98);
+  background: radial-gradient(circle at 0 0, rgba(148,255,225,0.45), transparent 60%);
   transform: translateY(-1px);
   opacity: 1;
 }
 .nav-link-primary {
   background-image: linear-gradient(120deg,var(--accent-1),var(--accent-3),var(--accent-4));
-  background-size: 220% 220%;
+  background-size: 200% 200%;
   color: #020617;
   font-weight: 600;
   padding-inline: 1.15rem;
-  box-shadow: 0 16px 45px rgba(0,0,0,0.96);
-  animation: navGradient 13s ease-in-out infinite;
+  box-shadow: 0 12px 34px rgba(0,0,0,0.9);
+  animation: navGradient 12s ease-in-out infinite;
 }
 .nav-item {
   position: relative;
@@ -178,24 +169,20 @@ header {
 }
 .nav-link-ghost {
   border-radius: var(--radius-pill);
-  padding: .46rem .9rem;
+  padding: .44rem .9rem;
   background: transparent;
-  border: 1px solid transparent;
-}
-.nav-link-ghost:hover {
-  border-color: rgba(148,163,255,0.6);
 }
 
-/* mega panel */
+/* mega panel (slightly smaller & lighter) */
 .mega {
   position: absolute;
-  inset-inline: 0;
-  right: -50%;
-  top: calc(100% + 10px);
-  min-width: 620px;
-  max-width: 780px;
+  inset-inline: auto 0;
+  right: -10px;
+  top: calc(100% + 8px);
+  min-width: 540px;
+  max-width: 720px;
   transform-origin: top right;
-  transform: translateY(10px) scale(0.98);
+  transform: translateY(6px) scale(0.98);
   opacity: 0;
   pointer-events: none;
   transition:
@@ -204,31 +191,29 @@ header {
   z-index: -1;
 }
 .mega-inner {
-  border-radius: 22px;
-  border: 1px solid rgba(148,163,255,0.5);
+  border-radius: 20px;
+  border: 1px solid rgba(148,163,255,0.6);
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 60%),
-    radial-gradient(circle at 100% 0, rgba(96,165,250,0.32), transparent 60%),
-    rgba(6,12,28,0.98);
-  box-shadow: 0 24px 80px rgba(0,0,0,0.96);
-  padding: 1.1rem 1.2rem 1.1rem;
-  backdrop-filter: blur(24px) saturate(170%);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.24), transparent 60%),
+    rgba(10,18,35,0.98);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.9);
+  padding: 1rem 1.15rem;
 }
 .mega-grid {
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
-  gap: 1.2rem;
+  gap: 1rem;
 }
 .mega-col-title {
   font-size: .78rem;
-  letter-spacing: .18em;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: #c7d2fe;
-  margin-bottom: .4rem;
+  margin-bottom: .35rem;
 }
 .mega-link {
   display: block;
-  padding: .35rem .35rem .35rem 0;
+  padding: .3rem .3rem .35rem 0;
   font-size: .86rem;
   color: #e5edff;
   border-radius: 10px;
@@ -237,16 +222,14 @@ header {
     transform var(--transition-fast),
     color var(--transition-fast);
 }
-.mega-link span.label {
-  display: block;
-}
+.mega-link span.label { display: block; }
 .mega-link span.desc {
   display: block;
   font-size: .78rem;
   color: var(--text-soft);
 }
 .mega-link:hover {
-  background: rgba(15,23,42,0.96);
+  background: rgba(15,23,42,0.98);
   transform: translateY(-1px);
 }
 .nav-item.show-mega .mega {
@@ -265,12 +248,12 @@ header {
   border: 1px solid rgba(148,163,255,0.7);
   background:
     radial-gradient(circle at 20% 0, rgba(148,255,225,0.6), transparent 60%),
-    rgba(3,7,18,0.98);
+    rgba(15,23,42,0.97);
   display: none;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 14px 35px rgba(0,0,0,0.96);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.9);
 }
 .nav-toggle-bar {
   width: 16px;
@@ -307,18 +290,18 @@ header {
   inset-inline: 0;
   top: var(--nav-height);
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.4), transparent 60%),
-    rgba(3,7,18,0.98);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.22), transparent 60%),
+    rgba(10,18,35,0.98);
   border-bottom: 1px solid rgba(148,163,255,0.35);
-  box-shadow: 0 18px 55px rgba(0,0,0,0.96);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.9);
   z-index: 55;
 }
 .nav-mobile-inner {
   width: min(100% - 3rem, var(--max-width));
   margin-inline: auto;
-  padding: .8rem 0 1rem;
+  padding: .7rem 0 1rem;
   display: grid;
-  gap: .3rem;
+  gap: .25rem;
 }
 .nav-shell.nav-open .nav-mobile {
   display: block;
@@ -327,18 +310,17 @@ header {
   padding: .6rem .9rem;
   border-radius: var(--radius-pill);
   font-size: .9rem;
-  background: rgba(6,12,28,0.98);
+  background: rgba(15,23,42,0.97);
   border: 1px solid rgba(148,163,255,0.5);
 }
 
-/* hero with parallax */
+/* hero */
 .hero {
   position: relative;
   min-height: calc(100vh - var(--nav-height));
   display: flex;
   align-items: center;
-  padding: 5rem 0 4rem;
-  isolation: isolate;
+  padding: 5rem 0 3.8rem;
 }
 .hero-layer {
   position: absolute;
@@ -348,39 +330,38 @@ header {
 }
 .hero-layer.is-gradient {
   background:
-    radial-gradient(1200px 900px at 0 0, rgba(129,140,248,0.5), transparent 65%),
-    radial-gradient(1100px 820px at 100% 100%, rgba(56,189,248,0.5), transparent 65%);
-  opacity: .8;
+    radial-gradient(1000px 700px at 0 0, rgba(129,140,248,0.4), transparent 70%),
+    radial-gradient(900px 650px at 100% 100%, rgba(56,189,248,0.26), transparent 70%);
+  opacity: .85;
   mix-blend-mode: screen;
 }
 .hero-layer.is-particles {
   background-image:
-    radial-gradient(2px 2px at 20% 30%, rgba(248,250,252,0.95), transparent),
-    radial-gradient(2px 2px at 80% 70%, rgba(248,250,252,0.9), transparent),
-    radial-gradient(2px 2px at 60% 20%, rgba(248,250,252,0.9), transparent),
-    radial-gradient(1.5px 1.5px at 40% 80%, rgba(148,163,255,1), transparent),
-    radial-gradient(1.5px 1.5px at 15% 75%, rgba(52,211,153,1), transparent);
-  opacity: .32;
-  animation: starDrift 32s linear infinite alternate;
+    radial-gradient(2px 2px at 20% 30%, rgba(248,250,252,0.85), transparent),
+    radial-gradient(2px 2px at 80% 70%, rgba(248,250,252,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(148,163,255,0.9), transparent),
+    radial-gradient(1.5px 1.5px at 15% 75%, rgba(52,211,153,0.9), transparent);
+  opacity: .28;
+  animation: starDrift 26s linear infinite alternate;
 }
 .hero-inner {
   position: relative;
   z-index: 1;
   display: grid;
   grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr);
-  gap: 2.7rem;
+  gap: 2.6rem;
   align-items: center;
 }
 .hero-kicker {
-  font-size: .86rem;
+  font-size: .85rem;
   letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--accent-2);
   font-weight: 600;
 }
 .hero-title {
-  margin: .6rem 0 .85rem;
-  font-size: clamp(2.4rem, 4.6vw, 3.4rem);
+  margin: .6rem 0 .9rem;
+  font-size: clamp(2.4rem, 4.5vw, 3.4rem);
   line-height: 1.05;
   letter-spacing: .04em;
 }
@@ -397,23 +378,23 @@ header {
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: .85rem;
-  margin-top: 1.8rem;
+  gap: .8rem;
+  margin-top: 1.7rem;
 }
 .btn {
   border: none;
   border-radius: var(--radius-pill);
-  padding: .9rem 1.5rem;
+  padding: .85rem 1.45rem;
   font-size: .95rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: .5rem;
+  gap: .45rem;
   background: rgba(15,23,42,0.96);
   color: #e5edff;
   border: 1px solid rgba(148,163,255,0.4);
-  box-shadow: 0 16px 45px rgba(0,0,0,0.95);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.9);
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast),
@@ -425,7 +406,7 @@ header {
 .btn span.icon { font-size: .95rem; }
 .btn-primary {
   background-image: linear-gradient(120deg,var(--accent-1),var(--accent-3),var(--accent-4));
-  background-size: 220% 220%;
+  background-size: 200% 200%;
   color: #020617;
   border-color: transparent;
   animation: heroButton 10s ease-in-out infinite;
@@ -433,7 +414,7 @@ header {
 .btn-secondary {
   background:
     radial-gradient(circle at 0 0, rgba(148,255,225,0.4), transparent 60%),
-    rgba(15,23,42,0.98);
+    rgba(15,23,42,0.97);
 }
 .btn-ghost {
   background: transparent;
@@ -442,7 +423,7 @@ header {
 }
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 60px rgba(0,0,0,1);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.9);
   filter: brightness(1.05);
 }
 
@@ -450,21 +431,20 @@ header {
 .hero-metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: .9rem;
+  gap: .85rem;
   margin-top: 2rem;
 }
 .metric-card {
   flex: 1 1 150px;
   min-width: 150px;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 60%),
-    rgba(6,12,28,0.98);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.3), transparent 60%),
+    rgba(10,18,35,0.98);
   border-radius: 20px;
   border: 1px solid var(--card-border-soft);
   padding: 1.02rem 1.05rem 1.15rem;
   box-shadow: var(--shadow-soft);
   transform-style: preserve-3d;
-  transform: translate3d(0,0,0);
   transition:
     transform var(--transition-med),
     box-shadow var(--transition-med),
@@ -472,7 +452,7 @@ header {
     background var(--transition-med);
 }
 .metric-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-strong);
   border-color: var(--card-border);
 }
@@ -483,12 +463,12 @@ header {
   color: #c7d2fe;
 }
 .metric-value {
-  font-size: 1.52rem;
+  font-size: 1.5rem;
   font-weight: 800;
   display: flex;
   align-items: baseline;
   gap: .18rem;
-  margin-top: .25rem;
+  margin-top: .22rem;
 }
 .metric-value span.suffix {
   font-size: .9rem;
@@ -497,52 +477,50 @@ header {
 .metric-caption {
   font-size: .82rem;
   color: var(--text-soft);
-  margin-top: .22rem;
+  margin-top: .2rem;
 }
 
 /* hero panel */
 .hero-panel {
   position: relative;
-  border-radius: 28px;
+  border-radius: 26px;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.5), transparent 60%),
-    radial-gradient(circle at 100% 0, rgba(59,130,246,0.5), transparent 60%),
-    rgba(6,12,28,0.98);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.45), transparent 60%),
+    radial-gradient(circle at 100% 0, rgba(59,130,246,0.4), transparent 60%),
+    rgba(10,18,35,0.98);
   border: 1px solid rgba(148,163,255,0.6);
-  padding: 1.15rem 1.2rem 1.1rem;
+  padding: 1.1rem 1.2rem 1.1rem;
   box-shadow: var(--shadow-strong);
-  transform-style: preserve-3d;
-  transform: translate3d(0,0,0);
   overflow: hidden;
 }
 .hero-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: .8rem;
+  margin-bottom: .75rem;
 }
 .hero-panel-title {
-  font-size: .96rem;
+  font-size: .95rem;
   font-weight: 600;
 }
 .hero-panel-chip {
-  padding: .18rem .74rem;
+  padding: .16rem .72rem;
   border-radius: 999px;
   border: 1px solid rgba(191,219,254,0.9);
   font-size: .8rem;
   color: #e5edff;
-  background: rgba(15,23,42,0.95);
+  background: rgba(15,23,42,0.96);
 }
 .hero-preview {
   border-radius: 20px;
   background:
-    radial-gradient(1200px 420px at 0% 0%, rgba(129,140,248,0.5), transparent 65%),
+    radial-gradient(900px 360px at 0% 0%, rgba(129,140,248,0.48), transparent 65%),
     linear-gradient(180deg, rgba(15,23,42,0.97), rgba(15,23,42,0.92));
   border: 1px dashed rgba(191,219,254,0.9);
   display: grid;
   place-items: center;
   color: var(--text-soft);
-  height: 240px;
+  height: 230px;
   cursor: zoom-in;
 }
 .hero-preview small {
@@ -553,26 +531,26 @@ header {
 .hero-panel-footer {
   font-size: .8rem;
   color: var(--text-soft);
-  margin-top: .7rem;
+  margin-top: .65rem;
 }
 
 /* sections */
 main section {
   position: relative;
-  padding: 4.3rem 0;
+  padding: 4.1rem 0;
 }
 section[id] {
-  scroll-margin-top: calc(var(--nav-height) + 26px);
+  scroll-margin-top: calc(var(--nav-height) + 22px);
 }
 main section::before {
   content: "";
   position: absolute;
   inset: 0;
-  opacity: .24;
+  opacity: .22;
   pointer-events: none;
   background:
-    radial-gradient(680px 360px at 5% 0, rgba(59,130,246,0.36), transparent 60%),
-    radial-gradient(650px 360px at 100% 100%, rgba(56,189,248,0.3), transparent 60%);
+    radial-gradient(620px 320px at 6% 0, rgba(59,130,246,0.3), transparent 60%),
+    radial-gradient(600px 320px at 100% 100%, rgba(56,189,248,0.26), transparent 60%);
   mix-blend-mode: soft-light;
   z-index: -1;
 }
@@ -580,12 +558,12 @@ main section::before {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 1.3rem;
-  margin-bottom: 1.9rem;
+  gap: 1.2rem;
+  margin-bottom: 1.8rem;
 }
 .section-title-block h2 {
   margin: 0 0 .35rem;
-  font-size: 1.6rem;
+  font-size: 1.58rem;
   letter-spacing: .16em;
   text-transform: uppercase;
 }
@@ -596,12 +574,12 @@ main section::before {
   max-width: 32rem;
 }
 .section-tag {
-  padding: .2rem .86rem;
+  padding: .18rem .84rem;
   border-radius: 999px;
   border: 1px solid var(--card-border-soft);
   font-size: .8rem;
   color: #c7d2fe;
-  background: rgba(6,12,28,0.96);
+  background: rgba(10,18,35,0.97);
   display: inline-flex;
   align-items: center;
   gap: .3rem;
@@ -617,23 +595,22 @@ main section::before {
 /* grids + cards */
 .grid {
   display: grid;
-  gap: 1.15rem;
+  gap: 1.08rem;
 }
 .grid-2 { grid-template-columns: repeat(2,minmax(0,1fr)); }
 .grid-3 { grid-template-columns: repeat(3,minmax(0,1fr)); }
 
 .card {
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.35), transparent 60%),
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.32), transparent 60%),
     var(--card-bg);
   border-radius: var(--radius-lg);
   border: 1px solid var(--card-border-soft);
-  padding: 1.25rem 1.2rem 1.4rem;
+  padding: 1.22rem 1.18rem 1.3rem;
   box-shadow: var(--shadow-soft);
   position: relative;
   overflow: hidden;
   transform-style: preserve-3d;
-  transform: translate3d(0,0,0);
   transition:
     transform var(--transition-med),
     box-shadow var(--transition-med),
@@ -646,8 +623,8 @@ main section::before {
   position: absolute;
   inset: -40%;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.5), transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(59,130,246,0.6), transparent 60%);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.42), transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(59,130,246,0.45), transparent 60%);
   opacity: 0;
   mix-blend-mode: soft-light;
   pointer-events: none;
@@ -662,7 +639,7 @@ main section::before {
 .card:hover::before { opacity: 1; }
 .card h3 {
   margin: 0 0 .4rem;
-  font-size: 1.04rem;
+  font-size: 1.03rem;
 }
 .card p {
   margin: 0;
@@ -672,14 +649,14 @@ main section::before {
 .card-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: .45rem;
+  gap: .42rem;
   margin-top: .8rem;
 }
 .chip {
-  padding: .18rem .7rem;
+  padding: .16rem .68rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--card-border-soft);
-  background: rgba(6,12,28,0.96);
+  background: rgba(10,18,35,0.97);
   font-size: .78rem;
   color: #c7d2fe;
 }
@@ -687,12 +664,12 @@ main section::before {
 /* timeline */
 .timeline {
   display: grid;
-  gap: 1.1rem;
+  gap: 1.05rem;
 }
 .step {
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: .95rem;
+  gap: .9rem;
   align-items: flex-start;
 }
 .step-bullet {
@@ -700,15 +677,15 @@ main section::before {
   height: 18px;
   border-radius: 999px;
   background:
-    radial-gradient(circle at 25% 0, rgba(148,255,225,0.95), transparent 65%),
-    #111827;
-  border: 1px solid rgba(191,219,254,0.95);
-  box-shadow: 0 0 0 5px rgba(59,130,246,0.5);
-  margin-top: .1rem;
+    radial-gradient(circle at 25% 0, rgba(148,255,225,0.92), transparent 65%),
+    #020617;
+  border: 1px solid rgba(191,219,254,0.9);
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.45);
+  margin-top: .08rem;
 }
-.step strong { font-size: .97rem; }
+.step strong { font-size: .96rem; }
 .step p {
-  margin: .2rem 0 0;
+  margin: .18rem 0 0;
   font-size: .9rem;
   color: var(--text-muted);
 }
@@ -718,7 +695,7 @@ main section::before {
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid var(--card-border-soft);
-  background: rgba(6,12,28,0.98);
+  background: rgba(10,18,35,0.98);
 }
 table {
   width: 100%;
@@ -727,11 +704,11 @@ table {
 }
 thead {
   background:
-    radial-gradient(circle at 0 0, rgba(96,165,250,0.35), transparent 70%),
-    rgba(15,23,42,0.96);
+    radial-gradient(circle at 0 0, rgba(96,165,250,0.3), transparent 70%),
+    rgba(15,23,42,0.97);
 }
 th,td {
-  padding: .78rem .9rem;
+  padding: .76rem .88rem;
   text-align: left;
   border-bottom: 1px solid rgba(148,163,255,0.18);
 }
@@ -742,17 +719,17 @@ th {
   color: #c7d2fe;
 }
 tbody tr:nth-child(even) {
-  background: rgba(6,12,28,0.98);
+  background: rgba(10,18,35,0.98);
 }
 tbody tr:hover {
   background:
-    radial-gradient(circle at 0 0, rgba(56,189,248,0.26), transparent 60%),
-    rgba(6,12,28,0.98);
+    radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 60%),
+    rgba(10,18,35,0.98);
 }
 .results-note {
   font-size: .82rem;
   color: var(--text-soft);
-  margin-top: .6rem;
+  margin-top: .55rem;
 }
 
 /* ROC gallery */
@@ -790,10 +767,10 @@ tbody tr:hover {
   margin-bottom: .85rem;
 }
 .case-tab {
-  padding: .35rem .8rem;
+  padding: .34rem .8rem;
   border-radius: var(--radius-pill);
   border: 1px solid rgba(148,163,255,0.45);
-  background: rgba(6,12,28,0.96);
+  background: rgba(10,18,35,0.97);
   font-size: .78rem;
   color: var(--text-soft);
   cursor: pointer;
@@ -805,14 +782,12 @@ tbody tr:hover {
 }
 .case-tab.active {
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.55), transparent 60%),
-    rgba(15,23,42,0.98);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.52), transparent 60%),
+    rgba(15,23,42,0.97);
   color: #e5edff;
   border-color: rgba(148,163,255,0.9);
   transform: translateY(-1px);
 }
-
-/* compare slider */
 .compare-grid {
   display: grid;
   grid-template-columns: minmax(0,1fr);
@@ -855,16 +830,16 @@ tbody tr:hover {
 .compare-label {
   padding: .16rem .6rem;
   border-radius: 999px;
-  background: rgba(12,21,40,0.96);
+  background: rgba(10,18,35,0.96);
   font-size: .78rem;
-  border: 1px solid rgba(191,219,254,0.95);
+  border: 1px solid rgba(191,219,254,0.9);
 }
 .compare-slider {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
   padding: .5rem .9rem .7rem;
-  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.8));
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.85));
   display: flex;
   align-items: center;
   gap: .4rem;
@@ -883,7 +858,7 @@ tbody tr:hover {
   height: 14px;
   border-radius: 999px;
   background: #e5edff;
-  border: 2px solid rgba(15,23,42,0.95);
+  border: 2px solid rgba(15,23,42,0.96);
   box-shadow: 0 0 0 4px rgba(148,163,255,0.5);
 }
 
@@ -897,21 +872,21 @@ tbody tr:hover {
   border-radius: 20px;
   background:
     radial-gradient(circle at 0 0, rgba(148,255,225,0.32), transparent 60%),
-    rgba(12,21,40,0.96);
+    rgba(10,18,35,0.97);
   border: 1px solid var(--card-border-soft);
   padding: 1.15rem 1.1rem 1.25rem;
   box-shadow: var(--shadow-soft);
-  transform-style: preserve-3d;
-  transform: translate3d(0,0,0);
   transition:
     transform var(--transition-med),
     box-shadow var(--transition-med),
-    border-color var(--transition-med);
+    border-color var(--transition-med),
+    filter var(--transition-med);
 }
 .qual-card:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-strong);
   border-color: var(--card-border);
+  filter: brightness(1.03);
 }
 .qual-title {
   margin: 0 0 .4rem;
@@ -926,7 +901,7 @@ tbody tr:hover {
   font-size: .86rem;
   color: var(--text-soft);
   aspect-ratio: 4/3;
-  margin-bottom: .55rem;
+  margin-bottom: .5rem;
   cursor: zoom-in;
 }
 .qual-text {
@@ -944,24 +919,22 @@ tbody tr:hover {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(1200px 550px at 10% 0, rgba(59,130,246,0.55), transparent 60%),
-    radial-gradient(1000px 500px at 90% 100%, rgba(34,197,94,0.45), transparent 60%);
+    radial-gradient(1000px 500px at 10% 0, rgba(59,130,246,0.5), transparent 60%),
+    radial-gradient(900px 460px at 90% 100%, rgba(34,197,94,0.42), transparent 60%);
   opacity: .9;
   mix-blend-mode: screen;
   pointer-events: none;
   z-index: -2;
-  animation: teamGlow 22s ease-in-out infinite alternate;
 }
 .team-stars {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(2px 2px at 20% 30%, rgba(248,250,252,0.95), transparent),
-    radial-gradient(2px 2px at 80% 70%, rgba(248,250,252,0.9), transparent),
-    radial-gradient(2px 2px at 60% 20%, rgba(248,250,252,0.9), transparent),
-    radial-gradient(1.5px 1.5px at 40% 80%, rgba(148,163,255,1), transparent),
-    radial-gradient(1.5px 1.5px at 15% 75%, rgba(52,211,153,1), transparent);
-  opacity: .35;
+    radial-gradient(2px 2px at 20% 30%, rgba(248,250,252,0.85), transparent),
+    radial-gradient(2px 2px at 80% 70%, rgba(248,250,252,0.8), transparent),
+    radial-gradient(1.5px 1.5px at 40% 80%, rgba(148,163,255,0.9), transparent),
+    radial-gradient(1.5px 1.5px at 15% 75%, rgba(52,211,153,0.9), transparent);
+  opacity: .32;
   pointer-events: none;
   z-index: -1;
 }
@@ -969,7 +942,7 @@ tbody tr:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.3rem;
+  gap: 1.2rem;
   margin-bottom: 1.7rem;
 }
 .team-title-block h2 {
@@ -985,10 +958,10 @@ tbody tr:hover {
   max-width: 40rem;
 }
 .team-pill {
-  padding: .22rem .95rem;
+  padding: .2rem .9rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--card-border);
-  background: rgba(6,12,28,0.96);
+  background: rgba(10,18,35,0.97);
   font-size: .8rem;
   color: #c7d2fe;
   display: inline-flex;
@@ -1011,17 +984,15 @@ tbody tr:hover {
 .team-card {
   border-radius: 22px;
   background:
-    radial-gradient(circle at 0 0, rgba(148,255,225,0.52), transparent 60%),
-    radial-gradient(circle at 100% 0, rgba(59,130,246,0.55), transparent 60%),
-    rgba(6,12,28,0.96);
+    radial-gradient(circle at 0 0, rgba(148,255,225,0.6), transparent 60%),
+    radial-gradient(circle at 100% 0, rgba(59,130,246,0.5), transparent 60%),
+    rgba(10,18,35,0.97);
   border: 1px solid var(--card-border-soft);
-  padding: 1.35rem 1.1rem 1.45rem;
+  padding: 1.3rem 1.1rem 1.4rem;
   text-align: center;
   position: relative;
   box-shadow: var(--shadow-soft);
   overflow: hidden;
-  transform-style: preserve-3d;
-  transform: translate3d(0,0,0);
   transition:
     transform var(--transition-med),
     box-shadow var(--transition-med),
@@ -1042,10 +1013,10 @@ tbody tr:hover {
   transition: opacity var(--transition-med);
 }
 .team-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-strong);
   border-color: var(--card-border);
-  filter: brightness(1.03);
+  filter: brightness(1.04);
 }
 .team-card:hover::before { opacity: 1; }
 .team-avatar {
@@ -1060,8 +1031,8 @@ tbody tr:hover {
   color: #020617;
   font-size: 20px;
   box-shadow:
-    0 0 0 2px rgba(248,250,252,0.96),
-    0 18px 42px rgba(15,23,42,1);
+    0 0 0 1px rgba(248,250,252,0.96),
+    0 16px 38px rgba(15,23,42,1);
 }
 .team-name {
   margin: .7rem 0 .1rem;
@@ -1080,8 +1051,8 @@ tbody tr:hover {
 
 /* footer */
 footer {
-  margin-top: 2.3rem;
-  padding: 2.8rem 0 2.4rem;
+  margin-top: 2.2rem;
+  padding: 2.6rem 0 2.3rem;
   background: linear-gradient(180deg,#020617,#020617);
   border-top: 1px solid rgba(148,163,255,0.35);
 }
@@ -1089,7 +1060,7 @@ footer {
   width: min(100% - 3rem, var(--max-width));
   margin-inline: auto;
   display: grid;
-  grid-template-columns: 1.7fr 1fr 1fr;
+  grid-template-columns: 1.7fr 1fr 11fr;
   gap: 1.4rem;
   font-size: .86rem;
   color: var(--text-soft);
@@ -1098,7 +1069,7 @@ footer {
   display: flex;
   align-items: center;
   gap: .8rem;
-  margin-bottom: .4rem;
+  margin-bottom: .35rem;
 }
 .footer-brand-title { font-weight: 600; }
 .footer-col strong {
@@ -1126,20 +1097,20 @@ footer {
 /* back to top */
 .back-top {
   position: fixed;
-  bottom: 1.7rem;
-  right: 1.7rem;
-  width: 42px;
-  height: 42px;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   border: 1px solid rgba(148,163,255,0.7);
   background:
     radial-gradient(circle at 20% 0, rgba(148,255,225,0.7), transparent 60%),
-    rgba(3,7,18,0.98);
+    rgba(15,23,42,0.97);
   color: #e5edff;
   display: grid;
   place-items: center;
   cursor: pointer;
-  box-shadow: 0 16px 45px rgba(0,0,0,0.98);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.9);
   opacity: 0;
   pointer-events: none;
   transform: translateY(8px);
@@ -1156,7 +1127,7 @@ footer {
   transform: translateY(0);
 }
 .back-top:hover {
-  box-shadow: 0 20px 54px rgba(0,0,0,1);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.95);
 }
 
 /* modal */
@@ -1177,7 +1148,7 @@ footer {
   max-width: 100%;
   max-height: 80vh;
   border-radius: 22px;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.98);
+  box-shadow: 0 20px 70px rgba(0,0,0,0.95);
 }
 .modal-caption {
   margin-top: .6rem;
@@ -1187,13 +1158,13 @@ footer {
 }
 .modal-close {
   position: absolute;
-  top: 1.7rem;
-  right: 1.7rem;
-  width: 36px;
-  height: 36px;
+  top: 1.6rem;
+  right: 1.6rem;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   border: 1px solid rgba(191,219,254,0.9);
-  background: rgba(15,23,42,0.96);
+  background: rgba(15,23,42,0.97);
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -1204,10 +1175,10 @@ footer {
 /* reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(20px);
   transition:
-    opacity 520ms ease,
-    transform 520ms ease;
+    opacity 480ms ease,
+    transform 480ms ease;
 }
 .reveal.visible {
   opacity: 1;
@@ -1225,13 +1196,9 @@ footer {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-@keyframes teamGlow {
-  0% { transform: translate3d(0,0,0); }
-  100% { transform: translate3d(-60px,-40px,0); }
-}
 @keyframes starDrift {
   0% { transform: translate3d(0,0,0); }
-  100% { transform: translate3d(40px,30px,0); }
+  100% { transform: translate3d(30px,24px,0); }
 }
 
 /* responsive */
@@ -1245,6 +1212,7 @@ footer {
 @media (max-width: 880px) {
   .nav-links { display: none; }
   .nav-toggle { display: inline-flex; }
+  .mega { display: none; }
 }
 @media (max-width: 820px) {
   .container,
@@ -1252,7 +1220,7 @@ footer {
   .footer-grid {
     width: min(100% - 2.1rem, var(--max-width));
   }
-  .hero { padding-top: 4rem; }
+  .hero { padding-top: 4.2rem; }
   .hero-actions { flex-direction: column; }
   .btn { width: 100%; justify-content: center; }
   .grid-2,
@@ -1265,11 +1233,10 @@ footer {
     align-items: flex-start;
     flex-direction: column;
   }
-  .mega { display: none; }
 }
 @media (max-width: 540px) {
   .dynamic-gallery img { width: 100%; }
-  .hero-metrics { gap: .75rem; }
+  .hero-metrics { gap: .7rem; }
   .team-row { grid-template-columns: minmax(0,1fr); }
   .footer-grid { grid-template-columns: minmax(0,1fr); }
 }
@@ -1378,8 +1345,8 @@ footer {
     <section class="hero" id="overview">
       <div class="hero-layer is-gradient"></div>
       <div class="hero-layer is-particles"></div>
-      <div class="container hero-inner" id="heroParallax">
-        <div class="reveal" data-parallax-depth="8">
+      <div class="container hero-inner">
+        <div class="reveal">
           <div class="hero-kicker">NIH ChestX-ray14 · CNNs · Transfer Learning</div>
           <h1 class="hero-title">
             Chest X-ray Classification for
@@ -1438,18 +1405,18 @@ footer {
           </div>
         </div>
 
-        <aside class="hero-panel reveal" aria-label="Preview card" data-parallax-depth="14">
+        <aside class="hero-panel reveal" aria-label="Preview card">
           <div class="hero-panel-header">
-            <div class="hero-panel-title">Confusion Matrix / ROC preview</div>
+            <div class="hero-panel-title">Confusion matrix / ROC preview</div>
             <div class="hero-panel-chip">Drop-in image ready</div>
           </div>
           <div class="hero-preview" data-modal-src="assets/roc_overview.png" data-modal-caption="Overall ROC curves and confusion matrix">
-            <small>Swap this box with an &lt;img&gt; element for your favorite ROC curves or confusion matrix.</small>
+            <small>Replace this area with an &lt;img&gt; element for your favorite ROC curves or confusion matrix.</small>
           </div>
           <div class="hero-panel-footer">
-            Replace the preview with
+            For example:
             <code>&lt;img src="assets/roc_overview.png" alt="ROC curves for pathologies"&gt;</code>
-            or any figure from your experiment logs.
+            or any experiment figure from your logs.
           </div>
         </aside>
       </div>
@@ -1473,7 +1440,10 @@ footer {
         <div class="grid grid-3">
           <article class="card reveal">
             <h3>NIH ChestX-ray14</h3>
-            <p>112,120 frontal chest X-rays annotated for 14 thoracic pathologies with long-tailed label distributions.</p>
+            <p>
+              112,120 frontal chest X-rays annotated for 14 thoracic pathologies
+              with long-tailed label distributions and overlapping conditions.
+            </p>
             <div class="card-chips">
               <span class="chip">Multi-label targets</span>
               <span class="chip">Frontal view</span>
@@ -1482,7 +1452,10 @@ footer {
           </article>
           <article class="card reveal">
             <h3>Preprocessing & Splits</h3>
-            <p>Images are resized to 224×224, normalized to single-channel grayscale, and split at the patient level into training, validation, and test sets.</p>
+            <p>
+              Images are resized to 224×224, transformed to single-channel grayscale,
+              normalized, and split at the patient level into training, validation, and test sets.
+            </p>
             <div class="card-chips">
               <span class="chip">224×224 resize</span>
               <span class="chip">Grayscale normalization</span>
@@ -1491,7 +1464,10 @@ footer {
           </article>
           <article class="card reveal">
             <h3>Ethics & Evaluation</h3>
-            <p>Held-out evaluation prioritizes label prevalence, calibration, and sensitivity to potential shortcut features such as devices and view position.</p>
+            <p>
+              Held-out evaluation emphasizes label prevalence, calibration, and sensitivity
+              to potential shortcuts such as imaging devices and view position.
+            </p>
             <div class="card-chips">
               <span class="chip">Stratified test set</span>
               <span class="chip">Calibration checks</span>
@@ -1522,35 +1498,52 @@ footer {
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Preprocessing</strong>
-                <p>DICOM/PNG load → resize to 224×224 → grayscale normalization → optional contrast enhancement → patient-wise train/validation/test split.</p>
+                <p>
+                  DICOM/PNG load → resize to 224×224 → grayscale normalization → optional contrast enhancement
+                  → patient-wise train/validation/test split.
+                </p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Model architectures</strong>
-                <p>DenseNet-121, EfficientNet-B4, and ResNet-50 initialized from ImageNet, with a final sigmoid layer for multi-label classification.</p>
+                <p>
+                  DenseNet-121, EfficientNet-B4, and ResNet-50 initialized from ImageNet, followed by a final
+                  sigmoid layer for multi-label classification of the 14 pathologies.
+                </p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Training strategy</strong>
-                <p>BCEWithLogitsLoss with class weights, AdamW optimizer, cosine learning rate schedule, and early stopping based on validation macro AUC-ROC.</p>
+                <p>
+                  BCEWithLogitsLoss with class weights, AdamW optimizer, cosine learning rate schedule,
+                  and early stopping driven by validation macro AUC-ROC.
+                </p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Evaluation</strong>
-                <p>Macro and micro AUC-ROC / AUC-PR, per-label metrics, and label-specific threshold selection using Youden’s J to balance sensitivity and specificity.</p>
+                <p>
+                  Macro and micro AUC-ROC / AUC-PR, per-label metrics,
+                  and label-specific threshold selection using Youden’s J statistic
+                  to balance sensitivity and specificity.
+                </p>
               </div>
             </div>
             <div class="step">
               <div class="step-bullet" aria-hidden="true"></div>
               <div>
                 <strong>Error analysis</strong>
-                <p>Grad-CAM explanations, breakdown by device and view, and inspection of representative true positives, false positives, and false negatives.</p>
+                <p>
+                  Grad-CAM explanations, breakdown by device and view,
+                  and inspection of representative true positives, false positives,
+                  and false negatives to understand failure modes.
+                </p>
               </div>
             </div>
           </div>
@@ -1609,14 +1602,15 @@ footer {
               </table>
             </div>
             <p class="results-note">
-              Metrics highlight a clear improvement when moving from DenseNet-121 to ResNet-50, both in macro AUC-ROC and macro F1.
+              Metrics highlight a clear improvement when moving from DenseNet-121 to ResNet-50,
+              both in macro AUC-ROC and macro F1.
             </p>
           </article>
 
           <article class="card reveal">
             <h3>ResNet-50 summary</h3>
             <div class="table-wrap">
-              <table aria-label="ResNet50 summary">
+              <table aria-label="ResNet-50 summary">
                 <thead>
                   <tr>
                     <th></th>
@@ -1639,12 +1633,13 @@ footer {
               </table>
             </div>
             <p class="results-note">
-              On the held-out test set, ResNet-50 maintains macro F1 while showing a slight drop in macro AUC-ROC, consistent with a realistic generalization gap.
+              On the held-out test set, ResNet-50 maintains macro F1 while showing a modest
+              drop in macro AUC-ROC, consistent with a realistic generalization gap.
             </p>
           </article>
         </div>
 
-        <div style="height:1.6rem"></div>
+        <div style="height:1.5rem"></div>
 
         <div class="grid grid-2">
           <article class="card reveal">
@@ -1655,7 +1650,8 @@ footer {
               <img src="assets/cm_resnet.png" alt="ResNet-50 confusion matrix" data-caption="ResNet-50 confusion matrix for selected labels">
             </div>
             <p class="results-note">
-              Add or remove <code>&lt;img&gt;</code> elements in this gallery; the layout automatically adapts to any number of ROC and confusion matrix plots.
+              Add or remove <code>&lt;img&gt;</code> elements in this gallery; the layout automatically adapts
+              to any number of ROC and confusion matrix plots.
             </p>
           </article>
 
@@ -1683,7 +1679,8 @@ footer {
               </div>
             </div>
             <p class="results-note" id="caseDescription">
-              Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette rather than external devices, reinforcing that the model attends to clinically relevant regions.
+              Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette rather than external devices,
+              reinforcing that the model attends to clinically relevant regions.
             </p>
           </article>
         </div>
@@ -1696,7 +1693,8 @@ footer {
           <div class="section-title-block">
             <h2>QUALITATIVE EXAMPLES</h2>
             <p>
-              Representative cases illustrating how the model behaves on true positives, false positives, and false negatives.
+              Representative cases illustrating how the model behaves on true positives,
+              false positives, and false negatives.
             </p>
           </div>
           <div class="section-tag">
@@ -1711,7 +1709,9 @@ footer {
               gradcam_tp.png
             </div>
             <p class="qual-text">
-              Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette rather than external devices, reinforcing that the model attends to clinically relevant regions.
+              Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette
+              rather than external devices, supporting the idea that the model leverages
+              clinically meaningful regions.
             </p>
           </article>
           <article class="qual-card reveal">
@@ -1720,7 +1720,9 @@ footer {
               gradcam_fp.png
             </div>
             <p class="qual-text">
-              The prediction is driven by attention on monitoring equipment, illustrating shortcut learning that motivates device-aware augmentations and stricter validation.
+              The prediction is driven by attention on monitoring equipment,
+              illustrating shortcut learning that motivates device-aware augmentations
+              and more careful validation.
             </p>
           </article>
           <article class="qual-card reveal">
@@ -1729,7 +1731,9 @@ footer {
               gradcam_fn.png
             </div>
             <p class="qual-text">
-              A subtle effusion is missed at default thresholds but becomes detectable after label-specific threshold tuning and calibration, highlighting the sensitivity trade-offs.
+              A subtle effusion is missed at default thresholds but becomes detectable
+              after label-specific threshold tuning and calibration, highlighting the
+              sensitivity–specificity trade-offs.
             </p>
           </article>
         </div>
@@ -1743,7 +1747,8 @@ footer {
           <div class="team-title-block">
             <h2>TEAM</h2>
             <p>
-              Team 11 · STA 160 · UC Davis — combining modeling, data curation, training operations, visualization, and reporting.
+              Team 11 · STA 160 · UC Davis — combining modeling, data curation,
+              training operations, visualization, and reporting.
             </p>
           </div>
           <div class="team-pill">
@@ -1753,48 +1758,58 @@ footer {
         </div>
 
         <div class="team-row">
+          <!-- 1: Muhammad -->
           <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">ML</div>
             <div class="team-name">Muhammad Laiq</div>
             <div class="team-role-main">Lead · Modeling & Docs</div>
             <div class="team-role-detail">
-              Model design, training strategy, hyperparameter selection, and primary report writing.
+              Model design, training strategy, hyperparameter selection,
+              and primary report writing for the project.
             </div>
           </article>
 
+          <!-- 2: Tina -->
           <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">TY</div>
             <div class="team-name">Tina Yu</div>
             <div class="team-role-main">Training Ops & Visualization</div>
             <div class="team-role-detail">
-              Experiments, training pipelines, hyperparameter sweeps, Grad-CAM and metric visualization.
+              Experiments, training pipelines, hyperparameter sweeps,
+              Grad-CAM exploration, and metric visualization.
             </div>
           </article>
 
+          <!-- 3: Kayla -->
           <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">KS</div>
             <div class="team-name">Kayla Sham</div>
             <div class="team-role-main">Data & EDA</div>
             <div class="team-role-detail">
-              Data cleaning, exploratory analysis, cohort statistics, and label distribution studies.
+              Data cleaning, exploratory analysis, cohort statistics,
+              and label distribution studies on ChestX-ray14.
             </div>
           </article>
 
+          <!-- 4: Lauren -->
           <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">LL</div>
             <div class="team-name">Lauren Le</div>
             <div class="team-role-main">Reporting & Evaluation</div>
             <div class="team-role-detail">
-              Result synthesis, error analysis, and preparation of the final STA 160 report and slides.
+              Result synthesis, error analysis, and preparation of the final
+              STA 160 report and slides.
             </div>
           </article>
 
+          <!-- 5: Fang -->
           <article class="team-card reveal">
             <div class="team-avatar" aria-hidden="true">FS</div>
             <div class="team-name">Fang Shang</div>
             <div class="team-role-main">Training Ops & Website</div>
             <div class="team-role-detail">
-              Result organization, website design, interactive visualization, and shared evaluation review.
+              Result organization, website design, interactive visualization,
+              and joint review of evaluation outcomes.
             </div>
           </article>
         </div>
@@ -1853,27 +1868,213 @@ var navShell=document.getElementById("navShell");
 var navToggle=document.getElementById("navToggle");
 var navMobile=document.getElementById("navMobile");
 var backTop=document.getElementById("backTop");
-if(navToggle){navToggle.addEventListener("click",function(){navShell.classList.toggle("nav-open")})}
-if(navMobile){navMobile.addEventListener("click",function(e){var link=e.target.closest("a.nav-link");if(link){navShell.classList.remove("nav-open")}})}
-document.querySelectorAll("[data-scroll]").forEach(function(btn){btn.addEventListener("click",function(){var sel=btn.getAttribute("data-scroll");if(!sel)return;var t=document.querySelector(sel);if(t){t.scrollIntoView({behavior:"smooth",block:"start"})}})});
-document.querySelectorAll("a[href^='#']").forEach(function(link){link.addEventListener("click",function(e){var id=link.getAttribute("href");if(!id||id==="#")return;var t=document.querySelector(id);if(t){e.preventDefault();navShell.classList.remove("nav-open");t.scrollIntoView({behavior:"smooth",block:"start"})}})});
-window.addEventListener("scroll",function(){var y=window.scrollY||window.pageYOffset;if(backTop){if(y>260){backTop.classList.add("visible")}else{backTop.classList.remove("visible")}}});
-if(backTop){backTop.addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"})})}
+
+if(navToggle){
+  navToggle.addEventListener("click",function(){
+    navShell.classList.toggle("nav-open");
+  });
+}
+if(navMobile){
+  navMobile.addEventListener("click",function(e){
+    var link=e.target.closest("a.nav-link");
+    if(link){
+      navShell.classList.remove("nav-open");
+    }
+  });
+}
+
+document.querySelectorAll("[data-scroll]").forEach(function(btn){
+  btn.addEventListener("click",function(){
+    var sel=btn.getAttribute("data-scroll");
+    if(!sel)return;
+    var t=document.querySelector(sel);
+    if(t){
+      t.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+  });
+});
+
+document.querySelectorAll("a[href^='#']").forEach(function(link){
+  link.addEventListener("click",function(e){
+    var id=link.getAttribute("href");
+    if(!id||id==="#")return;
+    var t=document.querySelector(id);
+    if(t){
+      e.preventDefault();
+      navShell.classList.remove("nav-open");
+      t.scrollIntoView({behavior:"smooth",block:"start"});
+    }
+  });
+});
+
+window.addEventListener("scroll",function(){
+  var y=window.scrollY||window.pageYOffset;
+  if(backTop){
+    if(y>260){
+      backTop.classList.add("visible");
+    }else{
+      backTop.classList.remove("visible");
+    }
+  }
+});
+
+if(backTop){
+  backTop.addEventListener("click",function(){
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+}
+
 var revealEls=document.querySelectorAll(".reveal");
-if("IntersectionObserver" in window){var ro=new IntersectionObserver(function(es,o){es.forEach(function(entry){if(entry.isIntersecting){entry.target.classList.add("visible");o.unobserve(entry.target)}})},{threshold:0.2});revealEls.forEach(function(el){ro.observe(el)})}else{revealEls.forEach(function(el){el.classList.add("visible")})}
+if("IntersectionObserver" in window){
+  var ro=new IntersectionObserver(function(entries,obs){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add("visible");
+        obs.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.18});
+  revealEls.forEach(function(el){ro.observe(el)});
+}else{
+  revealEls.forEach(function(el){el.classList.add("visible")});
+}
+
 var metricCards=document.querySelectorAll("[data-count]");
-if("IntersectionObserver" in window){var mo=new IntersectionObserver(function(es,o){es.forEach(function(entry){if(entry.isIntersecting){var el=entry.target;var target=parseFloat(el.getAttribute("data-target")||"0");var suffix=el.getAttribute("data-suffix")||"";var numSpan=el.querySelector(".num");if(!numSpan){o.unobserve(el);return}var start=null;function step(ts){if(!start)start=ts;var p=Math.min((ts-start)/900,1);var val=Math.floor(target*p);numSpan.textContent=val.toString();if(p<1){window.requestAnimationFrame(step)}else{numSpan.textContent=target.toString()}}window.requestAnimationFrame(step);var suf=el.querySelector(".suffix");if(suf&&suffix){suf.textContent=suffix}o.unobserve(el)}})},{threshold:0.6});metricCards.forEach(function(el){mo.observe(el)})}
-var compare=document.querySelector("[data-compare]");if(compare){var range=document.getElementById("compareRange");var after=compare.querySelector(".compare-after");if(range&&after){range.addEventListener("input",function(){var v=parseInt(range.value,10);after.style.clipPath="inset(0 0 0 "+v+"%)"})}}
-var modal=document.getElementById("imageModal");var modalImg=document.getElementById("modalImg");var modalCaption=document.getElementById("modalCaption");var modalClose=document.getElementById("modalClose");
-function openModal(src,cap){if(!modal||!modalImg)return;modalImg.src=src||"";modalCaption.textContent=cap||"";modal.style.display="flex";modal.setAttribute("aria-hidden","false")}
-function closeModal(){if(!modal)return;modal.style.display="none";modal.setAttribute("aria-hidden","true")}
-document.querySelectorAll("[data-gallery] img, .hero-preview[data-modal-src], .qual-img[data-modal-src]").forEach(function(el){el.addEventListener("click",function(){var src=el.getAttribute("data-modal-src")||el.getAttribute("src");var cap=el.getAttribute("data-caption")||el.getAttribute("alt")||el.getAttribute("data-modal-caption")||"";openModal(src,cap)})});
-if(modal){modal.addEventListener("click",function(e){if(e.target===modal){closeModal()}})}
-if(modalClose){modalClose.addEventListener("click",function(){closeModal()})}
-var hero=document.getElementById("heroParallax");if(hero){hero.addEventListener("mousemove",function(e){var rect=hero.getBoundingClientRect();var cx=rect.left+rect.width/2;var cy=rect.top+rect.height/2;var dx=(e.clientX-cx)/rect.width;var dy=(e.clientY-cy)/rect.height;document.querySelectorAll("[data-parallax-depth]").forEach(function(el){var d=parseFloat(el.getAttribute("data-parallax-depth")||"10");var tx=-dx*d;var ty=-dy*d;el.style.transform="translate3d("+tx+"px,"+ty+"px,0)"})});hero.addEventListener("mouseleave",function(){document.querySelectorAll("[data-parallax-depth]").forEach(function(el){el.style.transform=""})})}
-var megaItem=document.getElementById("megaItem");var megaPanel=document.getElementById("megaPanel");if(megaItem&&megaPanel){megaItem.addEventListener("mouseenter",function(){megaItem.classList.add("show-mega")});megaItem.addEventListener("mouseleave",function(){megaItem.classList.remove("show-mega")});megaItem.querySelector(".nav-mega-toggle").addEventListener("click",function(){megaItem.classList.toggle("show-mega")})}
-var caseTabs=document.getElementById("caseTabs");var compareBefore=document.getElementById("compareBefore");var compareAfter=document.getElementById("compareAfter");var caseDescription=document.getElementById("caseDescription");
-if(caseTabs&&compareBefore&&compareAfter&&caseDescription){var cases={tp:{before:"assets/grad_tp_before.png",after:"assets/grad_tp_after.png",desc:"Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette rather than external devices, reinforcing that the model attends to clinically relevant regions."},fp:{before:"assets/grad_fp_before.png",after:"assets/grad_fp_after.png",desc:"The prediction is driven by attention on monitoring equipment, illustrating shortcut learning that motivates device-aware augmentations and stricter validation."},fn:{before:"assets/grad_fn_before.png",after:"assets/grad_fn_after.png",desc:"A subtle effusion is missed at default thresholds but becomes detectable after label-specific threshold tuning and calibration, highlighting the sensitivity trade-offs."}};caseTabs.addEventListener("click",function(e){var tab=e.target.closest(".case-tab");if(!tab)return;var key=tab.getAttribute("data-case");if(!cases[key])return;compareBefore.src=cases[key].before;compareAfter.src=cases[key].after;caseDescription.textContent=cases[key].desc;caseTabs.querySelectorAll(".case-tab").forEach(function(t){t.classList.toggle("active",t===tab)})})}
+if("IntersectionObserver" in window){
+  var mo=new IntersectionObserver(function(entries,obs){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var el=entry.target;
+        var target=parseFloat(el.getAttribute("data-target")||"0");
+        var suffix=el.getAttribute("data-suffix")||"";
+        var numSpan=el.querySelector(".num");
+        if(!numSpan){obs.unobserve(el);return}
+        var start=null;
+        function step(ts){
+          if(!start)start=ts;
+          var p=Math.min((ts-start)/900,1);
+          var val=Math.floor(target*p);
+          numSpan.textContent=val.toString();
+          if(p<1){
+            window.requestAnimationFrame(step);
+          }else{
+            numSpan.textContent=target.toString();
+          }
+        }
+        window.requestAnimationFrame(step);
+        var suf=el.querySelector(".suffix");
+        if(suf&&suffix){suf.textContent=suffix}
+        obs.unobserve(el);
+      }
+    });
+  },{threshold:0.55});
+  metricCards.forEach(function(el){mo.observe(el)});
+}
+
+var compare=document.querySelector("[data-compare]");
+if(compare){
+  var range=document.getElementById("compareRange");
+  var after=compare.querySelector(".compare-after");
+  if(range&&after){
+    range.addEventListener("input",function(){
+      var v=parseInt(range.value,10);
+      after.style.clipPath="inset(0 0 0 "+v+"%)";
+    });
+  }
+}
+
+var modal=document.getElementById("imageModal");
+var modalImg=document.getElementById("modalImg");
+var modalCaption=document.getElementById("modalCaption");
+var modalClose=document.getElementById("modalClose");
+function openModal(src,cap){
+  if(!modal||!modalImg)return;
+  modalImg.src=src||"";
+  modalCaption.textContent=cap||"";
+  modal.style.display="flex";
+  modal.setAttribute("aria-hidden","false");
+}
+function closeModal(){
+  if(!modal)return;
+  modal.style.display="none";
+  modal.setAttribute("aria-hidden","true");
+}
+
+document.querySelectorAll("[data-gallery] img, .hero-preview[data-modal-src], .qual-img[data-modal-src]").forEach(function(el){
+  el.addEventListener("click",function(){
+    var src=el.getAttribute("data-modal-src")||el.getAttribute("src");
+    var cap=el.getAttribute("data-caption")||el.getAttribute("alt")||el.getAttribute("data-modal-caption")||"";
+    openModal(src,cap);
+  });
+});
+
+if(modal){
+  modal.addEventListener("click",function(e){
+    if(e.target===modal){closeModal()}
+  });
+}
+if(modalClose){
+  modalClose.addEventListener("click",function(){closeModal()});
+}
+
+var megaItem=document.getElementById("megaItem");
+var megaPanel=document.getElementById("megaPanel");
+if(megaItem&&megaPanel){
+  var megaToggle=megaItem.querySelector(".nav-mega-toggle");
+  megaItem.addEventListener("mouseenter",function(){
+    megaItem.classList.add("show-mega");
+  });
+  megaItem.addEventListener("mouseleave",function(){
+    megaItem.classList.remove("show-mega");
+  });
+  if(megaToggle){
+    megaToggle.addEventListener("click",function(e){
+      e.stopPropagation();
+      megaItem.classList.toggle("show-mega");
+    });
+  }
+  document.addEventListener("click",function(e){
+    if(!megaItem.contains(e.target)){
+      megaItem.classList.remove("show-mega");
+    }
+  });
+}
+
+var caseTabs=document.getElementById("caseTabs");
+var compareBefore=document.getElementById("compareBefore");
+var compareAfter=document.getElementById("compareAfter");
+var caseDescription=document.getElementById("caseDescription");
+if(caseTabs&&compareBefore&&compareAfter&&caseDescription){
+  var cases={
+    tp:{
+      before:"assets/grad_tp_before.png",
+      after:"assets/grad_tp_after.png",
+      desc:"Cardiomegaly correctly detected; Grad-CAM focuses on the cardiac silhouette rather than external devices, reinforcing that the model attends to clinically relevant regions."
+    },
+    fp:{
+      before:"assets/grad_fp_before.png",
+      after:"assets/grad_fp_after.png",
+      desc:"The prediction is driven by attention on monitoring equipment, illustrating shortcut learning that motivates device-aware augmentations and stricter validation."
+    },
+    fn:{
+      before:"assets/grad_fn_before.png",
+      after:"assets/grad_fn_after.png",
+      desc:"A subtle effusion is missed at default thresholds but becomes detectable after label-specific threshold tuning and calibration, highlighting the sensitivity–specificity trade-offs."
+    }
+  };
+  caseTabs.addEventListener("click",function(e){
+    var tab=e.target.closest(".case-tab");
+    if(!tab)return;
+    var key=tab.getAttribute("data-case");
+    if(!cases[key])return;
+    compareBefore.src=cases[key].before;
+    compareAfter.src=cases[key].after;
+    caseDescription.textContent=cases[key].desc;
+    caseTabs.querySelectorAll(".case-tab").forEach(function(t){
+      t.classList.toggle("active",t===tab);
+    });
+  });
+}
 </script>
 </body>
 </html>
