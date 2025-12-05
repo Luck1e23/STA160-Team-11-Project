@@ -200,37 +200,30 @@
         </div>
       </div>
 
-      <aside class="hero-card" aria-label="Preview">
-        <div class="preview">
-          <small>Drop a sample confusion matrix / ROC image here<br>(replace this box with an &lt;img&gt;)</small>
+      <aside class="hero-panel tilt reveal" data-tilt aria-label="Model preview card">
+        <div class="hero-panel-header">
+          <div class="hero-panel-title">Upload X-Ray Image</div>
+          <div class="hero-panel-tag">Preview only</div>
         </div>
+        <div class="hero-preview" style="text-align:center; padding: 15px;">
+          <img id="previewImage"
+              src=""
+              alt="Image preview"
+              class="hero-preview-img"
+              style="width:100%; border-radius:12px; display:none;" />
 
-        <label for="image-upload" class="btn" style="margin-top: .8rem; width: 100%; justify-content: center;">
-          Upload Image
-        </label>
-        <input type="file" id="image-upload" class="sr-only" accept="image/*">
-        
-        <p class="note" style="margin-top:.8rem">Tip: swap the placeholder with <code>&lt;img src="assets/roc.png" alt="ROC curves for pathologies" /&gt;</code></p>
+          <input type="file" id="fileInput" accept="image/*" class="hero-input">
+
+          <button onclick="uploadImage()" class="hero-button">
+              Submit Image (!!! Backend not ready)
+          </button>
+
+          <p id="result" class="hero-result"></p>
+        </div>
+        <p class="hero-panel-tip">Tip: upload won't work until backend is ready!</p>
       </aside>
     </div>
   </section>
-
-    <!-- ====== Image Upload Script ====== -->
-  <script>
-    const uploadInput = document.getElementById('image-upload');
-    const previewDiv = document.getElementById('upload-preview');
-
-    uploadInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        previewDiv.innerHTML = `<img src="${reader.result}" alt="Uploaded Image" style="width:100%; height:auto; border-radius:12px;" />`;
-      };
-      reader.readAsDataURL(file);
-    });
-  </script>
 
   <!-- ====== Datasets ====== -->
   <section id="datasets">
@@ -452,5 +445,38 @@
       </div>
     </div>
   </footer>
+// Below is the file selection and preview handling:
+// 1. checks if file is selected
+// 2. displays selected image in the preview <img>
+// 3. shows a message (rn says that backend is not ready)
+// Currently does NOT upload file yet
+// === File upload and preview (safe to add at the end) ===
+const fileInput = document.getElementById("fileInput");
+const previewImage = document.getElementById("previewImage");
+const result = document.getElementById("result");
+  
+if (fileInput) {
+  fileInput.addEventListener('change', function() {
+      const file = this.files[0];
+      if (file) {
+          previewImage.src = URL.createObjectURL(file);
+          previewImage.style.display = "block";
+      }
+  });
+}
+    
+function uploadImage() {
+    if (!fileInput) return;
+    
+    const file = fileInput.files[0];
+    if (!file) {
+        result.innerText = "Please select a file first.";
+        return;
+    }
+  
+    previewImage.src = URL.createObjectURL(file);
+    previewImage.style.display = "block";
+    result.innerText = "Backend not ready yet. Preview shown above.";
+}
 </body>
 </html>
