@@ -39,44 +39,73 @@
           <h3 style="margin-bottom:.6rem">Summary (Validation)</h3>
           <table aria-label="validation summary">
             <thead>
-              <tr><th>Model</th><th>Macro AUC‑ROC</th><th>Macro AUC‑PR</th><th>Params</th></tr>
+              <tr>
+                <th>Model</th>
+                <th>Best Val AUC</th>
+                <th>Best Val F1</th>
+                <th>Params</th>
+              </tr>
             </thead>
             <tbody>
-              <tr><td>DenseNet‑121</td><td>0.86</td><td>0.41</td><td>8.0M</td></tr>
-              <tr><td>ResNet‑50</td><td>0.84</td><td>0.38</td><td>25.6M</td></tr>
-              <tr><td>EfficientNet‑B0</td><td>0.83</td><td>0.36</td><td>5.3M</td></tr>
+              <tr>
+                <td>DenseNet‑121</td>
+                <td>0.7407</td>
+                <td>0.216</td>
+                <td>7.0M</td>
+              </tr>
+              <tr>
+                <td>EfficientNet‑B4</td>
+                <td>0.7503</td>
+                <td>0.233</td>
+                <td>19.0M</td>
+              </tr>
+              <tr>
+                <td>ResNet50</td>
+                <td>0.7966</td>
+                <td>0.292</td>
+                <td>25.0M</td>
+              </tr>
             </tbody>
           </table>
-          <p class="note">Replace with your numbers. Keep both ROC and PR due to class imbalance.</p>
         </article>
         <article class="card">
-          <h3 style="margin-bottom:.6rem">Per‑Label AUC‑ROC (Sample)</h3>
+          <h3 style="margin-bottom:.6rem">ResNet50</h3>
           <table aria-label="per label auc">
             <thead>
-              <tr><th>Label</th><th>AUC</th><th>Support</th></tr>
+              <tr>
+                <th>Validation Macro AUC</th>
+                <th>Validation Macro F1</th>
+                <th>Test Macro AUC</th>
+                <th>Test Macro AUC</th>
+              </tr>
             </thead>
             <tbody>
-              <tr><td>Cardiomegaly</td><td>0.92</td><td>8,753</td></tr>
-              <tr><td>Pleural Effusion</td><td>0.90</td><td>13,842</td></tr>
-              <tr><td>Edema</td><td>0.88</td><td>6,410</td></tr>
-              <tr><td>Consolidation</td><td>0.81</td><td>5,102</td></tr>
-              <tr><td>No Finding</td><td>0.78</td><td>—</td></tr>
+              <tr>
+                <td>0.795</td>
+                <td>0.284</td>
+                <td>0.757</td>
+                <td>0.295</td>
+              </tr>
             </tbody>
           </table>
-          <p class="note">Populate from your experiment logs or CSV exports.</p>
         </article>
       </div>
 
       <div class="spacer"></div>
 
       <div class="card">
-        <h3 style="margin:0 0 .6rem">Confusion Matrix / ROC Gallery</h3>
+        <h3 style="margin:0 0 .6rem">Visualization of Results</h3>
         <div class="gallery" id="gallery">
-          <div class="shot">roc_dense.png</div>
-          <div class="shot">roc_resnet.png</div>
-          <div class="shot">cm_cardio.png</div>
+          <div class="shot">
+            <img src="images/model_comparison.png" alt="model_comparison" />
+          </div>
+          <div class="shot">
+            <img src="images/val_auc.png" alt="validation_auc" />
+          </div>
+          <div class="shot">
+            <img src="images/resnet50_auc_f1.png" alt="resnet50_auc_f1" />
+          </div>
         </div>
-        <p class="note" style="margin-top:.6rem">Swap the placeholders with actual <code>&lt;img&gt;</code> tags when your plots are ready.</p>
       </div>
     </div>
   </section>
