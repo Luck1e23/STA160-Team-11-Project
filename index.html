@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>STA 160 X‑ray Project</title>
-  <meta name="description" content="Chest X‑ray classification project (NIH)." />
+  <meta name="description" content="Chest X‑ray classification project (NIH + CheXpert)." />
 
   <!-- ====== CSS ====== -->
   <style>
@@ -153,7 +153,6 @@
     .note { font-size: .95rem; color: var(--muted); }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
   </style>
-  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -182,17 +181,13 @@
   <section class="hero">
     <div class="container hero-grid">
       <div>
-        <div class="kicker">NIH • CNNs • Transfer Learning</div>
+        <div class="kicker">NIH + CheXpert • CNNs • Transfer Learning</div>
         <h1 class="title">Chest X‑ray Classification for Multi‑Label Pathologies</h1>
-        <p class="subtitle">
-          We benchmark pre‑trained CNNs to detect common thoracic findings from frontal chest X‑rays. Our pipeline covers curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.
-        </p>
-        
+        <p class="subtitle">We benchmark pre‑trained CNNs to detect common thoracic findings from frontal chest X‑rays. Our pipeline covers curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.</p>
         <div class="actions">
           <a class="btn primary" href="#results">View Results</a>
           <a class="btn" href="#method">See the Method</a>
         </div>
-
         <div class="stats" aria-label="Project stats">
           <div class="stat"><div class="num">112k+</div><div class="label">Images (NIH14)</div></div>
           <div class="stat"><div class="num">224k+</div><div class="label">Images (CheXpert)</div></div>
@@ -201,24 +196,34 @@
         </div>
       </div>
 
-      <aside class="hero-panel tilt reveal" data-tilt aria-label="Model preview card">
-        <div class="hero-panel-header">
-          <div class="hero-panel-title">Upload X-Ray Image</div>
-          <div class="hero-panel-tag">Preview only</div>
+      <aside class="hero-card" aria-label="Preview">
+        <div class="preview">
+          <span id="uploadText" style="color:#3498db; font-weight:bold;">
+            Upload X-ray
+          </span>
+          <input type="file" id="fileInput" accept="image/*" style="display:none;">
+          <img id="previewImage" src="" alt="Preview" style="display:none; width:100%; border-radius:12px; margin-top:10px;">
         </div>
-        <div class="hero-preview" style="text-align:center; padding: 15px;">
-
-          <label for="fileInput" class="upload-box" id="uploadBox">
-            Click to upload or drag file here
-            <img id="previewImage" src="" alt="Preview" />
-          </label>
-
-          <input type="file" id="fileInput" accept="image/*" class="hero-input">
-
-          <p id="result" class="hero-result"></p>
-        </div>
-        <p class="hero-panel-tip">Tip: upload won't work until backend is ready!</p>
+        <p class="note" style="margin-top:.8rem">Tip: swap the placeholder with <code>&lt;img src="assets/roc.png" alt="ROC curves for pathologies" /&gt;</code></p>
       </aside>
+
+      <script>
+      const previewDiv = document.querySelector(".preview");
+      const fileInput = document.getElementById("fileInput");
+      const previewImage = document.getElementById("previewImage");
+      const uploadText = document.getElementById("uploadText");
+
+      previewDiv.addEventListener("click", () => fileInput.click());
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        if (file) {
+          previewImage.src = URL.createObjectURL(file);
+          previewImage.style.display = "block";
+          uploadText.style.display = "none";
+        }
+      });
+      </script>
     </div>
   </section>
 
@@ -442,38 +447,5 @@
       </div>
     </div>
   </footer>
-// Below is the file selection and preview handling:
-// 1. checks if file is selected
-// 2. displays selected image in the preview <img>
-// 3. shows a message (rn says that backend is not ready)
-// Currently does NOT upload file yet
-// === File upload and preview (safe to add at the end) ===
-const fileInput = document.getElementById("fileInput");
-const previewImage = document.getElementById("previewImage");
-const result = document.getElementById("result");
-  
-if (fileInput) {
-  fileInput.addEventListener('change', function() {
-      const file = this.files[0];
-      if (file) {
-          previewImage.src = URL.createObjectURL(file);
-          previewImage.style.display = "block";
-      }
-  });
-}
-    
-function uploadImage() {
-    if (!fileInput) return;
-    
-    const file = fileInput.files[0];
-    if (!file) {
-        result.innerText = "Please select a file first.";
-        return;
-    }
-  
-    previewImage.src = URL.createObjectURL(file);
-    previewImage.style.display = "block";
-    result.innerText = "Backend not ready yet. Preview shown above.";
-}
 </body>
 </html>
