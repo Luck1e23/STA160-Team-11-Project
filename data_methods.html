@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dataset & Methods</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ====== Header / Nav ====== -->
+  <header role="banner">
+    <div class="container nav" aria-label="Top navigation">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">XR</div>
+        <div>STA 160 — Chest X‑ray</div>
+      </div>
+
+      <label class="hamburger" for="nav-toggle" aria-label="Open navigation" aria-controls="nav-links">☰</label>
+      <input type="checkbox" id="nav-toggle" class="sr-only" aria-hidden="true">
+
+      <nav id="nav-links" class="nav-links" role="navigation">
+        <a class="link" href="index.html">Image Upload</a>
+        <a class="link" href="data_methods.html">Data and Methods</a>
+        <a class="link" href="results.html">Results</a>
+      </nav>
+    </div>
+  </header>
+
+<main>
+  <!-- ====== Dataset ====== -->
+  <section id="datasets">
+    <div class="container">
+      <div class="section-head">
+        <h2>Dataset</h2>
+        <span class="tag">Data curation</span>
+      </div>
+      <div class="grid cols-3">
+        <article class="card">
+          <h3>NIH ChestX‑ray14</h3>
+          <p>112,120 frontal Chest X-rays annotated for 14 pathologies and No Finding. Multi‑label; long‑tailed distributions.</p>
+          <div class="spacer"></div>
+          <div class="row note"><span class="tag">Train/Valid/Test split</span><span class="tag">224×224</span><span class="tag">Augment: flip/crop</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== Method ====== -->
+  <section id="method">
+    <div class="container">
+      <div class="section-head">
+        <h2>Method</h2>
+        <span class="tag">Reproducible pipeline</span>
+      </div>
+      <div class="card">
+        <div class="timeline">
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Preprocessing</strong>
+              <p class="muted">DICOM/PNG read → resize 224×224 → grayscale normalization → optional CLAHE → train/valid/test split (patient‑wise).</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Models</strong>
+              <p class="muted">Transfer learning with ResNet‑50, DenseNet‑121, EfficientNet‑B0. Final linear head with sigmoid for multi‑label BCE.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Training</strong>
+              <p class="muted">BCEWithLogitsLoss + class weights; AdamW; cosine LR; early stopping on macro AUC‑ROC.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Evaluation</strong>
+              <p class="muted">Per‑label AUC‑ROC/PR, threshold tuning via Youden’s J; report macro/micro metrics; calibration with temperature scaling.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="bullet" aria-hidden="true"></div>
+            <div>
+              <strong>Error Analysis</strong>
+              <p class="muted">Confusions by view, device, and sex; Grad‑CAM sanity checks; slice‑wise breakdown for long‑tail classes.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+ <!-- ====== Footer ====== -->
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:.5rem">
+          <div class="logo" aria-hidden="true">XR</div>
+          <div>Chest X‑ray Project</div>
+        </div>
+        <p class="note">Course: STA 160 • Quarter: Fall 2025 • UC Davis</p>
+      </div>
+      <div>
+        <strong>Links</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="#datasets">Datasets</a></li>
+          <li><a href="#method">Method</a></li>
+          <li><a href="#results">Results</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="mailto:you@example.edu">you@example.edu</a></li>
+          <li><a href="#">GitHub repo</a></li>
+          <li><a href="#">Paper / Report</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ====== Header / Nav ====== -->
+  <header role="banner">
+    <div class="container nav" aria-label="Top navigation">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">XR</div>
+        <div>STA 160 — Chest X‑ray</div>
+      </div>
+
+      <label class="hamburger" for="nav-toggle" aria-label="Open navigation" aria-controls="nav-links">☰</label>
+      <input type="checkbox" id="nav-toggle" class="sr-only" aria-hidden="true">
+
+      <nav id="nav-links" class="nav-links" role="navigation">
+        <a class="link" href="index.html">Image Upload</a>
+        <a class="link" href="data_methods.html">Data and Methods</a>
+        <a class="link" href="results.html">Results</a>
+      </nav>
+    </div>
+  </header>
+
+ <!-- ====== Results ====== -->
+  <section id="results">
+    <div class="container">
+      <div class="section-head">
+        <h2>Results</h2>
+        <span class="tag">Metrics</span>
+      </div>
+      <div class="grid cols-2">
+        <article class="card">
+          <h3 style="margin-bottom:.6rem">Summary (Validation)</h3>
+          <table aria-label="validation summary">
+            <thead>
+              <tr><th>Model</th><th>Macro AUC‑ROC</th><th>Macro AUC‑PR</th><th>Params</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>DenseNet‑121</td><td>0.86</td><td>0.41</td><td>8.0M</td></tr>
+              <tr><td>ResNet‑50</td><td>0.84</td><td>0.38</td><td>25.6M</td></tr>
+              <tr><td>EfficientNet‑B0</td><td>0.83</td><td>0.36</td><td>5.3M</td></tr>
+            </tbody>
+          </table>
+          <p class="note">Replace with your numbers. Keep both ROC and PR due to class imbalance.</p>
+        </article>
+        <article class="card">
+          <h3 style="margin-bottom:.6rem">Per‑Label AUC‑ROC (Sample)</h3>
+          <table aria-label="per label auc">
+            <thead>
+              <tr><th>Label</th><th>AUC</th><th>Support</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Cardiomegaly</td><td>0.92</td><td>8,753</td></tr>
+              <tr><td>Pleural Effusion</td><td>0.90</td><td>13,842</td></tr>
+              <tr><td>Edema</td><td>0.88</td><td>6,410</td></tr>
+              <tr><td>Consolidation</td><td>0.81</td><td>5,102</td></tr>
+              <tr><td>No Finding</td><td>0.78</td><td>—</td></tr>
+            </tbody>
+          </table>
+          <p class="note">Populate from your experiment logs or CSV exports.</p>
+        </article>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="card">
+        <h3 style="margin:0 0 .6rem">Confusion Matrix / ROC Gallery</h3>
+        <div class="gallery" id="gallery">
+          <div class="shot">roc_dense.png</div>
+          <div class="shot">roc_resnet.png</div>
+          <div class="shot">cm_cardio.png</div>
+        </div>
+        <p class="note" style="margin-top:.6rem">Swap the placeholders with actual <code>&lt;img&gt;</code> tags when your plots are ready.</p>
+      </div>
+    </div>
+  </section>
+
+
+ <!-- ====== Footer ====== -->
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:.5rem">
+          <div class="logo" aria-hidden="true">XR</div>
+          <div>Chest X‑ray Project</div>
+        </div>
+        <p class="note">Course: STA 160 • Quarter: Fall 2025 • UC Davis</p>
+      </div>
+      <div>
+        <strong>Links</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="#datasets">Datasets</a></li>
+          <li><a href="#method">Method</a></li>
+          <li><a href="#results">Results</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="mailto:you@example.edu">you@example.edu</a></li>
+          <li><a href="#">GitHub repo</a></li>
+          <li><a href="#">Paper / Report</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
