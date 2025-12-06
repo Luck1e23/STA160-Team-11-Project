@@ -91,6 +91,12 @@
     section { padding: 3.2rem 0; }
     .section-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
     .section-head h2 { margin: 0; font-size: clamp(1.4rem, 3.6vw, 2rem); }
+    .dataset-head {
+      display: block;
+    }
+    .dataset-head h2 {
+      margin-bottom: 0.8rem;
+    }
     .muted { color: var(--muted); }
 
     /* Cards grid */
