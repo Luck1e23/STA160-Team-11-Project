@@ -123,12 +123,26 @@
 
     /* Gallery */
     .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
-    .shot { aspect-ratio: 4/3; border-radius: 10px; background: #0d1117; border: 1px dashed rgba(255,255,255,.12); display: grid; place-items: center; color: var(--muted); }
+    .shot {
+       border-radius: 10px;
+       background: #0d1117; 
+       border: 1px dashed rgba(255,255,255,.12); 
+       display: grid; 
+       place-items: center; 
+       color: var(--muted); 
+       overflow: hidden;
+      }
+    .shot img {
+      width: 100%;
+      height: auto;
+      object-fit: contain; 
+      border-radius: 8px;
+    }
     @media (max-width: 850px) { .gallery { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 520px) { .gallery { grid-template-columns: 1fr; } }
 
     /* Team */
-    .team { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+    .team { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
     .member { text-align: center; padding: 1rem; background: var(--surface); border: 1px solid rgba(255,255,255,.06); border-radius: 14px; }
     .avatar { inline-size: 74px; block-size: 74px; border-radius: 999px; margin-inline: auto; background: linear-gradient(135deg, var(--brand), var(--brand-2)); display: grid; place-items: center; color: #0b0f14; font-weight: 800; box-shadow: var(--shadow); }
     .member .role { color: var(--muted); font-size: .95rem; margin-top: .15rem; }

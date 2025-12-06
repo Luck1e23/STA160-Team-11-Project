@@ -36,9 +36,13 @@
       <div>
         <div class="kicker">NIH • CNNs • Transfer Learning</div>
         <h1 class="title">Automated Disease Detection using Deep Learning</h1>
-        <p class="subtitle">
-          We benchmark pre‑trained CNNs to detect common thoracic findings from frontal chest X‑rays.
-          Our pipeline covers curation, preprocessing, training, calibration, and error analysis with clear, reproducible steps.
+        <p class="subtitle" style="text-indent: 50px;">
+            Thoracic diseases are a major global health concern, and chest x-rays are crucial for detecting thoracic abnormalities. 
+          As a non-invasive examination, chest x-rays give healthcare providers the necessary information to present a diagnosis and outline a treatment plan to address any abnormalities or concerning thoracic conditions.
+          However, some findings can be missed when performing this examination. This can lead to errors in the interpretation of the x-ray and also hinder the care of the patient.
+          Additionally, the rising cost of healthcare means that many individuals cannot afford second opinions in the case of missed findings, further compromising their care. 
+          We aim to create an accessible tool that identifies disease in x-rays using neural networks and machine learning. With this, chest abnormalities can be detected,
+          supporting early diagnosis and improving the efficiency of modern healthcare while also reducing costs for individuals.
         </p>
         <div class="stats" aria-label="Project stats">
           <div class="stat"><div class="num">112k+</div><div class="label">Images (NIH14)</div></div>
@@ -81,6 +85,7 @@
       const fileInput = document.getElementById("fileInput");
       const previewImage = document.getElementById("previewImage");
       const uploadText = document.getElementById("uploadText");
+      const generateBtn = document.getElementById("generateBtn");
 
       previewDiv.addEventListener("click", () => fileInput.click());
 
@@ -95,6 +100,10 @@
 
         // SHOW the "Generate Results" button
         generateBtn.style.display = "block";
+      });
+      // If someone clicks "Generate Results"
+      generateBtn.addEventListener("click", () => {
+        alert("Model deployment Not Done, But Take a Look at Your Image!");
       });
       </script>
     </div>
@@ -185,9 +194,11 @@
       <div>
         <strong>Contact</strong>
         <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
-          <li><a href="mailto:you@example.edu">you@example.edu</a></li>
-          <li><a href="https://github.com/Luck1e23/STA160-Team-11-Project">GitHub repo</a></li>
-          <li><a href="#">Paper / Report</a></li>
+          <li>
+            <a href="https://github.com/Luck1e23/STA160-Team-11-Project">
+            GitHub repo
+            </a>
+          </li>
         </ul>
       </div>
     </div>
