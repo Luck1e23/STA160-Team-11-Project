@@ -1,9 +1,11 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>STA 160 X‑ray Project</title>
+
   <meta name="description" content="Chest X‑ray classification project (NIH)." />
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -24,7 +26,6 @@
         <a class="link" href="index.html">Image Upload</a>
         <a class="link" href="data_methods.html">Data and Methods</a>
         <a class="link" href="results.html">Results</a>
-        <a class="link" href="#gallery">Gallery</a>
         <a class="link" href="#team">Team</a>
       </nav>
     </div>
@@ -51,34 +52,15 @@
       </div>
 
       <aside class="hero-card" aria-label="Preview">
-        <div class="preview">
-          <span id="uploadText" style="color:#3498db; font-weight:bold;">
-            Upload X-ray Here (.PNG, .JPG, .JPEG)
-          </span>
-          <input type="file" id="fileInput" accept="image/*" style="display:none;">
-          <img id="previewImage"
-               src=""
-               alt="Preview"
-               style="display:none; width:100%; height:100%; object-fit:cover; border-radius:12px;">
-        </div>
-
-        <!-- Button appears only AFTER upload -->
-        <button id="generateBtn" class="generate-button" style="
-            margin-top:12px;
-            width:100%;
-            padding:12px;
-            background:#3498db;
-            color:white;
-            font-weight:bold;
-            border:none;
-            border-radius:8px;
-            cursor:pointer;
-            display:none;
-            font-size:1rem;
-        ">
-          Generate Results
-        </button>
+        <a href="https://huggingface.co/spaces/Ting4992/ChestXrayDetectionClassifier" target="_blank" style="text-decoration:none;">
+          <div class="preview" style="cursor:pointer;">
+            <span id="uploadText" style="color:#3498db; font-weight:bold;">
+              Click Here to Upload X-ray Here (.PNG, .JPG, .JPEG)
+            </span>
+          </div>
+        </a>
       </aside>
+
 
       <script>
       const previewDiv = document.querySelector(".preview");
@@ -109,33 +91,45 @@
     </div>
   </section>
 
-  <!-- ====== Qualitative Examples ====== -->
+   <!-- ====== Project Videos ====== -->
   <section id="gallery">
     <div class="container">
       <div class="section-head">
-        <h2>Qualitative Examples</h2>
-        <span class="tag">Grad‑CAM / Predictions</span>
+        <h2>Project Demonstrations</h2>
+        <span class="tag">Unlisted YouTube Videos</span>
       </div>
-      <div class="grid cols-3">
-        <article class="card">
-          <h3>True Positive</h3>
-          <div class="shot">gradcam_tp.png</div>
-          <p class="note">E.g., Cardiomegaly correctly detected; attention over cardiac silhouette.</p>
-        </article>
-        <article class="card">
-          <h3>False Positive</h3>
-          <div class="shot">gradcam_fp.png</div>
-          <p class="note">Spurious focus on devices; mitigated by augmentations.</p>
-        </article>
-        <article class="card">
-          <h3>False Negative</h3>
-          <div class="shot">gradcam_fn.png</div>
-          <p class="note">Missed small effusion; improved with threshold tuning.</p>
-        </article>
+
+      <div class="video-grid">
+        
+        <!-- Video 1: Project OVerview -->
+        <div>
+          <h3 style="margin-bottom: .6rem;">Project Overview</h3>
+          <div class="video-wrapper">
+            <iframe 
+              src="https://www.youtube.com/embed/LINK_TO_PRES_VIDEO_DONTFORGETTOREPLACE_GRRRRRRRRRRR"
+              title="Project Overview"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
+        <!-- Video 2: How the Model Runs using an Example Image -->
+        <div>
+          <h3 style="margin-bottom: .6rem;">How the Model Runs using an Example Image</h3>
+          <div class="video-wrapper">
+            <iframe 
+              src="https://www.youtube.com/embed/LINK_TO_MODEL_VIDEO_DONTFORGETTOREPLACE_GRRRRRRRRRRR"
+              title="Model Example Run"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
-
   <!-- ====== Team ====== -->
   <section id="team">
     <div class="container">
