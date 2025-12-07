@@ -52,34 +52,15 @@
       </div>
 
       <aside class="hero-card" aria-label="Preview">
-        <div class="preview">
-          <span id="uploadText" style="color:#3498db; font-weight:bold;">
-            Upload X-ray Here (.PNG, .JPG, .JPEG)
-          </span>
-          <input type="file" id="fileInput" accept="image/*" style="display:none;">
-          <img id="previewImage"
-               src=""
-               alt="Preview"
-               style="display:none; width:100%; height:100%; object-fit:cover; border-radius:12px;">
-        </div>
-
-        <!-- Button appears only AFTER upload -->
-        <button id="generateBtn" class="generate-button" style="
-            margin-top:12px;
-            width:100%;
-            padding:12px;
-            background:#3498db;
-            color:white;
-            font-weight:bold;
-            border:none;
-            border-radius:8px;
-            cursor:pointer;
-            display:none;
-            font-size:1rem;
-        ">
-          Generate Results
-        </button>
+        <a href="https://huggingface.co/spaces/Ting4992/ChestXrayDetectionClassifier" target="_blank" style="text-decoration:none;">
+          <div class="preview" style="cursor:pointer;">
+            <span id="uploadText" style="color:#3498db; font-weight:bold;">
+              Upload X-ray Here (.PNG, .JPG, .JPEG)
+            </span>
+          </div>
+        </a>
       </aside>
+
 
       <script>
       const previewDiv = document.querySelector(".preview");
@@ -206,4 +187,3 @@
   </footer>
 </body>
 </html>
-
