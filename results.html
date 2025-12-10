@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ====== Header / Nav ====== -->
+  <header role="banner">
+    <div class="container nav" aria-label="Top navigation">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">XR</div>
+        <div>STA 160 — Chest X‑ray</div>
+      </div>
+
+      <label class="hamburger" for="nav-toggle" aria-label="Open navigation" aria-controls="nav-links">☰</label>
+      <input type="checkbox" id="nav-toggle" class="sr-only" aria-hidden="true">
+
+      <nav id="nav-links" class="nav-links" role="navigation">
+        <a class="link" href="index.html">Image Upload</a>
+        <a class="link" href="data_methods.html">Data and Methods</a>
+        <a class="link" href="results.html">Results</a>
+      </nav>
+    </div>
+  </header>
+
+ <!-- ====== Results ====== -->
+  <section id="results">
+    <div class="container">
+      <div class="section-head">
+        <h2>Results</h2>
+        <span class="tag">Metrics</span>
+      </div>
+      <div class="grid cols-2">
+        <article class="card">
+          <h3 style="margin-bottom:.6rem">Summary (Validation)</h3>
+
+          <table aria-label="validation summary">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Best Val AUC</th>
+                <th>Best Val F1</th>
+                <th>Params</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>DenseNet‑121</td>
+                <td>0.7407</td>
+                <td>0.216</td>
+                <td>7.0M</td>
+              </tr>
+              <tr>
+                <td>EfficientNet‑B4</td>
+                <td>0.7503</td>
+                <td>0.233</td>
+                <td>19.0M</td>
+              </tr>
+              <tr>
+                <td>ResNet50</td>
+                <td>0.7966</td>
+                <td>0.292</td>
+                <td>25.0M</td>
+              </tr>
+            </tbody>
+            <caption>Figure 3: Table of the resulting threshold metrics for DenseNet21, EfficientNet-B4, and ResNet50</caption>
+          </table>
+        </article>
+        <article class="card">
+          <h3 style="margin-bottom:.6rem">ResNet50</h3>
+          <table aria-label="per label auc">
+            <thead>
+              <tr>
+                <th>Validation Macro AUC</th>
+                <th>Validation Macro F1</th>
+                <th>Test Macro AUC</th>
+                <th>Test Macro AUC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0.795</td>
+                <td>0.284</td>
+                <td>0.757</td>
+                <td>0.295</td>
+              </tr>
+            </tbody>
+            <caption>Figure 4: Resulting metrics for ResNet50 (Our Best Model)</caption>
+          </table>
+        </article>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="card">
+        <h3 style="margin:0 0 .6rem">Visualization of Results</h3>
+        <div class="gallery" id="gallery">
+          <div class="shot">
+            <img src="images/model_comparison.png" alt="model_comparison" />
+            <p class="caption">Figure 4: Comparison of Models with Different Pre-Trained Models</p>
+          </div>
+          <div class="shot">
+            <img src="images/val_auc.png" alt="validation_auc" />
+            <p class="caption">Figure 5: Validation AUC during Training</p>
+          </div>
+          <div class="shot">
+            <img src="images/resnet50_auc_f1.png" alt="resnet50_auc_f1" />
+            <p class="caption">Figure 5: Graph of AUC values per label for ResNet50</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+ <!-- ====== Footer ====== -->
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:.5rem">
+          <div class="logo" aria-hidden="true">XR</div>
+          <div>Chest X‑ray Project</div>
+        </div>
+        <p class="note">Course: STA 160 • Quarter: Fall 2025 • UC Davis</p>
+      </div>
+      <div>
+        <strong>Links</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="index.html">Image Uploader</a></li>
+          <li><a href="data_methods.html">Dataset</a></li>
+          <li><a href="results.html">Results</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="https://github.com/Luck1e23/STA160-Team-11-Project">GitHub repo</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

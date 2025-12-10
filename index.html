@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>STA 160 X‑ray Project</title>
+
+  <meta name="description" content="Chest X‑ray classification project (NIH)." />
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <!-- ====== Header / Nav ====== -->
+  <header role="banner">
+    <div class="container nav" aria-label="Top navigation">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">XR</div>
+        <div>STA 160 — Chest X‑ray</div>
+      </div>
+
+      <label class="hamburger" for="nav-toggle" aria-label="Open navigation" aria-controls="nav-links">☰</label>
+      <input type="checkbox" id="nav-toggle" class="sr-only" aria-hidden="true">
+
+      <nav id="nav-links" class="nav-links" role="navigation">
+        <a class="link" href="index.html">Image Upload</a>
+        <a class="link" href="data_methods.html">Data and Methods</a>
+        <a class="link" href="results.html">Results</a>
+        <a class="link" href="#team">Team</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ====== Hero ====== -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="kicker">NIH • CNNs • Transfer Learning</div>
+        <h1 class="title">Automated Disease Detection using Deep Learning</h1>
+        <p class="subtitle" style="text-indent: 50px;">
+            Thoracic diseases are a major global health concern, and chest x-rays are crucial for detecting thoracic abnormalities. 
+          As a non-invasive examination, chest x-rays give healthcare providers the necessary information to present a diagnosis and outline a treatment plan to address any abnormalities or concerning thoracic conditions.
+          However, some findings can be missed when performing this examination. This can lead to errors in the interpretation of the x-ray and also hinder the care of the patient.
+          Additionally, the rising cost of healthcare means that many individuals cannot afford second opinions in the case of missed findings, further compromising their care. 
+          We aim to create an accessible tool that identifies disease in x-rays using neural networks and machine learning. With this, chest abnormalities can be detected,
+          supporting early diagnosis and improving the efficiency of modern healthcare while also reducing costs for individuals.
+        </p>
+        <div class="stats" aria-label="Project stats">
+          <div class="stat"><div class="num">112k+</div><div class="label">Images (NIH14)</div></div>
+          <div class="stat"><div class="num">15</div><div class="label">NIH labels</div></div>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Preview">
+        <a href="https://huggingface.co/spaces/Ting4992/ChestXrayDetectionClassifier" target="_blank" style="text-decoration:none;">
+          <div class="preview" style="cursor:pointer;">
+            <span id="uploadText" style="color:#3498db; font-weight:bold;">
+              Click to Upload X-ray Here (.PNG, .JPG, .JPEG)
+            </span>
+          </div>
+        </a>
+      </aside>
+
+
+      <script>
+      const previewDiv = document.querySelector(".preview");
+      const fileInput = document.getElementById("fileInput");
+      const previewImage = document.getElementById("previewImage");
+      const uploadText = document.getElementById("uploadText");
+      const generateBtn = document.getElementById("generateBtn");
+
+      previewDiv.addEventListener("click", () => fileInput.click());
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        // Show preview
+        previewImage.src = URL.createObjectURL(file);
+        previewImage.style.display = "block";
+        uploadText.style.display = "none";
+
+        // SHOW the "Generate Results" button
+        generateBtn.style.display = "block";
+      });
+      // If someone clicks "Generate Results"
+      generateBtn.addEventListener("click", () => {
+        alert("Model deployment Not Done, But Take a Look at Your Image!");
+      });
+      </script>
+    </div>
+  </section>
+  
+  <!-- ====== Project Videos ====== -->
+  <section id="gallery">
+    <div class="container">
+      <div class="section-head">
+        <h2>Project Demonstrations</h2>
+      </div>
+
+      <div class="video-grid">
+        
+        <!-- Video 1: Project OVerview -->
+      <div>
+        <h3 style="margin-bottom: .6rem;">Project Overview</h3>
+        <div class="video-wrapper">
+          <iframe 
+            src="https://www.youtube.com/embed/jPq_F5WLz98"
+            title="Website Demo"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+  </section>
+
+  <!-- ====== Team ====== -->
+  <section id="team">
+    <div class="container">
+      <div class="section-head">
+        <h2>Team</h2>
+        <span class="tag">STA 160 • UC Davis</span>
+      </div>
+      <div class="team">
+        <div class="member">
+          <div class="avatar" aria-hidden="true">ML</div>
+          <h3>Muhammad Laiq</h3>
+          <div class="role">Lead • Modeling & Docs</div>
+        </div>
+        <div class="member">
+          <div class="avatar" aria-hidden="true">AB</div>
+          <h3> Lauren Le</h3>
+          <div class="role">Data & EDA</div>
+        </div>
+        <div class="member">
+          <div class="avatar" aria-hidden="true">CD</div>
+          <h3> Fang Shang</h3>
+          <div class="role">Training Ops</div>
+        </div>
+        <div class="member">
+          <div class="avatar" aria-hidden="true">EF</div>
+          <h3> Kayla Sham</h3>
+          <div class="role">Evaluation</div>
+        </div>
+        <div class="member">
+          <div class="avatar" aria-hidden="true">EF</div>
+          <h3>Tina Yu</h3>
+          <div class="role">Training models</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ====== Footer ====== -->
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="brand" style="margin-bottom:.5rem">
+          <div class="logo" aria-hidden="true">XR</div>
+          <div>Chest X‑ray Project</div>
+        </div>
+        <p class="note">Course: STA 160 • Quarter: Fall 2025 • UC Davis</p>
+      </div>
+      <div>
+        <strong>Links</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li><a href="index.html">Image Uploader</a></li>
+          <li><a href="data_methods.html">Dataset</a></li>
+          <li><a href="results.html">Results</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <ul style="list-style:none; padding:0; margin:.6rem 0 0 0">
+          <li>
+            <a href="https://github.com/Luck1e23/STA160-Team-11-Project">
+            GitHub repo
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
